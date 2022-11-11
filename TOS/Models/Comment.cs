@@ -27,6 +27,8 @@ public class Comment
     [ForeignKey("TopicId")]
     [InverseProperty("Comments")]
     public virtual Topic Topic { get; set; } = null!;
+    
+    public bool Anonymous { get; set; }
         
    
     
