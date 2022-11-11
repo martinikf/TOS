@@ -1,12 +1,14 @@
+using System.Configuration;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using TOS.Data;
 using TOS.Models;
+using TOS.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options
         .UseLazyLoadingProxies()
         .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
@@ -22,9 +24,19 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+//Register email sender
+builder.Services.AddTransient<SendinBlueSettings, SendinBlueSettings>(
+    a => new SendinBlueSettings()
+    {
+        Username = builder.Configuration["SendinBlue:Username"],
+        Password = builder.Configuration["SendinBlue:Password"]
+    });
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+
 var app = builder.Build();
 
-if(true)
+if(false)
     Seed.InitSeed(app);
 
 // Configure the HTTP request pipeline.
