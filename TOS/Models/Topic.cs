@@ -11,7 +11,9 @@ public class Topic
 
         public string Name { get; set; } = string.Empty;
 
-        public string? Description { get; set; }
+        public string DescriptionShort { get; set; }
+
+        public string? DescriptionLong { get; set; }
 
         public bool Visible { get; set; }
         

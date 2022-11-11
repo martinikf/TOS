@@ -7,4 +7,6 @@ public class UserInterestedTopic
     
     public int TopicId { get; set; }
     public virtual Topic Topic { get; set; } = null!;
+    
+    public DateTime DateTime { get; set; }
 }

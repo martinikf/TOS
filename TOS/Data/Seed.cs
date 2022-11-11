@@ -49,7 +49,7 @@ public static class Seed
         var mcITProgramme = CreateProgramme("Information Technology", true, ProgramType.Master, ctx);
         
         //Create topics
-        var tosTopic = CreateTopic("TOS", "System for offering topics of diploma theses", true, teacherUser,
+        var tosTopic = CreateTopic("TOS", "System for offering topics of diploma theses", "Longer description shown in details.", true, teacherUser,
             teacherUser, studentUser, bachelorGroup, ctx);
         
         //Recommended programmes for topics
@@ -211,7 +211,7 @@ public static class Seed
         return programme;
     }
 
-    public static Topic CreateTopic(string name, string description, bool visible, ApplicationUser creator,
+    public static Topic CreateTopic(string name, string descriptionShort,string? descriptionLong, bool visible, ApplicationUser creator,
         ApplicationUser? supervisor, ApplicationUser? assignedStudent, Group? group, ApplicationDbContext ctx)
     {
         //Crate new topic if not exists
@@ -222,7 +222,8 @@ public static class Seed
             topic = new Topic()
             {
                 Name = name,
-                Description = description,
+                DescriptionShort = descriptionShort,
+                DescriptionLong = descriptionLong,
                 Visible = visible,
                 Creator = creator,
                 Supervisor = supervisor,
@@ -256,7 +257,7 @@ public static class Seed
         return topicRecommendedProgramme;
     }
     
-    public static UserInterestedTopic CreateUserInterestedTopic(ApplicationUser user, Topic topic, ApplicationDbContext ctx)
+    public static UserInterestedTopic CreateUserInterestedTopic(ApplicationUser user, Topic topic, DateTime dateTime, ApplicationDbContext ctx)
     {
         //Create user interested topic if not exists
         var userInterestedTopic = ctx.UserInterestedTopics.FirstOrDefault(u =>
@@ -267,7 +268,8 @@ public static class Seed
             userInterestedTopic = new UserInterestedTopic()
             {
                 User = user,
-                Topic = topic
+                Topic = topic,
+                DateTime = dateTime
             };
             ctx.UserInterestedTopics.Add(userInterestedTopic);
             ctx.SaveChanges();
