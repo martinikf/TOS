@@ -6,30 +6,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace TOS.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class Rework : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AspNetRoles",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Programme",
                 columns: table => new
                 {
-                    FieldOfStudyId = table.Column<int>(type: "integer", nullable: false)
+                    ProgrammeId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Active = table.Column<bool>(type: "boolean", nullable: false),
@@ -37,16 +22,17 @@ namespace TOS.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Programme", x => x.FieldOfStudyId);
+                    table.PrimaryKey("PK_Programme", x => x.ProgrammeId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Role",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    NormalizedName = table.Column<string>(type: "text", nullable: true),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
@@ -93,9 +79,9 @@ namespace TOS.Migrations
                 {
                     table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                        name: "FK_AspNetRoleClaims_Role_RoleId",
                         column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
+                        principalTable: "Role",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -168,7 +154,7 @@ namespace TOS.Migrations
                     GroupId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    OwnerId = table.Column<int>(type: "integer", nullable: false),
+                    CreatorId = table.Column<int>(type: "integer", nullable: false),
                     Selectable = table.Column<bool>(type: "boolean", nullable: false),
                     Visible = table.Column<bool>(type: "boolean", nullable: false)
                 },
@@ -176,8 +162,8 @@ namespace TOS.Migrations
                 {
                     table.PrimaryKey("PK_Group", x => x.GroupId);
                     table.ForeignKey(
-                        name: "FK_Group_User_OwnerId",
-                        column: x => x.OwnerId,
+                        name: "FK_Group_User_CreatorId",
+                        column: x => x.CreatorId,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -194,9 +180,9 @@ namespace TOS.Migrations
                 {
                     table.PrimaryKey("PK_UserRole", x => new { x.UserId, x.RoleId });
                     table.ForeignKey(
-                        name: "FK_UserRole_AspNetRoles_RoleId",
+                        name: "FK_UserRole_Role_RoleId",
                         column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
+                        principalTable: "Role",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -287,7 +273,8 @@ namespace TOS.Migrations
                     AuthorId = table.Column<int>(type: "integer", nullable: false),
                     Comments = table.Column<int>(type: "integer", nullable: false),
                     ParentCommentId = table.Column<int>(type: "integer", nullable: true),
-                    TopicId = table.Column<int>(type: "integer", nullable: false)
+                    TopicId = table.Column<int>(type: "integer", nullable: false),
+                    Anonymous = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -325,7 +312,7 @@ namespace TOS.Migrations
                         name: "FK_TopicRecommendedProgram_Programme_ProgramId",
                         column: x => x.ProgramId,
                         principalTable: "Programme",
-                        principalColumn: "FieldOfStudyId",
+                        principalColumn: "ProgrammeId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_TopicRecommendedProgram_Topic_TopicId",
@@ -365,12 +352,6 @@ namespace TOS.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "RoleNameIndex",
-                table: "AspNetRoles",
-                column: "NormalizedName",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
                 table: "AspNetUserClaims",
                 column: "UserId");
@@ -406,9 +387,15 @@ namespace TOS.Migrations
                 column: "TopicId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Group_OwnerId",
+                name: "IX_Group_CreatorId",
                 table: "Group",
-                column: "OwnerId");
+                column: "CreatorId");
+
+            migrationBuilder.CreateIndex(
+                name: "RoleNameIndex",
+                table: "Role",
+                column: "NormalizedName",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Topic_AssignedId",
@@ -478,9 +465,6 @@ namespace TOS.Migrations
                 name: "Comment");
 
             migrationBuilder.DropTable(
-                name: "Role");
-
-            migrationBuilder.DropTable(
                 name: "TopicRecommendedProgram");
 
             migrationBuilder.DropTable(
@@ -496,7 +480,7 @@ namespace TOS.Migrations
                 name: "Topic");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "Role");
 
             migrationBuilder.DropTable(
                 name: "Group");

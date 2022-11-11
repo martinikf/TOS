@@ -5,19 +5,58 @@ namespace TOS.Data;
 
 public static class Seed
 {
-    public static void InitSeed()
+    public static void InitSeed(WebApplication app)
     {
+        using var scope = app.Services.CreateScope();
+        var ctx = scope.ServiceProvider.GetService<ApplicationDbContext>();
+        
         //Create Roles: Administrator, Teacher, Student, External
-        
-        //Create administrator user
-        
-        //Add roles to administrator
-        
+        var adminRole = CreateRole("Administrator", ctx);
+        var teacherRole = CreateRole("Teacher", ctx);
+        var studentRole = CreateRole("Student", ctx);
+        var externalRole = CreateRole("External", ctx);
+
+        //Create users
+        var adminUser = CreateUser("Admin", "User", "admin@tos.tos", true, "password", ctx);
+        var teacherUser = CreateUser("Teacher", "User", "teacher@tos.tos", true, "password", ctx);
+        var studentUser = CreateUser("Student", "User", "student@tos.tos", true, "password", ctx);
+        var externalUser = CreateUser("External", "User", "external@tos.tos", true, "password", ctx);
+
+        //Add roles
+        CreateUserRole(adminUser, adminRole, ctx);
+        CreateUserRole(teacherUser, teacherRole, ctx);
+        CreateUserRole(studentUser, studentRole, ctx);
+        CreateUserRole(externalUser, externalRole, ctx);
+
         //Create default Groups: Unassigned, Bachelor, Master for topics
+        var unassignedGroup = CreateGroup("Unassigned", adminUser, true, false, ctx);
+        var bachelorGroup = CreateGroup("Bachelor", adminUser, true, true, ctx);
+        var masterGroup = CreateGroup("Master", adminUser, true, true, ctx);
+        //Example for course
+        var jj1Group = CreateGroup("KMI/JJ1-2022-A", teacherUser, false, true, ctx);
         
+        //Create programmees
+        //Bachelor
+        var bcITProgramme = CreateProgramme("Information Technology", true, ProgramType.Bachelor, ctx);
+        var bcInfProgramme = CreateProgramme("Informatics", true, ProgramType.Bachelor, ctx);
+        var bcSwProgramme = CreateProgramme("Software Engineering", true, ProgramType.Bachelor, ctx);
+        var bcGeneralInfProgramme = CreateProgramme("General Informatics", true, ProgramType.Bachelor, ctx);
+        //Master
+        var mcInfProgramme = CreateProgramme("Informatics", true, ProgramType.Master, ctx);
+        var mcSwProgramme = CreateProgramme("Software Engineering", true, ProgramType.Master, ctx);
+        var mcGeneralInfProgramme = CreateProgramme("General Informatics", true, ProgramType.Master, ctx);
+        var mcAIProgramme = CreateProgramme("Artificial Intelligence", true, ProgramType.Master, ctx);
+        var mcITProgramme = CreateProgramme("Information Technology", true, ProgramType.Master, ctx);
         
+        //Create topics
+        var tosTopic = CreateTopic("TOS", "System for offering topics of diploma theses", true, teacherUser,
+            teacherUser, studentUser, bachelorGroup, ctx);
         
-        
+        //Recommended programmes for topics
+        CreateTopicRecommendedProgramme(bcSwProgramme, tosTopic ,ctx);
+
+
+
     }
 
 
@@ -34,7 +73,9 @@ public static class Seed
                 LastName = lastname,
                 Email = email,
                 EmailConfirmed = emailConfirmed,
-                UserName = email
+                UserName = email,
+                NormalizedEmail = email.ToUpper(),
+                NormalizedUserName = email.ToUpper()
             };
             user.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(user, password);
             user.SecurityStamp = Guid.NewGuid().ToString("D");
@@ -234,5 +275,5 @@ public static class Seed
         
         return userInterestedTopic;
     }
-    
+
 }

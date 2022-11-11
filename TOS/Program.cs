@@ -24,6 +24,9 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+if(true)
+    Seed.InitSeed(app);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

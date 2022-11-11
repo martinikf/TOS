@@ -40,7 +40,7 @@ namespace TOS.Data
             {
                 b.ToTable("UserRole");
             });
-            builder.Entity<IdentityRole>(b =>
+            builder.Entity<IdentityRole<int>>(b =>
             {
                 b.ToTable("Role");
             });

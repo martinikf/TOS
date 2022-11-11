@@ -12,8 +12,8 @@ using TOS.Data;
 namespace TOS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221111134223_GroupRenameCreatorMigration")]
-    partial class GroupRenameCreatorMigration
+    [Migration("20221111165136_Rework")]
+    partial class Rework
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,25 +23,6 @@ namespace TOS.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NormalizedName")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Role", (string)null);
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
                 {
@@ -69,7 +50,7 @@ namespace TOS.Migrations
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("Role", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -285,6 +266,9 @@ namespace TOS.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CommentId"));
 
+                    b.Property<bool>("Anonymous")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("AuthorId")
                         .HasColumnType("integer");
 
@@ -345,11 +329,11 @@ namespace TOS.Migrations
 
             modelBuilder.Entity("TOS.Models.Programme", b =>
                 {
-                    b.Property<int>("FieldOfStudyId")
+                    b.Property<int>("ProgrammeId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("FieldOfStudyId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ProgrammeId"));
 
                     b.Property<bool>("Active")
                         .HasColumnType("boolean");
@@ -362,7 +346,7 @@ namespace TOS.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("FieldOfStudyId");
+                    b.HasKey("ProgrammeId");
 
                     b.ToTable("Programme", (string)null);
                 });
@@ -410,7 +394,7 @@ namespace TOS.Migrations
                     b.ToTable("Topic", (string)null);
                 });
 
-            modelBuilder.Entity("TOS.Models.TopicRecommendedProgram", b =>
+            modelBuilder.Entity("TOS.Models.TopicRecommendedProgramme", b =>
                 {
                     b.Property<int>("TopicId")
                         .HasColumnType("integer");
@@ -575,7 +559,7 @@ namespace TOS.Migrations
                     b.Navigation("Supervisor");
                 });
 
-            modelBuilder.Entity("TOS.Models.TopicRecommendedProgram", b =>
+            modelBuilder.Entity("TOS.Models.TopicRecommendedProgramme", b =>
                 {
                     b.HasOne("TOS.Models.Programme", "Programme")
                         .WithMany("TopicRecommendedPrograms")
