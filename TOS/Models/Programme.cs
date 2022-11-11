@@ -6,7 +6,7 @@ namespace TOS.Models;
 public class Programme
 {
     [Key]
-    public int FieldOfStudyId { get; set; }
+    public int ProgrammeId { get; set; }
 
     public string Name { get; set; } = string.Empty;
         
@@ -14,5 +14,5 @@ public class Programme
         
     public ProgramType Type { get; set; }
 
-    public virtual ICollection<TopicRecommendedProgram> TopicRecommendedPrograms { get; } = new HashSet<TopicRecommendedProgram>();
+    public virtual ICollection<TopicRecommendedProgramme> TopicRecommendedPrograms { get; } = new HashSet<TopicRecommendedProgramme>();
 }

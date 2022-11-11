@@ -13,7 +13,7 @@ namespace TOS.Data
         public DbSet<Group> Groups { get; set; }
         public DbSet<Programme> Programmes { get; set; }
         public DbSet<Topic> Topics { get; set; }
-        public DbSet<TopicRecommendedProgram> TopicRecommendedPrograms { get; set; }
+        public DbSet<TopicRecommendedProgramme> TopicRecommendedProgrammes { get; set; }
         public DbSet<UserInterestedTopic> UserInterestedTopics { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -64,7 +64,7 @@ namespace TOS.Data
             {
                 b.ToTable("Topic");
             });
-            builder.Entity<TopicRecommendedProgram>(b =>
+            builder.Entity<TopicRecommendedProgramme>(b =>
             {
                 b.ToTable("TopicRecommendedProgram");
             });
@@ -87,14 +87,14 @@ namespace TOS.Data
                 .HasForeignKey(uk => uk.TopicId);
 
             //M:N relation
-            builder.Entity<TopicRecommendedProgram>().HasKey(tf => new { tf.TopicId, tf.ProgramId });
+            builder.Entity<TopicRecommendedProgramme>().HasKey(tf => new { tf.TopicId, tf.ProgramId });
 
-            builder.Entity<TopicRecommendedProgram>()
+            builder.Entity<TopicRecommendedProgramme>()
                 .HasOne(tf => tf.Topic)
                 .WithMany(x => x.TopicRecommendedPrograms)
                 .HasForeignKey(tf => tf.TopicId);
 
-            builder.Entity<TopicRecommendedProgram>()
+            builder.Entity<TopicRecommendedProgramme>()
                 .HasOne(tf => tf.Programme)
                 .WithMany(x => x.TopicRecommendedPrograms)
                 .HasForeignKey(tf => tf.ProgramId);

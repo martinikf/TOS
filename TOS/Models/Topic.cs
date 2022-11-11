@@ -16,7 +16,6 @@ public class Topic
         public bool Visible { get; set; }
         
         public int CreatorId { get; set; }
-
         [ForeignKey("CreatorId")]
         [InverseProperty("CreatedTopics")]
         public virtual ApplicationUser Creator { get; set; } = null!;
@@ -38,7 +37,7 @@ public class Topic
         [InverseProperty("Topics")]
         public virtual Group? Group { get; set; }
         
-        public virtual ICollection<TopicRecommendedProgram> TopicRecommendedPrograms { get; } = new HashSet<TopicRecommendedProgram>();
+        public virtual ICollection<TopicRecommendedProgramme> TopicRecommendedPrograms { get; } = new HashSet<TopicRecommendedProgramme>();
 
         [InverseProperty("Topic")]
         public virtual ICollection<Comment> Comments { get; } = new HashSet<Comment>();

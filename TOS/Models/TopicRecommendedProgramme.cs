@@ -1,6 +1,6 @@
 ﻿namespace TOS.Models;
 
-public class TopicRecommendedProgram
+public class TopicRecommendedProgramme
 {
     public int ProgramId { get; set; }
     public virtual Programme Programme { get; set; } = null!;
