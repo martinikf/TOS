@@ -11,8 +11,8 @@ public class Group
 
     public string Name { get; set; } = string.Empty;
     
-    public int OwnerId { get; set; }
-    [ForeignKey("OwnerId")]
+    public int CreatorId { get; set; }
+    [ForeignKey("CreatorId")]
     [InverseProperty("CreatedGroups")]
     public virtual ApplicationUser Creator { get; set; } = null!;
 
