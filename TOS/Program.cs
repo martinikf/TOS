@@ -51,9 +51,6 @@ else
     app.UseHsts();
 }
 
-//Seed data
-//Seed.Initialize(app);
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
