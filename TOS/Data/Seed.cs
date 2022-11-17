@@ -17,10 +17,10 @@ public static class Seed
         var externalRole = CreateRole("External", ctx);
 
         //Create users
-        var adminUser = CreateUser("Admin", "User", "admin@tos.tos", true, "password", ctx);
-        var teacherUser = CreateUser("Teacher", "User", "teacher@tos.tos", true, "password", ctx);
-        var studentUser = CreateUser("Student", "User", "student@tos.tos", true, "password", ctx);
-        var externalUser = CreateUser("External", "User", "external@tos.tos", true, "password", ctx);
+        var adminUser = CreateUser("Admin", "User", "admin@tos.tos","admin@tos.tos", true, "password", ctx);
+        var teacherUser = CreateUser("Teacher", "User", "teacher@tos.tos","teacher@tos.tos", true, "password", ctx);
+        var studentUser = CreateUser("Student", "User", "student@tos.tos", "student@tos.tos",true, "password", ctx);
+        var externalUser = CreateUser("External", "User", "external@tos.tos", "external@tos.tos",true, "password", ctx);
 
         //Add roles
         CreateUserRole(adminUser, adminRole, ctx);
@@ -61,7 +61,7 @@ public static class Seed
 
 
 
-    public static ApplicationUser CreateUser(string firstname, string lastname, string email, bool emailConfirmed, string password, ApplicationDbContext ctx)
+    public static ApplicationUser CreateUser(string firstname, string lastname, string email, string username, bool emailConfirmed, string password, ApplicationDbContext ctx)
     {
         //Create usef if not exists
         var user = ctx.Users.FirstOrDefault(u => u.Email == email);
@@ -73,9 +73,9 @@ public static class Seed
                 LastName = lastname,
                 Email = email,
                 EmailConfirmed = emailConfirmed,
-                UserName = email,
+                UserName = username,
                 NormalizedEmail = email.ToUpper(),
-                NormalizedUserName = email.ToUpper()
+                NormalizedUserName = username.ToUpper()
             };
             user.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(user, password);
             user.SecurityStamp = Guid.NewGuid().ToString("D");

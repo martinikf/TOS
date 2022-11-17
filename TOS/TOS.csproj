@@ -20,10 +20,10 @@
     <PackageReference Include="Microsoft.Owin.StaticFiles" Version="4.2.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.0" />
+    <PackageReference Include="System.DirectoryServices.Protocols" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Migrations\" />
     <Folder Include="Migrations" />
   </ItemGroup>
 
