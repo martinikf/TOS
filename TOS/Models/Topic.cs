@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using HostingEnvironmentExtensions = Microsoft.AspNetCore.Hosting.HostingEnvironmentExtensions;
 
 namespace TOS.Models;
 
@@ -11,7 +10,7 @@ public class Topic
 
         public string Name { get; set; } = string.Empty;
 
-        public string DescriptionShort { get; set; }
+        public string DescriptionShort { get; set; } = string.Empty;
 
         public string? DescriptionLong { get; set; }
 
