@@ -2,23 +2,19 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.DirectoryServices.Protocols;
-using System.Linq;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.Encodings.Web;
 using System.Xml.Linq;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using NuGet.Common;
+using Microsoft.AspNetCore.WebUtilities;
 using TOS.Data;
 using TOS.Models;
 
@@ -27,14 +23,17 @@ namespace TOS.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly ApplicationDbContext _context;
-
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger, ApplicationDbContext context)
+        private readonly IEmailSender _emailSender;
+        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger, ApplicationDbContext context, IEmailSender emailSender, UserManager<ApplicationUser> userManager)
         {
             _signInManager = signInManager;
             _logger = logger;
             _context = context;
+            _emailSender = emailSender;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -124,16 +123,16 @@ namespace TOS.Areas.Identity.Pages.Account
                 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User logged in.");
+                    _logger.LogInformation("User logged in");
                     return LocalRedirect(returnUrl);
-                }
+                }/*
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
-                }
+                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, Input.RememberMe });
+                }*/
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning("User account locked out.");
+                    _logger.LogWarning("User account locked out");
                     return RedirectToPage("./Lockout");
                 }
                 else
@@ -142,7 +141,7 @@ namespace TOS.Areas.Identity.Pages.Account
                     var user = _context.Users.FirstOrDefault(u => u.UserName == Input.Username);
                     if (user != null)
                     {
-                        if (LDAPAuthenticate(Input.Username, Input.Password))
+                        if (LdapAuthenticate(Input.Username, Input.Password))
                         {
                             //AD credentials are valid, update password
                             //User changed his AD password
@@ -151,17 +150,39 @@ namespace TOS.Areas.Identity.Pages.Account
                             _context.Users.Update(user);
                             
                             //Sign in user
-                            _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe,
+                            await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe,
                                 lockoutOnFailure: false);
                             return LocalRedirect(returnUrl);
                         }
                     }
                     //If user is not in database, check if AD credentials are valid -> CreateUser
-                    if (CreateADUser())
+                    if (CreateLdapUser())
                     {
-                        _logger.LogInformation("User logged in.");
-                        _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe,
+                      
+                        //Sign in new user
+                        await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe,
                             lockoutOnFailure: false);
+                        
+                        //Select user from database
+                        var currentUser = _context.Users.FirstOrDefault(u => u.UserName == Input.Username);
+                        if (currentUser?.Email is null) throw new Exception("User should exists here");
+                        
+                        //Generate email confirmation
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(currentUser);
+                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                        var callbackUrl = Url.Page(
+                            "/Account/ConfirmEmail",
+                            pageHandler: null,
+                            values: new { area = "Identity", userId = currentUser.Id, code, returnUrl = "/"},
+                            protocol: Request.Scheme);
+
+                        if(callbackUrl is null) throw new Exception("CallbackUrl is null");
+                            
+                        //Send email confirmation
+                        await _emailSender.SendEmailAsync(currentUser.Email, "Confirm your email",
+                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        
+                        _logger.LogInformation("User logged in");
                         return LocalRedirect(returnUrl);
                     }
                     
@@ -175,7 +196,7 @@ namespace TOS.Areas.Identity.Pages.Account
         }
 
 
-        private bool LDAPAuthenticate(string username, string password)
+        private bool LdapAuthenticate(string username, string password)
         {
             try
             {
@@ -205,17 +226,17 @@ namespace TOS.Areas.Identity.Pages.Account
             return true;
         }
 
-        private bool CreateADUser()
+        private bool CreateLdapUser()
         {
             try
             {
                 //If AD authentication fails -> return false
-                if (!LDAPAuthenticate(Input.Username, Input.Password)) return false;
+                if (!LdapAuthenticate(Input.Username, Input.Password)) return false;
 
                 var student = true;
                 
                 //Decide if user is a teacher or student and get OsCislo
-                string osCislo = String.Empty;
+                string osCislo;
                 var studentReq =
                     "https://stagservices.upol.cz/ws/services/rest2/users/getOsobniCislaByExternalLogin?login=" + Input.Username;
                 
@@ -247,29 +268,34 @@ namespace TOS.Areas.Identity.Pages.Account
 
         private void CreateUser(string osCislo, bool student)
         {
-            var role = student ? "Student" : "Teacher";
+            var roleString = student ? "Student" : "Teacher";
             var req = student
                 ? "https://stagservices.upol.cz/ws/services/rest2/student/getStudentInfo?osCislo=" + osCislo
                 : "https://stagservices.upol.cz/ws/services/rest2/ucitel/getUcitelInfo?ucitIdno=" + osCislo;
 
             var info = GetInfo(req);
-            var user = Seed.CreateUser(info.Item1, info.Item2, info.Item3, Input.Username,false, Input.Password, _context);
-            Seed.CreateUserRole(user, _context.Roles.FirstOrDefault(x => x.Name.Equals(role)), _context);
+            
+            var lastnameLowered = info.Item2.Substring(0, 1) + info.Item2.Substring(1).ToLower();
+            var user = Seed.CreateUser(info.Item1, lastnameLowered, info.Item3, Input.Username,false, Input.Password, _context);
+            
+            var roleToInsert = _context.Roles.FirstOrDefault(x => x.Name.Equals(roleString));
+            if (roleToInsert is null) throw new Exception("Role that should exist does not exist: " + roleString);
+            
+            Seed.CreateUserRole(user, roleToInsert, _context);
         }
-
+        
         private Tuple<string, string, string> GetInfo(string reqString)
         {
-            var req = (HttpWebRequest) WebRequest.Create(reqString);
-            req.Method = "GET";
-            req.ContentType = "application/xml";
-            req.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(Input.Username + ":" + Input.Password)));
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
+                Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1")
+                    .GetBytes(Input.Username + ":" + Input.Password)));
             
-            var response = req.GetResponse();
-
-            //response to string
-            var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
-        
-            //get jmeno, prijmeni, email from xml
+            client.BaseAddress = new Uri(reqString);
+            
+            var response = client.GetAsync(reqString).Result;
+            var responseString = response.Content.ReadAsStringAsync().Result;
+            
             var xml = XDocument.Parse(responseString);
             
             var firstname = xml.Descendants("jmeno").First().Value;
@@ -278,22 +304,19 @@ namespace TOS.Areas.Identity.Pages.Account
             
             return new Tuple<string, string, string>(firstname, lastname, email);
         }
-
+        
+        
         private string GetOsCislo(string reqString)
         {
-            var req = (HttpWebRequest) WebRequest.Create(reqString);
-            req.Method = "GET";
-            req.ContentType = "application/xml";
-            var response = req.GetResponse();
-
-            var responseString =
-                new StreamReader(response.GetResponseStream() ?? throw new Exception("No response from STAGAPI"))
-                    .ReadToEnd();
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(reqString);
+            
+            var response = client.GetAsync(reqString).Result;
+            var responseString = response.Content.ReadAsStringAsync().Result;
+            
             var xml = XDocument.Parse(responseString);
             
-            string osCislo = String.Empty;
-            osCislo = xml.Descendants("osCislo").First().Value;
-            return osCislo;
+            return xml.Descendants("osCislo").First().Value;
         }
     }
 }
