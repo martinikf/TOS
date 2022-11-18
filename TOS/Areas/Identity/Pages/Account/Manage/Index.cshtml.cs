@@ -56,21 +56,28 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
+            [Display(Name = "First name")]
+            public string Firstname { get; set; }
+            
+            [Display(Name = "Last name")]
+            public string Lastname { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            //Get current user
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser is null) throw new Exception("User should not be null");
+            var firstname = currentUser.FirstName;
+            var lastname = currentUser.LastName;
 
             Username = userName;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                Firstname = firstname,
+                Lastname = lastname
             };
         }
 
@@ -99,7 +106,7 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
                 await LoadAsync(user);
                 return Page();
             }
-
+            /*
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
             {
@@ -110,7 +117,14 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
-
+            */
+            //Update user name
+            //TODO Allow it only for none-AD users
+            //TODO Add stag api sync option for AD-users
+            user.FirstName = Input.Firstname;
+            user.LastName = Input.Lastname;
+            await _userManager.UpdateAsync(user);
+            
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
