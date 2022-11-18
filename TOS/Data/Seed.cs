@@ -61,7 +61,7 @@ public static class Seed
 
 
 
-    public static ApplicationUser CreateUser(string firstname, string lastname, string email, string username, bool emailConfirmed, string password, ApplicationDbContext ctx)
+    public static ApplicationUser CreateUser(string firstname, string lastname, string email, string username, bool emailConfirmed, string? password, ApplicationDbContext ctx)
     {
         //Create usef if not exists
         var user = ctx.Users.FirstOrDefault(u => u.Email == email);
@@ -77,7 +77,14 @@ public static class Seed
                 NormalizedEmail = email.ToUpper(),
                 NormalizedUserName = username.ToUpper()
             };
-            user.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(user, password);
+            if (password != null)
+            {
+                user.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(user, password);
+            }
+            else
+            {
+                user.PasswordHash = null;
+            }
             user.SecurityStamp = Guid.NewGuid().ToString("D");
             
             ctx.Users.Add(user);

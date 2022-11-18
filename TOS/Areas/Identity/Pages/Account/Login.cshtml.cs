@@ -125,11 +125,7 @@ namespace TOS.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User logged in");
                     return LocalRedirect(returnUrl);
-                }/*
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, Input.RememberMe });
-                }*/
+                }
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out");
@@ -137,49 +133,42 @@ namespace TOS.Areas.Identity.Pages.Account
                 }
                 else
                 {
+                    //For AD users
+                    
+                    //Login for AD users with account in database
                     //Check if username exists in database
                     var user = _context.Users.FirstOrDefault(u => u.UserName == Input.Username);
                     if (user != null)
                     {
                         if (LdapAuthenticate(Input.Username, Input.Password))
                         {
-                            //AD credentials are valid, update password
-                            //User changed his AD password
-                            var passwordHasher = new PasswordHasher<ApplicationUser>();
-                            user.PasswordHash = passwordHasher.HashPassword(user, Input.Password);
-                            _context.Users.Update(user);
-                            
                             //Sign in user
-                            await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe,
-                                lockoutOnFailure: false);
+                            await _signInManager.SignInAsync(user, Input.RememberMe);
                             return LocalRedirect(returnUrl);
                         }
                     }
                     //If user is not in database, check if AD credentials are valid -> CreateUser
-                    if (CreateLdapUser())
+                    ApplicationUser createdUser;
+                    if ((createdUser = CreateLdapUser()) != null)
                     {
-                      
                         //Sign in new user
-                        await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe,
-                            lockoutOnFailure: false);
-                        
-                        //Select user from database
-                        var currentUser = _context.Users.FirstOrDefault(u => u.UserName == Input.Username);
-                        if (currentUser?.Email is null) throw new Exception("User should exists here");
-                        
+                        await _signInManager.SignInAsync(createdUser, Input.RememberMe);
+
                         //Generate email confirmation
-                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(currentUser);
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(createdUser);
                         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                         var callbackUrl = Url.Page(
                             "/Account/ConfirmEmail",
                             pageHandler: null,
-                            values: new { area = "Identity", userId = currentUser.Id, code, returnUrl = "/"},
+                            values: new { area = "Identity", userId = createdUser.Id, code, returnUrl = "/"},
                             protocol: Request.Scheme);
 
                         if(callbackUrl is null) throw new Exception("CallbackUrl is null");
-                            
+
+                        if (createdUser.Email is null) throw new Exception("Email is null, STAGAPI fetch failed");
+                        
                         //Send email confirmation
-                        await _emailSender.SendEmailAsync(currentUser.Email, "Confirm your email",
+                        await _emailSender.SendEmailAsync(createdUser.Email, "Confirm your email",
                             $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
                         
                         _logger.LogInformation("User logged in");
@@ -226,12 +215,12 @@ namespace TOS.Areas.Identity.Pages.Account
             return true;
         }
 
-        private bool CreateLdapUser()
+        private ApplicationUser CreateLdapUser()
         {
             try
             {
                 //If AD authentication fails -> return false
-                if (!LdapAuthenticate(Input.Username, Input.Password)) return false;
+                if (!LdapAuthenticate(Input.Username, Input.Password)) return null;
 
                 var student = true;
                 
@@ -250,23 +239,21 @@ namespace TOS.Areas.Identity.Pages.Account
 
                     if ((osCislo = GetOsCislo(teacherReq)).Length < 1)
                     {
-                        //Teacher osCislo not found -> return false
-                        return false;
+                        //Teacher osCislo not found -> return null
+                        return null;
                     }
                 }
 
                 //Create user to database
-                CreateUser(osCislo, student);
+                return CreateUser(osCislo, student);
             }
             catch
             {
-                return false;
+                return null;
             }
-
-            return true;
         }
 
-        private void CreateUser(string osCislo, bool student)
+        private ApplicationUser CreateUser(string osCislo, bool student)
         {
             var roleString = student ? "Student" : "Teacher";
             var req = student
@@ -275,48 +262,74 @@ namespace TOS.Areas.Identity.Pages.Account
 
             var info = GetInfo(req);
             
-            var lastnameLowered = info.Item2.Substring(0, 1) + info.Item2.Substring(1).ToLower();
-            var user = Seed.CreateUser(info.Item1, lastnameLowered, info.Item3, Input.Username,false, Input.Password, _context);
+            //If info values are null, stagapi connection failed
+
+            var lastnameLowered = info.Item2[..1] + info.Item2[1..].ToLower();
+            var user = Seed.CreateUser(info.Item1, lastnameLowered, info.Item3, Input.Username,false, null, _context);
             
             var roleToInsert = _context.Roles.FirstOrDefault(x => x.Name.Equals(roleString));
             if (roleToInsert is null) throw new Exception("Role that should exist does not exist: " + roleString);
             
             Seed.CreateUserRole(user, roleToInsert, _context);
+
+            return user;
         }
-        
+
         private Tuple<string, string, string> GetInfo(string reqString)
         {
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
-                Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1")
-                    .GetBytes(Input.Username + ":" + Input.Password)));
-            
-            client.BaseAddress = new Uri(reqString);
-            
-            var response = client.GetAsync(reqString).Result;
-            var responseString = response.Content.ReadAsStringAsync().Result;
-            
-            var xml = XDocument.Parse(responseString);
-            
-            var firstname = xml.Descendants("jmeno").First().Value;
-            var lastname = xml.Descendants("prijmeni").First().Value;
-            var email = xml.Descendants("email").First().Value;
-            
-            return new Tuple<string, string, string>(firstname, lastname, email);
+            try
+            {
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
+                    Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1")
+                        .GetBytes(Input.Username + ":" + Input.Password)));
+
+                client.BaseAddress = new Uri(reqString);
+
+                var response = client.GetAsync(reqString).Result;
+                var responseString = response.Content.ReadAsStringAsync().Result;
+
+                var xml = XDocument.Parse(responseString);
+
+                var firstname = xml.Descendants("jmeno").First().Value;
+                var lastname = xml.Descendants("prijmeni").First().Value;
+                var email = xml.Descendants("email").First().Value;
+
+                return new Tuple<string, string, string>(firstname, lastname, email);
+            }
+            catch
+            {
+                _logger.LogInformation("Stag api connection failed");
+                ModelState.AddModelError(string.Empty, "Connection to STAGAPI failed.");
+                //return to login page
+                RedirectToAction("OnGetAsync");
+                throw new Exception("STAGAPI connection failed");
+            }
         }
-        
-        
+
         private string GetOsCislo(string reqString)
         {
-            var client = new HttpClient();
-            client.BaseAddress = new Uri(reqString);
-            
-            var response = client.GetAsync(reqString).Result;
-            var responseString = response.Content.ReadAsStringAsync().Result;
-            
-            var xml = XDocument.Parse(responseString);
-            
-            return xml.Descendants("osCislo").First().Value;
+            try
+            {
+                var client = new HttpClient();
+                client.BaseAddress = new Uri(reqString);
+
+                var response = client.GetAsync(reqString).Result;
+                var responseString = response.Content.ReadAsStringAsync().Result;
+
+                var xml = XDocument.Parse(responseString);
+
+                return xml.Descendants("osCislo").First().Value;
+            }
+            catch
+            {
+                //Stag api connection failed
+                _logger.LogInformation("Stag api connection failed");
+                ModelState.AddModelError(string.Empty, "Connection to STAGAPI failed.");
+                //return to login page
+                RedirectToAction("OnGetAsync");
+                throw new Exception("STAGAPI connection failed");
+            }
         }
     }
 }
