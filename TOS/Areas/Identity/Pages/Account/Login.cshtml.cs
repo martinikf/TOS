@@ -166,8 +166,9 @@ namespace TOS.Areas.Identity.Pages.Account
                                 return LocalRedirect(returnUrl);
                             }
                             
-                            //Failed login TODO
-                            return RedirectToAction("OnGetAsync");
+                            //Failed login
+                            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                            return Page();
                         }
                         
                         //Happens if user used username + @upol.cz
@@ -238,8 +239,7 @@ namespace TOS.Areas.Identity.Pages.Account
             // If we got this far, something failed, redisplay form
             return Page();
         }
-
-
+        
         private bool LdapAuthenticate(string username, string password)
         {
             try
