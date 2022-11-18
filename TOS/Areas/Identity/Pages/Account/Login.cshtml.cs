@@ -123,6 +123,7 @@ namespace TOS.Areas.Identity.Pages.Account
                 
                 if (result.Succeeded)
                 {
+                    //Used also for AD users with local password
                     _logger.LogInformation("User logged in");
                     return LocalRedirect(returnUrl);
                 }
@@ -134,10 +135,63 @@ namespace TOS.Areas.Identity.Pages.Account
                 else
                 {
                     //For AD users
-                    
+
                     //Login for AD users with account in database
                     //Check if username exists in database
                     var user = _context.Users.FirstOrDefault(u => u.UserName == Input.Username);
+
+                    if (user is null)
+                    {
+                        //AD user in database used an email instead of portal login username
+                        //Happens if User is already in database and entered full email instead of username
+                        var adUserByEmail =
+                            _context.Users.FirstOrDefault(u => u.Email.ToLower().Equals(Input.Username.ToLower()));
+                        if (adUserByEmail != null)
+                        {
+                            if (adUserByEmail.UserName == null) throw new Exception("User doesn't have username");
+                            
+                            //Local password check
+                            result = await _signInManager.PasswordSignInAsync(adUserByEmail.UserName, Input.Password,
+                                Input.RememberMe, lockoutOnFailure: false);
+                            if (result.Succeeded)
+                            {
+                                return LocalRedirect(returnUrl);
+                            }
+
+                            //Check for AD auth
+                            if (LdapAuthenticate(adUserByEmail.UserName, Input.Password))
+                            {
+                                //Sign in user
+                                await _signInManager.SignInAsync(adUserByEmail, Input.RememberMe);
+                                return LocalRedirect(returnUrl);
+                            }
+                            
+                            //Failed login TODO
+                            return RedirectToAction("OnGetAsync");
+                        }
+                        
+                        //Happens if user used username + @upol.cz
+                        if ( Input.Username.EndsWith("@upol.cz"))
+                        {
+                            //Trim the @upol.cz part
+                            Input.Username = Input.Username.Replace("@upol.cz", "");
+                            
+                            //set the user with trimmed username
+                            user = _context.Users.FirstOrDefault(u => u.UserName.Equals(Input.Username));
+                            
+                            //Have to check again for local password login
+                            //Check if user tried to logged in with local password
+                            result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password,
+                                Input.RememberMe, lockoutOnFailure: false);
+                            if (result.Succeeded)
+                            {
+                                return LocalRedirect(returnUrl);
+                            }
+                            //Check for AD login later.
+
+                        }
+                    }
+
                     if (user != null)
                     {
                         if (LdapAuthenticate(Input.Username, Input.Password))
@@ -147,6 +201,7 @@ namespace TOS.Areas.Identity.Pages.Account
                             return LocalRedirect(returnUrl);
                         }
                     }
+                    
                     //If user is not in database, check if AD credentials are valid -> CreateUser
                     ApplicationUser createdUser;
                     if ((createdUser = CreateLdapUser()) != null)
@@ -200,7 +255,7 @@ namespace TOS.Areas.Identity.Pages.Account
                 var connection = new LdapConnection(new LdapDirectoryIdentifier("158.194.64.3", 389))
                 {
                     AuthType = authType,
-                    Credential = new NetworkCredential(Input.Username, Input.Password)
+                    Credential = new NetworkCredential(username, password)
                 };
 
                 connection.SessionOptions.ProtocolVersion = 3;
