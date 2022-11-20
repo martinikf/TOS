@@ -29,7 +29,10 @@ namespace TOS.Data
             builder.Entity<ApplicationUser>()
                 .Ignore(c => c.PhoneNumber)
                 .Ignore(c => c.PhoneNumberConfirmed)
-                .Ignore(c => c.TwoFactorEnabled);
+                .Ignore(c => c.TwoFactorEnabled)
+                .Ignore(c => c.LockoutEnabled)
+                .Ignore(c => c.LockoutEnd)
+                .Ignore(c => c.AccessFailedCount);
 
             //Rename identity tables
             builder.Entity<ApplicationUser>(b =>
