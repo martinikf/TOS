@@ -109,7 +109,7 @@ namespace TOS.Areas.Identity.Pages.Account
 
         private void PrepareInputUsername()
         {
-            if (Input.Username.EndsWith("@upol.cz"))
+            if (Input.Username.ToLower().EndsWith("@upol.cz"))
             {
                 //User used his email
                 var userFromEmailInput = _context.Users.FirstOrDefault(x => x.Email.Equals(Input.Username));
