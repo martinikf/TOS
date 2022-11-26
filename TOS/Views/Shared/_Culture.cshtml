@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Options
+@using TOS.Resources
+@using Microsoft.AspNetCore.Localization
+
+
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
+@inject IOptions<RequestLocalizationOptions> LocalOptions
+
+@{
+    var culture = Context.Features.Get<IRequestCultureFeature>();
+    if (culture is null || LocalOptions.Value.SupportedUICultures is null) throw new Exception("_Culture PartialView");
+    
+    var cultureList = LocalOptions.Value.SupportedUICultures.Select(x => new SelectListItem {Value = x.Name, Text = SharedLocalizer.GetString(x.Name)}).ToList();
+    var returnUrl = string.IsNullOrWhiteSpace(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}{Context.Request.QueryString}";
+}
+
+<div>
+    <form asp-action="CultureManagement" asp-controller="Home" method="post" asp-route-returnUrl="@returnUrl">
+        <select name="culture" asp-for="@culture.RequestCulture.UICulture.Name" asp-items="@cultureList" onchange="this.form.submit();"></select>
+    </form>
+</div>

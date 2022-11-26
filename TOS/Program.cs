@@ -1,6 +1,10 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using TOS.Data;
 using TOS.Models;
 using TOS.Services;
@@ -21,7 +25,26 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole<int>>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddControllersWithViews();
+
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization();
+
+builder.Services.AddLocalization();
+builder.Services.Configure<RequestLocalizationOptions>(
+    options =>
+    {
+        //TODO set Cultures from files
+        var supportedCultures = new[]
+        {
+            new CultureInfo("cz"),
+            new CultureInfo("en")
+        };
+        
+        options.DefaultRequestCulture = new RequestCulture("cz");
+        options.SupportedCultures = supportedCultures;
+        options.SupportedUICultures = supportedCultures;
+    });
+
 
 //Register email sender
 builder.Services.AddSingleton<SmtpEmailSenderSettings, SmtpEmailSenderSettings>(
@@ -37,6 +60,8 @@ builder.Services.AddSingleton<SmtpEmailSenderSettings, SmtpEmailSenderSettings>(
 builder.Services.AddSingleton<IEmailSender, SmtpEmailSender>();
 
 var app = builder.Build();
+
+app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
 if(true)
     Seed.InitSeed(app);
