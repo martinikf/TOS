@@ -1,0 +1,66 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@using TOS.Resources
+@model IEnumerable<TOS.Models.Topic>
+
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewData["TopicsIndexHeading"]</h1>
+@if (@ViewData["TopicsIndexGroupId"] != null && User.IsInRole("Teacher"))
+{
+    <a asp-controller="Group" asp-action="Edit" asp-route-id="@ViewData["TopicsIndexGroupId"]">Edit group</a>
+}
+<p>
+    <a asp-action="Create">Create New Topic</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DescriptionShort)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Supervisor)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.TopicId">
+                     @Html.DisplayFor(modelItem => item.Name)
+                </a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DescriptionShort)
+            </td>
+            <td>
+                @if (item.Supervisor != null)
+                {
+                    @Html.DisplayFor(modelItem => item.Supervisor.FirstName)
+                    @Html.DisplayFor(modelItem => item.Supervisor.LastName)
+                }
+                else
+                {
+                    @Html.DisplayText("-");
+                }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<!--
+    <a asp-action="Edit" asp-route-id="item.TopicId">Edit</a> |
+                <a asp-action="Details" asp-route-id="item.TopicId">Details</a> |
+                <a asp-action="Delete" asp-route-id="item.TopicId">Delete</a>
+-->

@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using TOS.Resources
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -24,6 +28,15 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                        <li class ="nav-item">
+                            <a class="nav-link text-dark" asp-action="Index" asp-controller="Topic" asp-route-groupName="Bachelor">@SharedLocalizer["Bachelor"]</a>
+                        </li>
+                        <li class ="nav-item">
+                            <a class="nav-link text-dark" asp-action="Index" asp-controller="Topic" asp-route-groupName="Master">@SharedLocalizer["Master"]</a>
+                        </li>
+                        <li class ="nav-item">
+                            <a class="nav-link text-dark" asp-action="Index" asp-controller="Group">@SharedLocalizer["Groups"]</a>
                         </li>
                     </ul>
                     <partial name="_Culture"/>
