@@ -33,10 +33,11 @@ public class Topic
 
         public virtual ICollection<UserInterestedTopic> UserInterestedTopics { get; } = new HashSet<UserInterestedTopic>();
         
-        public int? GroupId { get; set; }
+        public int GroupId { get; set; }
+
         [ForeignKey("GroupId")]
         [InverseProperty("Topics")]
-        public virtual Group? Group { get; set; }
+        public virtual Group Group { get; set; } = null!;
         
         public virtual ICollection<TopicRecommendedProgramme> TopicRecommendedPrograms { get; } = new HashSet<TopicRecommendedProgramme>();
 
