@@ -1,11 +1,65 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Mvc.Routing
+@using TOS.Resources
 @model TOS.Models.Topic
+
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
 
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Scripts
+{
+    <script>
+    $(document).ready(function (){
+        $("#btn-interest").on("click", function (){
+            var formData = new FormData();
+            var topicId = @Model.TopicId;
+            var url = '@Url.Action("Interest", "Topic")' + "?topicId=" + topicId;
+            $.ajax({
+            type: 'GET',
+            url: url,
+            contentType: false,
+            processData: false,
+            cache: false,
+            success: function (response) {
+                var element = $("#btn-interest");
+                element = element[0];
+                
+                console.log(element);
+                if (element.classList.contains("interested")){
+                    element.innerHTML = "@SharedLocalizer["Add interest"]";
+                    element.classList.remove("interested");
+                    element.classList.add("not-interested");
+                    console.log("User removed interest from this topic");
+                }
+                else if (element.classList.contains("not-interested")){
+                    element.innerHTML = "@SharedLocalizer["Remove interest"]";
+                    element.classList.remove("not-interested");
+                    element.classList.add("interested");
+                    console.log("User interested in this topic");
+                }
+                else{
+                    console.log("Error");
+                }
+                 console.log(response);  
+                //$("#btn-interest").text("SharedLocalizer["Remove interest"]");
+            },
+             error: function (response){
+                console.log("Ajax failed");
+                }
+            });
+        });
+    });
+    </script>
+}
+
+
 <h1>Details</h1>
+
+<a href="javascript:void(0)" class="btn btn-primary @ViewData["UserInterestClass"]" id="btn-interest">@ViewData["UserInterestString"] </a>
 
 <div>
     <h4>Topic</h4>
