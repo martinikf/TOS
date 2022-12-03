@@ -15,49 +15,55 @@
     <a asp-controller="Group" asp-action="Edit" asp-route-id="@ViewData["TopicsIndexGroupId"]">Edit group</a>
 }
 <p>
-    <a asp-action="Create">Create New Topic</a>
+    <a asp-action="Create" asp-route-groupName="@ViewData["TopicsIndexGroupName"]">Create New Topic</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DescriptionShort)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Supervisor)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+
+TODO: Filtering, sorting, searching here |-----------------------------------|
+
 @foreach (var item in Model) {
-        <tr>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.TopicId">
-                     @Html.DisplayFor(modelItem => item.Name)
-                </a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DescriptionShort)
-            </td>
-            <td>
-                @if (item.Supervisor != null)
-                {
-                    @Html.DisplayFor(modelItem => item.Supervisor.FirstName)
-                    @Html.DisplayFor(modelItem => item.Supervisor.LastName)
-                }
-                else
-                {
-                    @Html.DisplayText("-");
-                }
-            </td>
-        </tr>
+    <div class="topic">
+        
+        <div class="topic__name">
+            <a asp-action="Details" asp-route-id="@item.TopicId">
+                @Html.DisplayFor(modelItem => item.Name)
+            </a>
+        </div>
+
+        @if (item.Supervisor != null)
+        {
+            <div class="topic__supervisor">
+
+                @Html.DisplayFor(modelItem => item.Supervisor.FirstName)
+                @Html.DisplayFor(modelItem => item.Supervisor.LastName)
+
+            </div>
+        }
+
+        <div class="topic__infoboxes">
+            @if (item.AssignedStudent == null)
+            {
+                <span class="infobox">@SharedLocalizer["Free topic"]</span>
+            }
+            else
+            {
+                <span class="infobox">@SharedLocalizer["Taken topic"]</span>
+            }
+            @foreach (var programme in item.TopicRecommendedPrograms)
+            {
+                <span class="infobox">@SharedLocalizer[programme.Programme.Name]</span>
+            }
+        </div>
+        
+        <div class="topic__description">
+            @Html.DisplayFor(modelItem => item.DescriptionShort)
+        </div>
+    </div>
+    
+    <hr/>
 }
-    </tbody>
-</table>
+
+
+
 
 <!--
     <a asp-action="Edit" asp-route-id="item.TopicId">Edit</a> |

@@ -24,7 +24,9 @@ public class SmtpEmailSender : IEmailSender
     
     public Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
-        return _client.SendMailAsync(new MailMessage(_fromAddress, email, subject, htmlMessage));
+        Console.WriteLine("Sending email to " + email + " with subject " + subject + " and message " + htmlMessage);
+        return Task.CompletedTask;
+        //return _client.SendMailAsync(new MailMessage(_fromAddress, email, subject, htmlMessage));
     }
 }
 

@@ -51,10 +51,28 @@ public static class Seed
         //Create topics
         var tosTopic = CreateTopic("TOS", "System for offering topics of diploma theses", "Longer description shown in details.", true, teacherUser,
             teacherUser, studentUser, bachelorGroup, ctx);
+
+        var deskovkyTopic = CreateTopic("Mobilní aplikace pro seznamování hračů deskových her",
+            "Mobilní aplikace, která bude mít za úkol seskupovat lidi se zájmem o stejné deskové hry. Umožní chat mezi takovými lidmi.",
+            "Long desc", true, teacherUser, teacherUser, null, bachelorGroup, ctx);
+
+        var masterTopic = CreateTopic("Překladač pro jazyk LISP",
+            "Překladač pro jazyk LISP, který bude umožnovat velkou možnost optimalizace kodu", "Long desc", true, externalUser,
+            teacherUser, null, masterGroup, ctx);
+
+        var master2Topic = CreateTopic("MVC framework pro jednoduchý vývoj webových aplikací",
+            "Framework pro studentem vybraný programovací jazyk. Framework umožní jednoduchý vývoj web apliackí pomocí architektruy MVC.",
+            "long Desc", true, teacherUser, teacherUser, null, masterGroup, ctx);
+        
         
         //Recommended programmes for topics
-        CreateTopicRecommendedProgramme(bcSwProgramme, tosTopic ,ctx);
-
+        CreateTopicRecommendedProgramme(bcSwProgramme, tosTopic, ctx);
+        CreateTopicRecommendedProgramme(bcSwProgramme, deskovkyTopic, ctx);
+        CreateTopicRecommendedProgramme(bcInfProgramme, deskovkyTopic, ctx);
+        CreateTopicRecommendedProgramme(mcInfProgramme, masterTopic, ctx);
+        CreateTopicRecommendedProgramme(mcInfProgramme, master2Topic, ctx);
+        CreateTopicRecommendedProgramme(mcSwProgramme, master2Topic, ctx);
+        CreateTopicRecommendedProgramme(mcGeneralInfProgramme, masterTopic, ctx);
 
 
     }
@@ -219,7 +237,7 @@ public static class Seed
     }
 
     public static Topic CreateTopic(string name, string descriptionShort,string? descriptionLong, bool visible, ApplicationUser creator,
-        ApplicationUser? supervisor, ApplicationUser? assignedStudent, Group? group, ApplicationDbContext ctx)
+        ApplicationUser? supervisor, ApplicationUser? assignedStudent, Group group, ApplicationDbContext ctx)
     {
         //Crate new topic if not exists
         var topic = ctx.Topics.FirstOrDefault(t => t.Name.Equals(name));
