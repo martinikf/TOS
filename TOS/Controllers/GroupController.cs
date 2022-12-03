@@ -57,7 +57,6 @@ namespace TOS
         // GET: Group/Create
         public IActionResult Create()
         {
-            ViewData["CreatorId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
@@ -68,13 +67,15 @@ namespace TOS
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("GroupId,Name,CreatorId,Selectable,Visible")] Group @group)
         {
+            group.CreatorId = _context.Users.First(x => User.Identity != null && x.UserName == User.Identity.Name).Id;
+            
             if (ModelState.IsValid)
             {
                 _context.Add(@group);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CreatorId"] = new SelectList(_context.Users, "Id", "Id", @group.CreatorId);
+            
             return View(@group);
         }
 
@@ -91,7 +92,6 @@ namespace TOS
             {
                 return NotFound();
             }
-            ViewData["CreatorId"] = new SelectList(_context.Users, "Id", "Id", @group.CreatorId);
             return View(@group);
         }
 
@@ -127,7 +127,6 @@ namespace TOS
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CreatorId"] = new SelectList(_context.Users, "Id", "Id", @group.CreatorId);
             return View(@group);
         }
 
