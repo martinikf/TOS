@@ -102,30 +102,40 @@ namespace TOS.Controllers
         }
 
         // GET: Topic/Create
-        public IActionResult Create(string? groupName = null)
+        public async Task<IActionResult> Create(string? groupName = null)
         {
-            
             SelectList? groupSelectList = null;
-            //Current user
-            var user = _context.Users.First(x => User.Identity != null && x.UserName!.Equals(User.Identity.Name));
-            var teacherRole = _context.Roles.First(r => r.Name != null && r.Name.Equals("Teacher"));
-            
             
             if (groupName == null)
             {
+                ViewData["TopicCreateDisplayProgrammes"] = false;
                 groupSelectList = new SelectList(_context.Groups.Where(x => x.Selectable), "GroupId", "Name");
             }
             else
             {
                 //Creates selectList for groups when a valid groupName is provided
                 var groupProvided = _context.Groups.First(x => x.Name.ToLower().Equals(groupName.ToLower()));
-                if (!groupProvided.Selectable)
+                if (!groupProvided.Selectable || groupProvided.Name.Equals("Unassigned"))
                 {
+                    ViewData["TopicCreateDisplayProgrammes"] = false;
                     groupSelectList = new SelectList(_context.Groups.Where(x => x.Selectable || x.Equals(groupProvided)),
                         "GroupId", "Name", groupProvided.GroupId);
                 }
                 else
                 {
+                    //Set ViewData for recommended progammes
+                    ViewData["TopicCreateDisplayProgrammes"] = true;
+                    if (groupProvided.Name.Equals("Bachelor"))
+                    {
+                        ViewData["TopicCreateProgrammes"] =
+                            await _context.Programmes.Where(x => x.Type == ProgramType.Bachelor).ToListAsync();
+                    }
+                    else
+                    {
+                        ViewData["TopicCreateProgrammes"] =
+                            await _context.Programmes.Where(x => x.Type == ProgramType.Master).ToListAsync();
+                    }
+
                     groupSelectList = new SelectList(_context.Groups.Where(x => x.Selectable), 
                         "GroupId", "Name", groupProvided.GroupId);
                 }
@@ -140,7 +150,8 @@ namespace TOS.Controllers
                     "Email");
             
             //Selects all users with role Teacher
-            
+            var user = _context.Users.First(x => User.Identity != null && x.UserName!.Equals(User.Identity.Name));
+            var teacherRole = _context.Roles.First(r => r.Name != null && r.Name.Equals("Teacher"));
             ViewData["Supervisors"] =
                 new SelectList(
                     _context.Users.Where(x =>
@@ -154,21 +165,44 @@ namespace TOS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TopicId,Name,DescriptionShort,DescriptionLong,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic)
+        public async Task<IActionResult> Create([Bind("TopicId,Name,DescriptionShort,DescriptionLong,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic, string[] programmes)
         {
-            topic.CreatorId = _context.Users.First(x => User.Identity != null && x.Email != null && x.Email.Equals(User.Identity.Name)).Id;
-
-            if (ModelState.IsValid)
-            {
-                _context.Add(topic);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
             
-            ViewData["Students"] = new SelectList(_context.Users, "Id", "Id", topic.AssignedId);
-            ViewData["Groups"] = new SelectList(_context.Groups.Where(x=>x.Selectable), "GroupId", "GroupId", topic.GroupId);
-            ViewData["Supervisors"] = new SelectList(_context.Users, "Id", "Id", topic.SupervisorId);
-            return View(topic);
+            topic.CreatorId = _context.Users.First(x => User.Identity != null && x.Email != null && x.Email.Equals(User.Identity.Name)).Id;
+            _context.Add(topic);
+            await _context.SaveChangesAsync();
+            
+            //Logic for recommended programmes
+            List<Programme>? programmeObjects = null;
+            //Get group from topic.groupId
+            var group = await _context.Groups.FirstAsync(x => x.GroupId.Equals(topic.GroupId));
+            
+            if (group.Name.Equals("Bachelor"))
+            {
+                 programmeObjects =
+                    await _context.Programmes.Where(x => x.Type == ProgramType.Bachelor).ToListAsync();
+            }
+            else if(group.Name.Equals("Master"))
+            {
+                 programmeObjects =
+                    await _context.Programmes.Where(x => x.Type == ProgramType.Master).ToListAsync();
+            }
+
+            if (programmeObjects != null)
+            {
+                foreach (var programme in programmes)
+                {
+                    _context.TopicRecommendedProgrammes.Add(new()
+                    {
+                        TopicId = topic.TopicId,
+                        ProgramId = programmeObjects.First(x => x.Name.Equals(programme)).ProgrammeId
+                    });
+                }
+            }
+
+            await _context.SaveChangesAsync();
+           
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Topic/Edit/5
@@ -203,31 +237,24 @@ namespace TOS.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(topic);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TopicExists(topic.TopicId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+            try
+            { 
+                _context.Update(topic);
+                await _context.SaveChangesAsync();
             }
-            ViewData["AssignedId"] = new SelectList(_context.Users, "Id", "Id", topic.AssignedId);
-            ViewData["CreatorId"] = new SelectList(_context.Users, "Id", "Id", topic.CreatorId);
-            ViewData["GroupId"] = new SelectList(_context.Groups.Where(x=>x.Selectable), "GroupId", "GroupId", topic.GroupId);
-            ViewData["SupervisorId"] = new SelectList(_context.Users, "Id", "Id", topic.SupervisorId);
-            return View(topic);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TopicExists(topic.TopicId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Topic/Delete/5

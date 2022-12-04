@@ -43,15 +43,15 @@ namespace TOS
                 return NotFound();
             }
 
-            var @group = await _context.Groups
+            var group = await _context.Groups
                 .Include(x => x.Creator)
                 .FirstOrDefaultAsync(m => m.GroupId == id);
-            if (@group == null)
+            if (group == null)
             {
                 return NotFound();
             }
 
-            return View(@group);
+            return View(group);
         }
 
         // GET: Group/Create
@@ -65,18 +65,13 @@ namespace TOS
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GroupId,Name,CreatorId,Selectable,Visible")] Group @group)
+        public async Task<IActionResult> Create([Bind("GroupId,Name,CreatorId,Selectable,Visible")] Group group)
         {
             group.CreatorId = _context.Users.First(x => User.Identity != null && x.UserName == User.Identity.Name).Id;
             
-            if (ModelState.IsValid)
-            {
-                _context.Add(@group);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            
-            return View(@group);
+            _context.Add(group);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Group/Edit/5
