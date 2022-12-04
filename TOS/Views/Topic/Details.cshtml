@@ -62,60 +62,141 @@
 <a href="javascript:void(0)" class="btn btn-primary @ViewData["UserInterestClass"]" id="btn-interest">@ViewData["UserInterestString"] </a>
 
 <div>
-    <h4>Topic</h4>
+    <h4>@Html.DisplayFor(model => model.Name)</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DescriptionShort)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DescriptionShort)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DescriptionLong)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DescriptionLong)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Visible)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Visible)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Creator)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Creator.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Supervisor)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Supervisor.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AssignedStudent)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AssignedStudent.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Group)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Group.GroupId)
-        </dd>
-    </dl>
+    @if(Model.AssignedStudent != null)
+    {
+        <span class="infobox">@SharedLocalizer["Taken topic"]</span>
+    }
+    else
+    {
+        <span class="infobox">@SharedLocalizer["Free topic"]</span>
+    }
+    
+    @foreach(var programme in Model.TopicRecommendedPrograms)
+    {
+        <span class="infobox">@SharedLocalizer[programme.Programme.Name]</span>
+    }
+
+    <h5>@SharedLocalizer["Short topic description"]</h5>
+    <p>@Html.DisplayFor(model => model.DescriptionShort)</p>
+    <h5>@SharedLocalizer["Long topic description"]</h5>
+    <p>@Html.DisplayFor(model => model.DescriptionLong)</p>
+    <h5>@SharedLocalizer["Supervisor"]</h5>
+    <p>
+        @Html.DisplayFor(model => model.Supervisor.FirstName) @Html.DisplayFor(model => model.Supervisor.LastName)
+        @Html.DisplayFor(model => model.Supervisor.Email)
+    </p>
+    <h5>@SharedLocalizer["Topic group"]</h5>
+    <p>@Html.DisplayFor(model => model.Group.Name)</p>
+    
+
+    @foreach (var attachment in Model.Attachments)
+    {
+        
+    }
+    
+    <div class="CommentSection">
+        <div class="Comments">
+            
+      
+            @foreach (var comment in PrepareComments(Model.Comments))
+            {
+                <div class="Comment" style="margin-left: @(comment.Depth * 40)px">
+                    <div class=" border border-dark rounded p-2 m-2">
+                  
+                    <div class="Comment__body">
+                        @if (comment.Anonymous && !User.IsInRole("Teacher"))
+                        {
+                            <h5 class="Comment__AuthorName">Anonymous</h5>
+                        }
+                        else
+                        {
+                            <h5 class="Comment__AuthorName">@comment.Author.FirstName @comment.Author.LastName - @comment.Author.Email</h5>
+                        }
+                        <p class="Comment__CreatedAt">@comment.CreatedAt</p>
+                        <p class="Comment__Text">@comment.Text</p>
+                    </div>
+                        <div class="Comment__reply row">
+                            <div class="col-md-8">
+                                <form asp-action="AddComment">
+                                    <input type="hidden" asp-for="TopicId" name="id">
+                                    <input type="hidden" name="parentId" value="@comment.CommentId"/>
+                                    <div class="form-group">
+                                        <label class="control-label">Reply</label>
+                                        <textarea name="text" class="form-control" rows="3"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" value="Send" class="btn btn-primary">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                              
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="NewComment">
+            <h3>@SharedLocalizer["New comment"]</h3>
+            <hr/>
+             <div class="row">
+                    <div class="col-md-8">
+                        <form asp-action="AddComment">
+                            <input type="hidden" asp-for="TopicId" name="id"/>
+                            <div class="form-group">
+                                <label class="control-label">Text</label>
+                                <input type="text" name="text" class="form-control"/>
+                            </div>
+                            <label class="control-label">Anonymous</label>
+                                <input type="checkbox" name="anonymous"/>
+                            <div class="form-group">
+                                <input type="submit" value="Send" class="btn btn-primary"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+        </div>
+    </div>
+    
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.TopicId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+@functions{
+
+    private static IEnumerable<Comment> PrepareComments(IEnumerable<Comment> comments)
+    {
+        List<Comment> returnComments = new ();
+
+        //Foreach root comment
+        foreach(var comment in comments.Where(x => x.ParentComment == null))
+        {
+            returnComments.Add(comment);
+            returnComments.AddRange(PrepareReplies(comment.Replies, 1));
+        }
+        
+        
+        return returnComments;
+    }
+
+    private static IEnumerable<Comment> PrepareReplies(IEnumerable<Comment> comments, int depth)
+    {
+        List<Comment> returnComments = new ();
+
+        foreach (var comment in comments)
+        {
+            comment.Depth = depth;
+            returnComments.Add(comment);
+            returnComments.AddRange(PrepareReplies(comment.Replies, depth + 1));
+        }
+        
+        return returnComments;
+    }
+
+}
+
+@if (User.IsInRole("Teacher"))
+{
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model?.TopicId">Edit</a> |
+    </div>
+}

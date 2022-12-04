@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Localization;
@@ -46,7 +47,7 @@ namespace TOS.Controllers
             }
             else
             {
-                ViewData["TopicsIndexHeading"] = _sharedLocalizer[groupName];
+                ViewData["TopicsIndexHeading"] = _sharedLocalizer["Index heading for: " + groupName];
                 
                 //Shows edit button only for not selectable groups
                 if (!group.Selectable)
@@ -105,6 +106,10 @@ namespace TOS.Controllers
         {
             
             SelectList? groupSelectList = null;
+            //Current user
+            var user = _context.Users.First(x => User.Identity != null && x.UserName!.Equals(User.Identity.Name));
+            var teacherRole = _context.Roles.First(r => r.Name != null && r.Name.Equals("Teacher"));
+            
             
             if (groupName == null)
             {
@@ -135,11 +140,11 @@ namespace TOS.Controllers
                     "Email");
             
             //Selects all users with role Teacher
-            var teacherRole = _context.Roles.First(r => r.Name != null && r.Name.Equals("Teacher"));
+            
             ViewData["Supervisors"] =
                 new SelectList(
                     _context.Users.Where(x =>
-                        _context.UserRoles.Any(y => y.UserId == x.Id && y.RoleId == teacherRole.Id)), "Id", "Email");
+                        _context.UserRoles.Any(y => y.UserId == x.Id && y.RoleId == teacherRole.Id)), "Id", "Email", user.Id);
             
             return View();
         }
@@ -271,7 +276,7 @@ namespace TOS.Controllers
           return (_context.Topics?.Any(e => e.TopicId == id)).GetValueOrDefault();
         }
 
-        public async Task<JsonResult> Interest(string? topicId)
+        public async Task<JsonResult> Interest(int? topicId)
         {
             if (topicId == null) throw new Exception("topicId should be provided");
             
@@ -279,7 +284,7 @@ namespace TOS.Controllers
             var user = await _context.Users.FirstAsync(x => User.Identity != null && x.Email != null && x.Email.Equals(User.Identity.Name));
             
             //Topic
-            var topic = await _context.Topics.FirstAsync(x => x.TopicId.ToString().Equals(topicId));
+            var topic = await _context.Topics.FirstAsync(x => x.TopicId.Equals(topicId));
 
             if (await _context.UserInterestedTopics.AnyAsync(x => x.UserId.Equals(user.Id) && x.TopicId.Equals(topic.TopicId)))
             {
@@ -296,6 +301,24 @@ namespace TOS.Controllers
             
             await _context.SaveChangesAsync();
             return Json(true);
+        }
+
+        public async Task<IActionResult> AddComment(int id, string text, bool anonymous, int? parentId = null)
+        {
+            //get current user
+            var user = await _context.Users.FirstAsync(x => User.Identity != null && x.Email != null && x.Email.Equals(User.Identity.Name));
+            
+            var c = new Comment();
+            c.TopicId = id;
+            c.Author = user;
+            c.CreatedAt = DateTime.Now;
+            c.Text = text;
+            c.ParentCommentId = parentId;
+            c.Anonymous = anonymous;
+            _context.Comments.Add(c);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", new { id = id });
         }
     }
 }

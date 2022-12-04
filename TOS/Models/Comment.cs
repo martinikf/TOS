@@ -29,7 +29,8 @@ public class Comment
     public virtual Topic Topic { get; set; } = null!;
     
     public bool Anonymous { get; set; }
-        
-   
-    
+
+    [NotMapped] 
+    public int Depth { get; set; } = 0;
+
 }
