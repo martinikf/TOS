@@ -37,16 +37,16 @@ public static class Seed
         
         //Create programmees
         //Bachelor
-        var bcITProgramme = CreateProgramme("Information Technology", true, ProgramType.Bachelor, ctx);
-        var bcInfProgramme = CreateProgramme("Informatics", true, ProgramType.Bachelor, ctx);
-        var bcSwProgramme = CreateProgramme("Software Engineering", true, ProgramType.Bachelor, ctx);
-        var bcGeneralInfProgramme = CreateProgramme("General Informatics", true, ProgramType.Bachelor, ctx);
+        var bcITProgramme = CreateProgramme("Informační technologie", true, ProgramType.Bachelor, ctx);
+        var bcInfProgramme = CreateProgramme("Informatika", true, ProgramType.Bachelor, ctx);
+        var bcSwProgramme = CreateProgramme("Vývoj software", true, ProgramType.Bachelor, ctx);
+        var bcGeneralInfProgramme = CreateProgramme("Obecná informatika", true, ProgramType.Bachelor, ctx);
         //Master
-        var mcInfProgramme = CreateProgramme("Informatics", true, ProgramType.Master, ctx);
-        var mcSwProgramme = CreateProgramme("Software Engineering", true, ProgramType.Master, ctx);
-        var mcGeneralInfProgramme = CreateProgramme("General Informatics", true, ProgramType.Master, ctx);
-        var mcAIProgramme = CreateProgramme("Artificial Intelligence", true, ProgramType.Master, ctx);
-        var mcITProgramme = CreateProgramme("Information Technology", true, ProgramType.Master, ctx);
+        var mcInfProgramme = CreateProgramme("Informatika", true, ProgramType.Master, ctx);
+        var mcSwProgramme = CreateProgramme("Vývoj software", true, ProgramType.Master, ctx);
+        var mcGeneralInfProgramme = CreateProgramme("Obecná informatika", true, ProgramType.Master, ctx);
+        var mcAIProgramme = CreateProgramme("Úmělá inteligence", true, ProgramType.Master, ctx);
+        var mcITProgramme = CreateProgramme("Informační technologie", true, ProgramType.Master, ctx);
         
         //Create topics
         var tosTopic = CreateTopic("TOS", "System for offering topics of diploma theses", "Longer description shown in details.", true, teacherUser,
