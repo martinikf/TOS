@@ -36,14 +36,37 @@ namespace TOS.Controllers
             
             if (group == null)
             {
-                ViewData["TopicsIndexHeading"] = _sharedLocalizer["Topics"];
-                ViewData["TopicsIndexGroupName"] = null;
-                
-                //If groupId wasn't provided or groupId is invalid -> Display all Bachelor and Master topics
-                var applicationDbContext = _context.Topics.Where(x => x.Group.Selectable && x.Group.Visible)
-                    .Include(t => t.AssignedStudent).Include(t => t.Creator)
-                    .Include(t => t.Group).Include(t => t.Supervisor);
-                return View(await applicationDbContext.ToListAsync());
+                if (groupName != null && groupName.Equals("MyTopics"))
+                {
+                    ViewData["TopicsIndexHeading"] = _sharedLocalizer["My topics"];
+                    ViewData["TopicsIndexGroupName"] = null;
+                    
+                    //get logged in user as ApplicationUser
+                    var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName.Equals(User.Identity.Name));
+
+                    if (user is null) throw new Exception();
+                    
+                    List<Topic> topics = new();
+
+                    topics.AddRange(user.AssignedTopics);
+                    topics.AddRange(user.CreatedTopics);
+                    topics.AddRange(user.SupervisedTopics);
+                    topics.AddRange(user.UserInterestedTopics.Select(t => t.Topic));
+
+                    return View(topics);
+
+                }
+                else
+                {
+                    ViewData["TopicsIndexHeading"] = _sharedLocalizer["Topics"];
+                    ViewData["TopicsIndexGroupName"] = null;
+
+                    //If groupId wasn't provided or groupId is invalid -> Display all Bachelor and Master topics
+                    var applicationDbContext = _context.Topics.Where(x => x.Group.Selectable && x.Group.Visible)
+                        .Include(t => t.AssignedStudent).Include(t => t.Creator)
+                        .Include(t => t.Group).Include(t => t.Supervisor);
+                    return View(await applicationDbContext.ToListAsync());
+                }
             }
             else
             {
@@ -53,6 +76,7 @@ namespace TOS.Controllers
                 if (!group.Selectable)
                 {
                     ViewData["TopicsIndexGroupId"] = group.GroupId;
+                    ViewData["TopicsIndexHeading"] = _sharedLocalizer["Group of topics for:"].Value + " " + groupName;
                 }
 
                 ViewData["TopicsIndexGroupName"] = group.Name;
@@ -308,7 +332,7 @@ namespace TOS.Controllers
             if (topicId == null) throw new Exception("topicId should be provided");
             
             //Current user
-            var user = await _context.Users.FirstAsync(x => User.Identity != null && x.Email != null && x.Email.Equals(User.Identity.Name));
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName.Equals(User.Identity.Name));
             
             //Topic
             var topic = await _context.Topics.FirstAsync(x => x.TopicId.Equals(topicId));
@@ -333,7 +357,7 @@ namespace TOS.Controllers
         public async Task<IActionResult> AddComment(int id, string text, bool anonymous, int? parentId = null)
         {
             //get current user
-            var user = await _context.Users.FirstAsync(x => User.Identity != null && x.Email != null && x.Email.Equals(User.Identity.Name));
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName.Equals(User.Identity.Name));
             
             var c = new Comment();
             c.TopicId = id;
