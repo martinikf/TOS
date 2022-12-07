@@ -27,4 +27,49 @@
     <data name="en" xml:space="preserve">
         <value>English</value>
     </data>
+    <data name="Index heading for: Bachelor" xml:space="preserve">
+        <value>Bachelor theses</value>
+    </data>
+    <data name="Index heading for: Master" xml:space="preserve">
+        <value>Master theses</value>
+    </data>
+    <data name="Group of topics for:" xml:space="preserve">
+        <value>Group of topics for: </value>
+    </data>
+    <data name="Add interest" xml:space="preserve">
+        <value>Add interest</value>
+    </data>
+    <data name="Remove interest" xml:space="preserve">
+        <value>Remove interest</value>
+    </data>
+    <data name="Taken topic" xml:space="preserve">
+        <value>Taken</value>
+    </data>
+    <data name="Free topic" xml:space="preserve">
+        <value>Available topic</value>
+    </data>
+    <data name="NavGroups" xml:space="preserve">
+        <value>Other topics</value>
+    </data>
+    <data name="NavHome" xml:space="preserve">
+        <value>Home</value>
+    </data>
+    <data name="NavMaster" xml:space="preserve">
+        <value>Master theses</value>
+    </data>
+    <data name="NavBachelor" xml:space="preserve">
+        <value>Bachelor theses</value>
+    </data>
+    <data name="GroupsHeading" xml:space="preserve">
+        <value>Groups</value>
+    </data>
+    <data name="CommentSend" xml:space="preserve">
+        <value>Send</value>
+    </data>
+    <data name="MyTopics" xml:space="preserve">
+        <value>My topics</value>
+    </data>
+    <data name="My topics" xml:space="preserve">
+        <value>My topics</value>
+    </data>
 </root>

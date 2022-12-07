@@ -1,10 +1,14 @@
+@using TOS.Resources
+@using Microsoft.AspNetCore.Mvc.Localization
 @model IEnumerable<TOS.Models.Group>
+
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>@SharedLocalizer["GroupsHeading"]</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
