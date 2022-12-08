@@ -14,9 +14,12 @@
 {
     <a asp-controller="Group" asp-action="Edit" asp-route-id="@ViewData["TopicsIndexGroupId"]">Edit group</a>
 }
-<p>
-    <a asp-action="Create" asp-route-groupName="@ViewData["TopicsIndexGroupName"]">Create New Topic</a>
-</p>
+@if (User.IsInRole("Teacher"))
+{
+    <p>
+        <a asp-action="Create" asp-route-groupName="@ViewData["TopicsIndexGroupName"]">Create New Topic</a>
+    </p>
+}
 
 TODO: Filtering, sorting, searching here |-----------------------------------|
 

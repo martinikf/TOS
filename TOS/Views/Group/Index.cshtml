@@ -10,9 +10,13 @@
 
 <h1>@SharedLocalizer["GroupsHeading"]</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@if (User.IsInRole("Teacher"))
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
+
 TODO: Search input here |--------------------------------|
 <table class="table">
     <thead>

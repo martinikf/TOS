@@ -75,7 +75,7 @@
 
 <h1>Details</h1>
 
-@if (@ViewData["UserInterestHide"] == null)
+@if (@ViewData["UserInterestHide"] == null && User.IsInRole("Student"))
 {
     <a href="javascript:void(0)" class="btn btn-primary @ViewData["UserInterestClass"]" id="btn-interest">@ViewData["UserInterestString"] </a>
 }
@@ -115,53 +115,56 @@
         
     }
     
-    <div class="CommentSection">
-        <div class="Comments">
-            
-      
-            @foreach (var comment in PrepareComments(Model.Comments))
-            {
-                <div class="Comment" style="margin-left: @(comment.Depth * 40)px">
-                    <div class=" border border-dark rounded p-2 m-2">
-                  
-                    <div class="Comment__body">
-                        @if (!comment.Anonymous || User.IsInRole("Teacher") || User.Identity.Name.Equals(comment.Author.UserName))
-                        {
-                            <h5 class="Comment__AuthorName">@comment.Author.FirstName @comment.Author.LastName - @comment.Author.Email</h5>
-                        }
-                        else
-                        {
-                            <h5 class="Comment__AuthorName">@SharedLocalizer["Anonymous"]</h5>
-                        }
-                        
-                        <p class="Comment__CreatedAt">@comment.CreatedAt</p>
-                        <p class="Comment__Text">@comment.Text</p>
-                         <button class="ReplyButton" value="@comment.CommentId" onclick="ReplyButtonClick(this.value)">Reply</button>
-                    </div>
-                        <div class="Comment__reply row" id="ReplyForm@(comment.CommentId)" style="display: none;">
-                            <div class="col-md-8">
-                                <form asp-action="AddComment">
-                                    <input type="hidden" asp-for="TopicId" name="id">
-                                    <input type="hidden" name="parentId" value="@comment.CommentId"/>
-                                    <div class="form-group">
-                                        <label class="control-label">Reply</label>
-                                        <textarea name="text" class="form-control" rows="3"></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="submit" value="@SharedLocalizer["CommentSend"]" class="btn btn-primary">
-                                    </div>
-                                </form>
+    @if (User.Identity.Name != null)
+    {
+
+        <div class="CommentSection">
+            <div class="Comments">
+
+
+                @foreach (var comment in PrepareComments(Model.Comments))
+                {
+                    <div class="Comment" style="margin-left: @(comment.Depth * 40)px">
+                        <div class=" border border-dark rounded p-2 m-2">
+
+                            <div class="Comment__body">
+                                @if (!comment.Anonymous || User.IsInRole("Teacher") || User.Identity.Name.Equals(comment.Author.UserName))
+                                {
+                                    <h5 class="Comment__AuthorName">@comment.Author.FirstName @comment.Author.LastName - @comment.Author.Email</h5>
+                                }
+                                else
+                                {
+                                    <h5 class="Comment__AuthorName">@SharedLocalizer["Anonymous"]</h5>
+                                }
+
+                                <p class="Comment__CreatedAt">@comment.CreatedAt</p>
+                                <p class="Comment__Text">@comment.Text</p>
+                                <button class="ReplyButton" value="@comment.CommentId" onclick="ReplyButtonClick(this.value)">Reply</button>
                             </div>
+                            <div class="Comment__reply row" id="ReplyForm@(comment.CommentId)" style="display: none;">
+                                <div class="col-md-8">
+                                    <form asp-action="AddComment">
+                                        <input type="hidden" asp-for="TopicId" name="id">
+                                        <input type="hidden" name="parentId" value="@comment.CommentId"/>
+                                        <div class="form-group">
+                                            <label class="control-label">Reply</label>
+                                            <textarea name="text" class="form-control" rows="3"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="submit" value="@SharedLocalizer["CommentSend"]" class="btn btn-primary">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
                         </div>
-                              
                     </div>
-                </div>
-            }
-        </div>
-        <div class="NewComment">
-            <h3>@SharedLocalizer["New comment"]</h3>
-            <hr/>
-             <div class="row">
+                }
+            </div>
+            <div class="NewComment">
+                <h3>@SharedLocalizer["New comment"]</h3>
+                <hr/>
+                <div class="row">
                     <div class="col-md-8">
                         <form asp-action="AddComment">
                             <input type="hidden" asp-for="TopicId" name="id"/>
@@ -169,19 +172,19 @@
                                 <label class="control-label">Text</label>
                                 <textarea name="text" class="form-control" rows="3"></textarea>
                             </div>
-                            
-                                <label class="control-label">Anonymous</label>
-                                 <input type="checkbox" name="anonymous" value="true" />
-                         
+
+                            <label class="control-label">Anonymous</label>
+                            <input type="checkbox" name="anonymous" value="true"/>
+
                             <div class="form-group">
                                 <input type="submit" value="Send" class="btn btn-primary"/>
                             </div>
                         </form>
                     </div>
                 </div>
+            </div>
         </div>
-    </div>
-    
+    }
 </div>
 
 @functions{
