@@ -367,6 +367,7 @@ namespace TOS.Controllers
             
             var c = new Comment();
             c.TopicId = id;
+            c.AuthorId = user.Id;
             c.Author = user;
             c.CreatedAt = DateTime.Now;
             c.Text = text;

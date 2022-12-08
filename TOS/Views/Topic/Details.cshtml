@@ -125,14 +125,15 @@
                     <div class=" border border-dark rounded p-2 m-2">
                   
                     <div class="Comment__body">
-                        @if (comment.Anonymous && !User.IsInRole("Teacher"))
-                        {
-                            <h5 class="Comment__AuthorName">Anonymous</h5>
-                        }
-                        else
+                        @if (!comment.Anonymous || User.IsInRole("Teacher") || User.Identity.Name.Equals(comment.Author.UserName))
                         {
                             <h5 class="Comment__AuthorName">@comment.Author.FirstName @comment.Author.LastName - @comment.Author.Email</h5>
                         }
+                        else
+                        {
+                            <h5 class="Comment__AuthorName">@SharedLocalizer["Anonymous"]</h5>
+                        }
+                        
                         <p class="Comment__CreatedAt">@comment.CreatedAt</p>
                         <p class="Comment__Text">@comment.Text</p>
                          <button class="ReplyButton" value="@comment.CommentId" onclick="ReplyButtonClick(this.value)">Reply</button>
@@ -168,8 +169,10 @@
                                 <label class="control-label">Text</label>
                                 <textarea name="text" class="form-control" rows="3"></textarea>
                             </div>
-                            <label class="control-label">Anonymous</label>
-                                <input type="checkbox" name="anonymous"/>
+                            
+                                <label class="control-label">Anonymous</label>
+                                 <input type="checkbox" name="anonymous" value="true" />
+                         
                             <div class="form-group">
                                 <input type="submit" value="Send" class="btn btn-primary"/>
                             </div>
@@ -218,5 +221,6 @@
 {
     <div>
         <a asp-action="Edit" asp-route-id="@Model?.TopicId">Edit</a> |
+         <a asp-action="Delete" asp-route-id="@Model?.TopicId">Delete</a>
     </div>
 }
