@@ -248,10 +248,10 @@ namespace TOS.Controllers
             {
                 return NotFound();
             }
-            ViewData["AssignedId"] = new SelectList(_context.Users, "Id", "Id", topic.AssignedId);
-            ViewData["CreatorId"] = new SelectList(_context.Users, "Id", "Id", topic.CreatorId);
-            ViewData["GroupId"] = new SelectList(_context.Groups.Where(x=>x.Selectable), "GroupId", "GroupId", topic.GroupId);
-            ViewData["SupervisorId"] = new SelectList(_context.Users, "Id", "Id", topic.SupervisorId);
+            ViewData["AssignedId"] = new SelectList(_context.Users, "Id", "Email", topic.AssignedId);
+            ViewData["CreatorId"] = new SelectList(_context.Users, "Id", "Email", topic.CreatorId);
+            ViewData["GroupId"] = new SelectList(_context.Groups.Where(x=>x.Selectable || topic.GroupId.Equals(x.GroupId)), "GroupId", "Name", topic.GroupId);
+            ViewData["SupervisorId"] = new SelectList(_context.Users, "Id", "Email", topic.SupervisorId);
             return View(topic);
         }
 
