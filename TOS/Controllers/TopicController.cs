@@ -109,8 +109,14 @@ namespace TOS.Controllers
             
             //Get cuurent user
             var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName.Equals(User.Identity.Name));
-
-            if (await _context.UserInterestedTopics.AnyAsync(x => x.UserId.Equals(user.Id) && x.TopicId.Equals(id)))
+            @ViewData["UserInterestHide"] = null;
+            
+            if (user is null)
+            {
+                //User is not logged in -> don't show interest button
+                @ViewData["UserInterestHide"] = true;
+            }
+            else if (await _context.UserInterestedTopics.AnyAsync(x => x.UserId.Equals(user.Id) && x.TopicId.Equals(id)))
             {
                 @ViewData["UserInterestClass"] = "interested";
                 @ViewData["UserInterestString"] = _sharedLocalizer["Remove interest"];
