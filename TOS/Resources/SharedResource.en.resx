@@ -72,4 +72,7 @@
     <data name="My topics" xml:space="preserve">
         <value>My topics</value>
     </data>
+    <data name="Topics" xml:space="preserve">
+        <value>All topics</value>
+    </data>
 </root>

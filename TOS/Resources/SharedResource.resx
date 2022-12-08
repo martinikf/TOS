@@ -65,4 +65,7 @@
     <data name="My topics" xml:space="preserve">
         <value>Moje témata</value>
     </data>
+    <data name="Topics" xml:space="preserve">
+        <value>Všechna témata</value>
+    </data>
 </root>
