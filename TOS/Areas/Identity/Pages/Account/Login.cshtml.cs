@@ -3,7 +3,8 @@
 #nullable disable
 
 using System.ComponentModel.DataAnnotations;
-using System.DirectoryServices.Protocols;
+//using System.DirectoryServices.Protocols;
+using Novell.Directory.Ldap;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
@@ -175,6 +176,19 @@ namespace TOS.Areas.Identity.Pages.Account
         {
             try
             {
+                var ldapConn = new LdapConnection();
+                ldapConn.Connect("158.194.64.3", 389);
+                ldapConn.Bind("prfad\\" + username, password);
+                return ldapConn.Connected;
+            }
+            catch
+            {
+                return false;
+            }
+            /*
+             Doesn't work under linux
+            try
+            {
                 var authType = AuthType.Negotiate;
 
                 if (!OperatingSystem.IsWindows())
@@ -199,6 +213,7 @@ namespace TOS.Areas.Identity.Pages.Account
             }
             
             return true;
+            */
         }
 
         private ApplicationUser CreateLdapUser()
