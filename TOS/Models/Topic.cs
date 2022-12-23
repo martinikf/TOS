@@ -9,10 +9,16 @@ public class Topic
         public int TopicId { get; set; }
 
         public string Name { get; set; } = string.Empty;
+        
+        public string NameEng { get; set; } = string.Empty;
 
         public string DescriptionShort { get; set; } = string.Empty;
+        
+        public string DescriptionShortEng { get; set; } = string.Empty;
 
         public string? DescriptionLong { get; set; }
+        
+        public string? DescriptionLongEng { get; set; }
 
         public bool Visible { get; set; }
         

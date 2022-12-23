@@ -8,6 +8,8 @@ public class Attachment
     
     public string Name { get; set; } = string.Empty;
     
+    public string NameEng { get; set; } = string.Empty;
+    
     public string Path { get; set; } = string.Empty;
     
     public DateTime CreatedAt { get; set; }
