@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ namespace TOS.Controllers
             //Used for showing edit button for not selectable groups (teacher created groups)
             ViewData["TopicsIndexGroupId"] = null;
             
-            if (groupName != null) group = await _context.Groups.FirstOrDefaultAsync(x => x.Name.Equals(groupName));
+            if (groupName != null) group = await _context.Groups.FirstOrDefaultAsync(x => x.NameEng.Equals(groupName));
             
             if (group == null)
             {
@@ -79,9 +80,9 @@ namespace TOS.Controllers
                     ViewData["TopicsIndexHeading"] = _sharedLocalizer["Group of topics for:"].Value + " " + groupName;
                 }
 
-                ViewData["TopicsIndexGroupName"] = group.Name;
+                ViewData["TopicsIndexGroupName"] = group.NameEng;
                 
-                var applicationDbContext = _context.Topics.Where(x => x.Group.Name.Equals(groupName) && x.Visible)
+                var applicationDbContext = _context.Topics.Where(x => x.Group.NameEng.Equals(groupName) && x.Visible)
                     .Include(t => t.AssignedStudent).Include(t => t.Creator)
                     .Include(t => t.Group).Include(t => t.Supervisor);
                 return View(await applicationDbContext.ToListAsync());
@@ -136,43 +137,40 @@ namespace TOS.Controllers
         {
             SelectList? groupSelectList = null;
             
+            //If culture is not cz -> display english group names; Used in SelectList
+            string nameString = "NameEng";
+            if (CultureInfo.CurrentCulture.Name.Contains("cz"))
+            {
+                nameString = "Name";
+            }
+            
             if (groupName == null)
             {
-                ViewData["TopicCreateDisplayProgrammes"] = false;
-                groupSelectList = new SelectList(_context.Groups.Where(x => x.Selectable), "GroupId", "Name");
+                groupSelectList = new SelectList(_context.Groups.Where(x => x.Selectable), "GroupId", nameString);
             }
             else
             {
                 //Creates selectList for groups when a valid groupName is provided
-                var groupProvided = _context.Groups.First(x => x.Name.ToLower().Equals(groupName.ToLower()));
-                if (!groupProvided.Selectable || groupProvided.Name.Equals("Unassigned"))
+                var groupProvided = _context.Groups.FirstOrDefault(x => x.NameEng.ToLower().Equals(groupName.ToLower()));
+                if (groupProvided == null) throw new Exception();
+                
+                if (!groupProvided.Selectable)
                 {
-                    ViewData["TopicCreateDisplayProgrammes"] = false;
-                    groupSelectList = new SelectList(_context.Groups.Where(x => x.Selectable || x.Equals(groupProvided)),
-                        "GroupId", "Name", groupProvided.GroupId);
+                    //Block for subject
+                    groupSelectList = new SelectList(_context.Groups.Where(x => x.Equals(groupProvided)),
+                        "GroupId", nameString, groupProvided.GroupId);
                 }
                 else
                 {
-                    //Set ViewData for recommended progammes
-                    ViewData["TopicCreateDisplayProgrammes"] = true;
-                    if (groupProvided.Name.Equals("Bachelor"))
-                    {
-                        ViewData["TopicCreateProgrammes"] =
-                            await _context.Programmes.Where(x => x.Type == ProgramType.Bachelor).ToListAsync();
-                    }
-                    else
-                    {
-                        ViewData["TopicCreateProgrammes"] =
-                            await _context.Programmes.Where(x => x.Type == ProgramType.Master).ToListAsync();
-                    }
-
                     groupSelectList = new SelectList(_context.Groups.Where(x => x.Selectable), 
-                        "GroupId", "Name", groupProvided.GroupId);
+                        "GroupId", nameString, groupProvided.GroupId);
+                   
                 }
             }
 
+            ViewData["Programmes"] = await _context.Programmes.Where(x => x.Active).ToListAsync();
             ViewData["Groups"] = groupSelectList;
-            var studentRole = _context.Roles.First(x => x.Name != null && x.Name.Equals("Student"));
+            var studentRole = await _context.Roles.FirstAsync(x => x.Name != null && x.Name.Equals("Student"));
             ViewData["Students"] =
                 new SelectList(
                     _context.Users.Where(user =>
@@ -180,8 +178,8 @@ namespace TOS.Controllers
                     "Email");
             
             //Selects all users with role Teacher
-            var user = _context.Users.First(x => User.Identity != null && x.UserName!.Equals(User.Identity.Name));
-            var teacherRole = _context.Roles.First(r => r.Name != null && r.Name.Equals("Teacher"));
+            var user = await _context.Users.FirstAsync(x => User.Identity != null && x.UserName!.Equals(User.Identity.Name));
+            var teacherRole = await _context.Roles.FirstAsync(r => r.Name != null && r.Name.Equals("Teacher"));
             ViewData["Supervisors"] =
                 new SelectList(
                     _context.Users.Where(x =>
@@ -195,39 +193,27 @@ namespace TOS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TopicId,Name,DescriptionShort,DescriptionLong,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic, string[] programmes)
+        public async Task<IActionResult> Create([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic, int[] programmes)
         {
+            //Set eng fields to czech if not provided
+            if(topic.NameEng == "") topic.NameEng = topic.Name;
+            if(topic.DescriptionShortEng == "") topic.DescriptionShortEng = topic.DescriptionShort;
+            if(topic.DescriptionLongEng == "") topic.DescriptionLongEng = topic.DescriptionLong;
             
             topic.CreatorId = _context.Users.First(x => User.Identity != null && x.Email != null && x.Email.Equals(User.Identity.Name)).Id;
             _context.Add(topic);
             await _context.SaveChangesAsync();
             
-            //Logic for recommended programmes
-            List<Programme>? programmeObjects = null;
-            //Get group from topic.groupId
-            var group = await _context.Groups.FirstAsync(x => x.GroupId.Equals(topic.GroupId));
-            
-            if (group.Name.Equals("Bachelor"))
+            //Delete all recommended programmes
+            _context.TopicRecommendedProgrammes.RemoveRange(_context.TopicRecommendedProgrammes.Where(x=>x.TopicId.Equals(topic.TopicId)));
+            //Re-add new recommended programmes
+            foreach (var programme in programmes)
             {
-                 programmeObjects =
-                    await _context.Programmes.Where(x => x.Type == ProgramType.Bachelor).ToListAsync();
-            }
-            else if(group.Name.Equals("Master"))
-            {
-                 programmeObjects =
-                    await _context.Programmes.Where(x => x.Type == ProgramType.Master).ToListAsync();
-            }
-
-            if (programmeObjects != null)
-            {
-                foreach (var programme in programmes)
+                _context.TopicRecommendedProgrammes.Add(new()
                 {
-                    _context.TopicRecommendedProgrammes.Add(new()
-                    {
-                        TopicId = topic.TopicId,
-                        ProgramId = programmeObjects.First(x => x.Name.Equals(programme)).ProgrammeId
-                    });
-                }
+                    TopicId = topic.TopicId,
+                    ProgramId = programme
+                });
             }
 
             await _context.SaveChangesAsync();

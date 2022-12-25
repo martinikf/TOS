@@ -1,6 +1,7 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @using TOS.Resources
 @using System.Collections
+@using System.Globalization
 @model TOS.Models.Topic
 
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
@@ -24,14 +25,26 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
+                    <label asp-for="NameEng" class="control-label"></label>
+                    <input asp-for="NameEng" class="form-control" />
+            </div>
+            <div class="form-group">
                 <label asp-for="DescriptionShort" class="control-label"></label>
                 <input asp-for="DescriptionShort" class="form-control" />
                 <span asp-validation-for="DescriptionShort" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="DescriptionShortEng" class="control-label"></label>
+                <input asp-for="DescriptionShortEng" class="form-control" />
+            </div>
+            <div class="form-group">
                 <label asp-for="DescriptionLong" class="control-label"></label>
                 <input asp-for="DescriptionLong" class="form-control" />
                 <span asp-validation-for="DescriptionLong" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DescriptionLongEng" class="control-label"></label>
+                <input asp-for="DescriptionLongEng" class="form-control" />
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
@@ -54,27 +67,36 @@
             </div>
             <div class="form-group">
                 <label asp-for="GroupId" class="control-label"></label>
-                <select asp-for="GroupId" class ="form-control" asp-items="ViewBag.Groups"></select>
+                <select asp-for="GroupId" class ="form-control" asp-items="ViewBag.Groups" onchange="RefreshProgrammes()"></select>
             </div>
             
         
             <hr/>
-            @if (ViewData["TopicCreateDisplayProgrammes"] != null && (bool)ViewData["TopicCreateDisplayProgrammes"]!)
+
+            @if (ViewData["Programmes"] != null)
             {
-                <ul class="Programmes">
-                    
-                @foreach (var programme in (IEnumerable<Programme>)ViewData["TopicCreateProgrammes"]!)
-                {
-                    <div>
-                        <input type="checkbox" name="programmes" value="@programme.Name"/>
-                        <label>@programme.Name</label>
-                    </div>
-                }
-              </ul>
-            }
-            <hr/>
-            
                 <div class="form-group">
+                    <ul>
+                        @foreach (var programme in (IEnumerable<Programme>) ViewData["Programmes"]!)
+                        {
+                            <li class="Programme @programme.Type">
+                                <input type="checkbox" name="programmes" value="@programme.ProgrammeId"/>
+                                @if (CultureInfo.CurrentCulture.Name.Contains("cz"))
+                                {
+                                    <label>@programme.Name</label>
+                                }
+                                else
+                                {
+                                    <label>@programme.NameEng</label>
+                                }
+                            </li>
+                        }   
+                    </ul>
+                </div>
+                <hr/>
+            }
+            
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -85,3 +107,65 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+@section Scripts
+{
+    <script>
+    
+        window.onload = function () {
+            RefreshProgrammes();
+        }
+    
+        function RefreshProgrammes(){
+            var programmes = document.getElementsByClassName("Programme");
+            //Hide all programmmes
+            for (var i = 0; i < programmes.length; i++) {
+                programmes[i].style.display = "none";
+            }
+            
+            //Get selected group selected option name
+            //ChatGPT
+            const selectElement = document.querySelector('#GroupId');
+            const selectedOption = selectElement.options[selectElement.selectedIndex];
+            const groupName = selectedOption.text;
+            
+            console.log(groupName);
+            
+             var bachelorProgrammes = document.getElementsByClassName("Bachelor");
+             var masterProgrammes = document.getElementsByClassName("Master");
+             
+            if (groupName == "Bachelor" || groupName == "Bakalářská"){
+                //Unselect all Master checkboxes
+                for (var i = 0; i < masterProgrammes.length; i++) {
+                    masterProgrammes[i].getElementsByTagName("input")[0].checked = false;
+                }
+                
+                //Show all Bachelor programmes
+                for (var i = 0; i < bachelorProgrammes.length; i++) {
+                    bachelorProgrammes[i].style.display = "block";
+                }
+            }
+            else if (groupName == "Master" || groupName == "Magisterská"){
+                //Unselect all Bachelor checkboxes
+                for (var i = 0; i < bachelorProgrammes.length; i++) {
+                    bachelorProgrammes[i].getElementsByTagName("input")[0].checked = false;
+                }
+                
+                //Show all Master programmes
+                for (var i = 0; i < masterProgrammes.length; i++) {
+                    masterProgrammes[i].style.display = "block";
+                }    
+            }
+            else{
+                //Unselect all checkboxes
+                for (var i = 0; i < programmes.length; i++) {
+                    programmes[i].getElementsByTagName("input")[0].checked = false;
+                }
+                //Hide all programmes
+                for (var i = 0; i < programmes.length; i++) {
+                    programmes[i].style.display = "none";
+                }
+            }
+        }
+       
+    </script>
+}

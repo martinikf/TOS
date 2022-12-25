@@ -75,4 +75,10 @@
     <data name="Topics" xml:space="preserve">
         <value>All topics</value>
     </data>
+    <data name="Unassigned option" xml:space="preserve">
+        <value>Unassigned option</value>
+    </data>
+    <data name="New comment" xml:space="preserve">
+        <value>New comment</value>
+    </data>
 </root>

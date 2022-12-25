@@ -1,6 +1,7 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.AspNetCore.Mvc.Routing
 @using TOS.Resources
+@using System.Globalization
 @model TOS.Models.Topic
 
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
@@ -94,20 +95,20 @@
     
     @foreach(var programme in Model.TopicRecommendedPrograms)
     {
-        <span class="infobox">@SharedLocalizer[programme.Programme.Name]</span>
+        <span class="infobox">@SelectStringByLanguage(programme.Programme.Name, programme.Programme.NameEng)</span>
     }
 
     <h5>@SharedLocalizer["Short topic description"]</h5>
-    <p>@Html.DisplayFor(model => model.DescriptionShort)</p>
+    <p>@SelectStringByLanguage(Model.DescriptionShort, Model.DescriptionShortEng)</p>
     <h5>@SharedLocalizer["Long topic description"]</h5>
-    <p>@Html.DisplayFor(model => model.DescriptionLong)</p>
+    <p>@SelectStringByLanguage(Model.DescriptionLong, Model.DescriptionLongEng)</p>
     <h5>@SharedLocalizer["Supervisor"]</h5>
     <p>
         @Html.DisplayFor(model => model.Supervisor.FirstName) @Html.DisplayFor(model => model.Supervisor.LastName)
         @Html.DisplayFor(model => model.Supervisor.Email)
     </p>
     <h5>@SharedLocalizer["Topic group"]</h5>
-    <p>@Html.DisplayFor(model => model.Group.Name)</p>
+    <p>@SelectStringByLanguage(Model.Group.Name, Model.Group.NameEng)</p>
     
 
     @foreach (var attachment in Model.Attachments)
@@ -120,7 +121,6 @@
 
         <div class="CommentSection">
             <div class="Comments">
-
 
                 @foreach (var comment in PrepareComments(Model.Comments))
                 {
@@ -218,6 +218,18 @@
         return returnComments;
     }
 
+}
+
+@functions{
+
+    private static string SelectStringByLanguage(string cz, string eng)
+    {
+        @if (CultureInfo.CurrentCulture.Name.Contains("cz"))
+        {
+            return cz;
+        }
+        return eng;
+    }
 }
 
 @if (User.IsInRole("Teacher"))

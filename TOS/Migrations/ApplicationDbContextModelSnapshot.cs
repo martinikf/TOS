@@ -234,6 +234,10 @@ namespace TOS.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("NameEng")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Path")
                         .IsRequired()
                         .HasColumnType("text");
@@ -306,6 +310,10 @@ namespace TOS.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("NameEng")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<bool>("Selectable")
                         .HasColumnType("boolean");
 
@@ -331,6 +339,10 @@ namespace TOS.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("NameEng")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -360,7 +372,14 @@ namespace TOS.Migrations
                     b.Property<string>("DescriptionLong")
                         .HasColumnType("text");
 
+                    b.Property<string>("DescriptionLongEng")
+                        .HasColumnType("text");
+
                     b.Property<string>("DescriptionShort")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("DescriptionShortEng")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -368,6 +387,10 @@ namespace TOS.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("NameEng")
                         .IsRequired()
                         .HasColumnType("text");
 

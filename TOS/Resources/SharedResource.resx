@@ -68,4 +68,10 @@
     <data name="Topics" xml:space="preserve">
         <value>Všechna témata</value>
     </data>
+    <data name="Unassigned option" xml:space="preserve">
+        <value>Nepřiřazeno</value>
+    </data>
+    <data name="New comment" xml:space="preserve">
+        <value>Nový komentář</value>
+    </data>
 </root>

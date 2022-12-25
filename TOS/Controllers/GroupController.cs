@@ -28,7 +28,7 @@ namespace TOS
             if (User.IsInRole("Teacher"))
             {
                 var list = await applicationDbContext.ToListAsync();
-                var unassignedGroup = _context.Groups.FirstOrDefault(x => x.Name == "Unassigned");
+                var unassignedGroup = _context.Groups.FirstOrDefault(x => x.NameEng == "Unassigned");
                 if(unassignedGroup is null) throw new Exception("Unassigned group should exist!");
                 list.Insert(0, unassignedGroup);
             }
@@ -65,8 +65,10 @@ namespace TOS
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GroupId,Name,CreatorId,Selectable,Visible")] Group group)
+        public async Task<IActionResult> Create([Bind("GroupId,Name,NameEng,CreatorId,Selectable,Visible")] Group group)
         {
+            if(group.NameEng == "") group.NameEng = group.Name;
+            
             group.CreatorId = _context.Users.First(x => User.Identity != null && x.UserName == User.Identity.Name).Id;
             
             _context.Add(group);

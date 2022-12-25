@@ -1,5 +1,6 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @using TOS.Resources
+@using System.Globalization
 @model IEnumerable<TOS.Models.Topic>
 
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
@@ -23,12 +24,12 @@
 
 TODO: Filtering, sorting, searching here |-----------------------------------|
 
-@foreach (var item in Model) {
+@foreach (Topic item in Model) {
     <div class="topic">
         
         <div class="topic__name">
             <a asp-action="Details" asp-route-id="@item.TopicId">
-                @Html.DisplayFor(modelItem => item.Name)
+                <h3>@SelectStringByLanguage(item.Name, item.NameEng)</h3>
             </a>
         </div>
 
@@ -51,25 +52,34 @@ TODO: Filtering, sorting, searching here |-----------------------------------|
             {
                 <span class="infobox">@SharedLocalizer["Taken topic"]</span>
             }
+            
             @foreach (var programme in item.TopicRecommendedPrograms)
             {
-                <span class="infobox">@SharedLocalizer[programme.Programme.Name]</span>
+                <span class="infobox">@SelectStringByLanguage(programme.Programme.Name, programme.Programme.NameEng)</span>
             }
         </div>
         
         <div class="topic__description">
-            @Html.DisplayFor(modelItem => item.DescriptionShort)
+            @SelectStringByLanguage(item.DescriptionShort, item.DescriptionShortEng)
         </div>
+        <hr/>
     </div>
-    
-    <hr/>
 }
 
+@functions{
 
-
+    private static string SelectStringByLanguage(string cz, string eng)
+    {
+        @if (CultureInfo.CurrentCulture.Name.Contains("cz"))
+        {
+            return cz;
+        }
+        return eng;
+    }
+}
 
 <!--
-    <a asp-action="Edit" asp-route-id="item.TopicId">Edit</a> |
-                <a asp-action="Details" asp-route-id="item.TopicId">Details</a> |
-                <a asp-action="Delete" asp-route-id="item.TopicId">Delete</a>
+<a asp-action="Edit" asp-route-id="item.TopicId">Edit</a>
+<a asp-action="Details" asp-route-id="item.TopicId">Details</a>
+<a asp-action="Delete" asp-route-id="item.TopicId">Delete</a>
 -->
