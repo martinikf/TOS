@@ -1,0 +1,19 @@
+﻿@model IEnumerable<TOS.Models.ApplicationUser>
+
+@{
+    ViewData["Title"] = "Administration - Users";
+}
+
+<h1>Administration</h1>
+
+@foreach (var user in Model)
+{
+    <p>
+        @user.FirstName
+        @user.LastName
+        @user.Email
+    </p>
+    
+    <a asp-controller="Administration" asp-action="EditRoles" asp-route-id="@user.Id">Edit</a>
+   
+}

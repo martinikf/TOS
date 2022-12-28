@@ -1,0 +1,20 @@
+﻿@model IEnumerable<TOS.Models.Programme>
+
+@{
+    ViewData["Title"] = "Administration - Programmes";
+}
+
+<h1>Administration</h1>
+
+<ul>
+    <li><a asp-controller="Administration" asp-action="CreateProgramme">Create</a></li>
+</ul>
+
+
+@foreach (var programme in Model)
+{
+    <h3>@programme.Name - @programme.Active</h3>
+    <h3>@programme.NameEng</h3>
+                          
+    <a asp-controller="Administration" asp-action="EditProgramme" asp-route-id="@programme.ProgrammeId">Edit</a>
+}
