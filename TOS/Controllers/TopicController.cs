@@ -238,6 +238,23 @@ namespace TOS.Controllers
             ViewData["CreatorId"] = new SelectList(_context.Users, "Id", "Email", topic.CreatorId);
             ViewData["GroupId"] = new SelectList(_context.Groups.Where(x=>x.Selectable || topic.GroupId.Equals(x.GroupId)), "GroupId", "Name", topic.GroupId);
             ViewData["SupervisorId"] = new SelectList(_context.Users, "Id", "Email", topic.SupervisorId);
+
+
+            ViewData["Programmes"] = await _context.Programmes
+                .Where(x => x.Active)
+                .Select(p => new Programme
+                {
+                    ProgrammeId = p.ProgrammeId,
+                    Name = p.Name,
+                    Active = p.Active,
+                    Type = p.Type,
+                    NameEng = p.NameEng,
+                    Selected = _context.TopicRecommendedProgrammes
+                        .Any(x => x.TopicId.Equals(topic.TopicId) && x.ProgramId.Equals(p.ProgrammeId))
+                })
+                .ToListAsync();
+
+
             return View(topic);
         }
 
@@ -246,29 +263,33 @@ namespace TOS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name,DescriptionShort,DescriptionLong,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic)
+        public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name,DescriptionShort,DescriptionLong,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic, int[] programmes)
         {
             if (id != topic.TopicId)
             {
                 return NotFound();
             }
-
-            try
-            { 
-                _context.Update(topic);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
+            
+            if(topic.NameEng == "") topic.NameEng = topic.Name;
+            if(topic.DescriptionShortEng == "") topic.DescriptionShortEng = topic.DescriptionShort;
+            if(topic.DescriptionLongEng == "") topic.DescriptionLongEng = topic.DescriptionLong;
+      
+            _context.Update(topic);
+            await _context.SaveChangesAsync();
+          
+            //Delete all recommended programmes
+            _context.TopicRecommendedProgrammes.RemoveRange(_context.TopicRecommendedProgrammes.Where(x=>x.TopicId.Equals(topic.TopicId)));
+            //Re-add new recommended programmes
+            foreach (var programme in programmes)
             {
-                if (!TopicExists(topic.TopicId))
+                _context.TopicRecommendedProgrammes.Add(new()
                 {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                    TopicId = topic.TopicId,
+                    ProgramId = programme
+                });
             }
+
+            await _context.SaveChangesAsync();
             
             return RedirectToAction(nameof(Index));
         }

@@ -1,3 +1,5 @@
+@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model TOS.Models.Topic
 
 @{
@@ -51,9 +53,43 @@
             </div>
             <div class="form-group">
                 <label asp-for="GroupId" class="control-label"></label>
-                <select asp-for="GroupId" class="form-control" asp-items="ViewBag.GroupId"></select>
+                <select asp-for="GroupId" class="form-control" asp-items="ViewBag.GroupId" onchange="RefreshProgrammes()"></select>
                 <span asp-validation-for="GroupId" class="text-danger"></span>
             </div>
+            
+            
+             @if (ViewData["Programmes"] != null)
+                        {
+                            <div class="form-group">
+                                <ul>
+                                    @foreach (var programme in (IEnumerable<Programme>) ViewData["Programmes"]!)
+                                    {
+                                        <li class="Programme @programme.Type">
+                                            @if(programme.Selected)
+                                            {
+                                                <input type="checkbox" name="Programmes" value="@programme.ProgrammeId" checked="checked" />
+                                            }
+                                            else
+                                            {
+                                                <input type="checkbox" name="Programmes" value="@programme.ProgrammeId" />
+                                            }
+                                            @if (CultureInfo.CurrentCulture.Name.Contains("cz"))
+                                            {
+                                                <label>@programme.Name</label>
+                                            }
+                                            else
+                                            {
+                                                <label>@programme.NameEng</label>
+                                            }
+                                        </li>
+                                    }   
+                                </ul>
+                            </div>
+                            <hr/>
+                        }
+            
+            
+            
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -64,4 +100,68 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+
+@section Scripts
+{
+    <script>
+    
+        window.onload = function () {
+            RefreshProgrammes();
+        }
+    
+        function RefreshProgrammes(){
+            var programmes = document.getElementsByClassName("Programme");
+            //Hide all programmmes
+            for (var i = 0; i < programmes.length; i++) {
+                programmes[i].style.display = "none";
+            }
+            
+            //Get selected group selected option name
+            //ChatGPT
+            const selectElement = document.querySelector('#GroupId');
+            const selectedOption = selectElement.options[selectElement.selectedIndex];
+            const groupName = selectedOption.text;
+            
+            console.log(groupName);
+            
+             var bachelorProgrammes = document.getElementsByClassName("Bachelor");
+             var masterProgrammes = document.getElementsByClassName("Master");
+             
+            if (groupName == "Bachelor" || groupName == "Bakalářská"){
+                //Unselect all Master checkboxes
+                for (var i = 0; i < masterProgrammes.length; i++) {
+                    masterProgrammes[i].getElementsByTagName("input")[0].checked = false;
+                }
+                
+                //Show all Bachelor programmes
+                for (var i = 0; i < bachelorProgrammes.length; i++) {
+                    bachelorProgrammes[i].style.display = "block";
+                }
+            }
+            else if (groupName == "Master" || groupName == "Magisterská"){
+                //Unselect all Bachelor checkboxes
+                for (var i = 0; i < bachelorProgrammes.length; i++) {
+                    bachelorProgrammes[i].getElementsByTagName("input")[0].checked = false;
+                }
+                
+                //Show all Master programmes
+                for (var i = 0; i < masterProgrammes.length; i++) {
+                    masterProgrammes[i].style.display = "block";
+                }    
+            }
+            else{
+                //Unselect all checkboxes
+                for (var i = 0; i < programmes.length; i++) {
+                    programmes[i].getElementsByTagName("input")[0].checked = false;
+                }
+                //Hide all programmes
+                for (var i = 0; i < programmes.length; i++) {
+                    programmes[i].style.display = "none";
+                }
+            }
+        }
+       
+    </script>
+}
 
