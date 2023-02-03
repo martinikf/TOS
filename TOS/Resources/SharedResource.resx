@@ -74,4 +74,13 @@
     <data name="New comment" xml:space="preserve">
         <value>Nový komentář</value>
     </data>
+    <data name="Login" xml:space="preserve">
+        <value>Přihlásit</value>
+    </data>
+    <data name="Register" xml:space="preserve">
+        <value>Registrovat</value>
+    </data>
+    <data name="Logout" xml:space="preserve">
+        <value>Odhlásit</value>
+    </data>
 </root>
