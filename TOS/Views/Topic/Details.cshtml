@@ -111,10 +111,19 @@
     <p>@SelectStringByLanguage(Model.Group.Name, Model.Group.NameEng)</p>
     
 
-    @foreach (var attachment in Model.Attachments)
-    {
-        
-    }
+   <div>
+       <h2>@SharedLocalizer["Attachments"]</h2>
+       <hr/>
+       @foreach (var attachment in Model.Attachments)
+       {
+           <div class="Attachment border border-dark rounded p-2 m-2 col-sm-4">
+               <h4>@attachment.Name</h4>
+               @attachment.Creator.Email
+               <!-- FILE -->
+               <a href="/files/@attachment.TopicId/@attachment.Name">Download File</a>
+           </div>
+       }
+   </div>
     
     @if (User.Identity.Name != null)
     {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -18,11 +19,13 @@ namespace TOS.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IHtmlLocalizer<SharedResource> _sharedLocalizer;
+        private readonly IWebHostEnvironment _env;
 
-        public TopicController(ApplicationDbContext context,  IHtmlLocalizer<SharedResource> sharedLocalizer)
+        public TopicController(ApplicationDbContext context,  IHtmlLocalizer<SharedResource> sharedLocalizer, IWebHostEnvironment env)
         {
             _context = context;
             _sharedLocalizer = sharedLocalizer;
+            _env = env;
         }
 
         // GET: Topic
@@ -193,7 +196,7 @@ namespace TOS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic, int[] programmes)
+        public async Task<IActionResult> Create([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic, int[] programmes, List<IFormFile> files)
         {
             //Set eng fields to czech if not provided
             if(topic.NameEng == "") topic.NameEng = topic.Name;
@@ -218,6 +221,10 @@ namespace TOS.Controllers
 
             await _context.SaveChangesAsync();
            
+            //Create uploaded files
+            var user = await _context.Users.FirstAsync(x => User.Identity != null && x.UserName!.Equals(User.Identity.Name));
+            await CreateFiles(topic, user, files);
+            
             return RedirectToAction(nameof(Index));
         }
 
@@ -263,8 +270,10 @@ namespace TOS.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name,DescriptionShort,DescriptionLong,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic, int[] programmes)
+        public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name,DescriptionShort,DescriptionLong,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic, int[] programmes, List<IFormFile> files)
         {
+            var user = await _context.Users.FirstAsync(x => User.Identity != null && x.UserName!.Equals(User.Identity.Name));
+
             if (id != topic.TopicId)
             {
                 return NotFound();
@@ -290,6 +299,8 @@ namespace TOS.Controllers
             }
 
             await _context.SaveChangesAsync();
+
+            await CreateFiles(topic, user, files);
             
             return RedirectToAction(nameof(Index));
         }
@@ -384,6 +395,64 @@ namespace TOS.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Details", new { id = id });
+        }
+
+
+        public async Task<bool> CreateFiles(Topic topic, ApplicationUser user, List<IFormFile> files)
+        {
+            foreach (var file in files)
+            {
+                var filePath = Path.Combine(_env.WebRootPath, "files", topic.TopicId.ToString(), file.FileName);
+                var fileInfo = new FileInfo(filePath);
+                
+                //If topic has attachment with same file name -> skip current file
+                if (fileInfo.Exists)
+                {
+                    if (_context.Attachments.Any(x => x.TopicId.Equals(topic.TopicId) && x.Name.Equals(file.FileName)))
+                    {
+                        //TODO: Show pop-up message, that file with same name already exists
+                        continue;
+                    }
+                    fileInfo.Delete();
+                }
+                
+                //Create missing directories
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? string.Empty);
+
+                //Create file
+                await using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                
+                //Add record to database
+                _context.Attachments.Add(new Attachment()
+                {
+                    CreatorId = user.Id,
+                    TopicId = topic.TopicId,
+                    Name = file.FileName
+                });
+            }
+            
+            await _context.SaveChangesAsync();
+            
+            return true;
+        }
+        
+        public async Task<IActionResult> DeleteAttachment(int attachmentId, int topicId)
+        {
+            //Delete the file from server
+            var file = new FileInfo(Path.Combine(_env.WebRootPath, "files", topicId.ToString(), _context.Attachments.First(x => x.AttachmentId.Equals(attachmentId)).Name));
+            if (file.Exists)
+            {
+                file.Delete();
+            }
+            
+            //Update database
+            _context.Attachments.Remove(_context.Attachments.FirstOrDefault(x => x.AttachmentId.Equals(attachmentId)));
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Edit", new { id = topicId });
         }
     }
 }
