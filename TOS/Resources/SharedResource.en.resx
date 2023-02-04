@@ -93,4 +93,7 @@
     <data name="Anonymous" xml:space="preserve">
         <value>Anonymous</value>
     </data>
+    <data name="Deleted comment" xml:space="preserve">
+        <value>Deleted comment</value>
+    </data>
 </root>

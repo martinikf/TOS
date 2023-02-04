@@ -454,5 +454,28 @@ namespace TOS.Controllers
 
             return RedirectToAction("Edit", new { id = topicId });
         }
+
+        public async Task<IActionResult> DeleteComment(int commentId, int topicId)
+        {
+            var comment = await _context.Comments.FirstOrDefaultAsync(x => x.CommentId.Equals(commentId));
+
+            if (comment != null)
+            {
+                if (comment.Replies.Count > 0)
+                {
+                    comment.Text = "Deleted comment";
+                    comment.Anonymous = true;
+                    _context.Comments.Update(comment);
+                }
+                else
+                {
+                    _context.Comments.Remove(comment);
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            
+            return RedirectToAction("Details", new { id = topicId });
+        }
     }
 }

@@ -86,4 +86,7 @@
     <data name="Anonymous" xml:space="preserve">
         <value>Anonymní</value>
     </data>
+    <data name="Deleted comment" xml:space="preserve">
+        <value>Smazaný komentář</value>
+    </data>
 </root>
