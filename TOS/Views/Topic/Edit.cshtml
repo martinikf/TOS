@@ -11,7 +11,7 @@
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-Idr 
+
 <h1>Edit</h1>
 
 <h4>Topic</h4>
@@ -48,12 +48,18 @@ Idr
             </div>
             <div class="form-group">
                 <label asp-for="SupervisorId" class="control-label"></label>
-                <select asp-for="SupervisorId" class="form-control" asp-items="ViewBag.SupervisorId"></select>
+                <select asp-for="SupervisorId" class="form-control" asp-items="ViewBag.SupervisorId">
+                    <!--Return null for Unassigned option-->
+                    <option value="null">@SharedLocalizer["Unassigned option"]</option>
+                </select>
                 <span asp-validation-for="SupervisorId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="AssignedId" class="control-label"></label>
-                <select asp-for="AssignedId" class="form-control" asp-items="ViewBag.AssignedId"></select>
+                <select asp-for="AssignedId" class="form-control" asp-items="ViewBag.AssignedId">
+                     <!--Return null for Unassigned option-->
+                     <option value="null">@SharedLocalizer["Unassigned option"]</option>
+                </select>
                 <span asp-validation-for="AssignedId" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -124,16 +130,17 @@ Idr
 @section Scripts
 {
     <script>
-    
         window.onload = function () {
-            RefreshProgrammes();
+            RefreshProgrammes(true);
         }
     
-        function RefreshProgrammes(){
+        function RefreshProgrammes(skip = false){
             var programmes = document.getElementsByClassName("Programme");
-            //Hide all programmmes
+            //Hide all programmmes and unselect all checkboxes
             for (var i = 0; i < programmes.length; i++) {
                 programmes[i].style.display = "none";
+                if (!skip)
+                    programmes[i].getElementsByTagName("input")[0].checked = false;
             }
             
             //Get selected group selected option name
@@ -146,41 +153,19 @@ Idr
             
              var bachelorProgrammes = document.getElementsByClassName("Bachelor");
              var masterProgrammes = document.getElementsByClassName("Master");
+             var toShow = [];
              
-            if (groupName == "Bachelor" || groupName == "Bakalářská"){
-                //Unselect all Master checkboxes
-                for (var i = 0; i < masterProgrammes.length; i++) {
-                    masterProgrammes[i].getElementsByTagName("input")[0].checked = false;
-                }
-                
-                //Show all Bachelor programmes
-                for (var i = 0; i < bachelorProgrammes.length; i++) {
-                    bachelorProgrammes[i].style.display = "block";
-                }
-            }
-            else if (groupName == "Master" || groupName == "Magisterská"){
-                //Unselect all Bachelor checkboxes
-                for (var i = 0; i < bachelorProgrammes.length; i++) {
-                    bachelorProgrammes[i].getElementsByTagName("input")[0].checked = false;
-                }
-                
-                //Show all Master programmes
-                for (var i = 0; i < masterProgrammes.length; i++) {
-                    masterProgrammes[i].style.display = "block";
-                }    
-            }
-            else{
-                //Unselect all checkboxes
-                for (var i = 0; i < programmes.length; i++) {
-                    programmes[i].getElementsByTagName("input")[0].checked = false;
-                }
-                //Hide all programmes
-                for (var i = 0; i < programmes.length; i++) {
-                    programmes[i].style.display = "none";
-                }
-            }
+             if (groupName == "Bachelor" || groupName == "Bakalářská"){
+                 toShow = bachelorProgrammes;
+             }
+             else if (groupName == "Master" || groupName == "Magisterská"){
+                  toShow = masterProgrammes;
+             }
+             
+             for (var i = 0; i < toShow.length; i++) {
+                 toShow[i].style.display = "block";
+             }
         }
-       
     </script>
 }
 
