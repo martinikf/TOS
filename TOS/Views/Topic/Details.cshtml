@@ -139,7 +139,15 @@
                             <div class="Comment__body">
                                 @if (!comment.Anonymous || User.IsInRole("Teacher") || User.Identity.Name.Equals(comment.Author.UserName))
                                 {
-                                    <h5 class="Comment__AuthorName">@comment.Author.FirstName @comment.Author.LastName - @comment.Author.Email</h5>
+                                    if (comment.Anonymous)
+                                    {
+                                        <h5 class="Comment__AuthorName">@comment.Author.FirstName @comment.Author.LastName - @comment.Author.Email - @SharedLocalizer["Anonymous"]</h5>
+
+                                    }
+                                    else
+                                    {
+                                        <h5 class="Comment__AuthorName">@comment.Author.FirstName @comment.Author.LastName - @comment.Author.Email</h5>
+                                    }
                                 }
                                 else
                                 {
@@ -159,6 +167,11 @@
                                             <label class="control-label">Reply</label>
                                             <textarea name="text" class="form-control" rows="3"></textarea>
                                         </div>
+                                        @if (User.IsInRole("Student"))
+                                        {
+                                            <label class="control-label">@SharedLocalizer["Anonymous"]</label>
+                                            <input type="checkbox" name="anonymous" value="true"/>
+                                        }
                                         <div class="form-group">
                                             <input type="submit" value="@SharedLocalizer["CommentSend"]" class="btn btn-primary">
                                         </div>
@@ -182,8 +195,11 @@
                                 <textarea name="text" class="form-control" rows="3"></textarea>
                             </div>
 
-                            <label class="control-label">Anonymous</label>
-                            <input type="checkbox" name="anonymous" value="true"/>
+                            @if (User.IsInRole("Student"))
+                            {
+                                <label class="control-label">@SharedLocalizer["Anonymous"]</label>
+                                <input type="checkbox" name="anonymous" value="true"/>
+                            }
 
                             <div class="form-group">
                                 <input type="submit" value="Send" class="btn btn-primary"/>

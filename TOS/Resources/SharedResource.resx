@@ -83,4 +83,7 @@
     <data name="Logout" xml:space="preserve">
         <value>Odhlásit</value>
     </data>
+    <data name="Anonymous" xml:space="preserve">
+        <value>Anonymní</value>
+    </data>
 </root>

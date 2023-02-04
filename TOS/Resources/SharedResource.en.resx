@@ -90,4 +90,7 @@
     <data name="Logout" xml:space="preserve">
         <value>Logout</value>
     </data>
+    <data name="Anonymous" xml:space="preserve">
+        <value>Anonymous</value>
+    </data>
 </root>
