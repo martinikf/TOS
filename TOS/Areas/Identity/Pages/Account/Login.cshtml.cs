@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TOS.Data;
 using TOS.Models;
+using TOS.Services;
 
 namespace TOS.Areas.Identity.Pages.Account
 {
@@ -162,7 +163,7 @@ namespace TOS.Areas.Identity.Pages.Account
             {
                 //User not found in database -> register -> sign in 
                 ApplicationUser createdUser;
-                if ((createdUser = CreateLdapUser()) != null)
+                if ((createdUser = await CreateLdapUser()) != null)
                 {
                     successfulSignIn = await LdapSignIn(createdUser);
                 }
@@ -216,7 +217,7 @@ namespace TOS.Areas.Identity.Pages.Account
             */
         }
 
-        private ApplicationUser CreateLdapUser()
+        private async Task<ApplicationUser> CreateLdapUser()
         {
             try
             {
@@ -227,11 +228,11 @@ namespace TOS.Areas.Identity.Pages.Account
                 const string stagServicesUrl = "https://stagservices.upol.cz/ws/services";
                 
                 var studentReq = stagServicesUrl + "/rest2/users/getOsobniCislaByExternalLogin?login=" + Input.Username;
-                if ((userStagId = GetUserStagId(studentReq)).Length >= 1) return CreateUser(userStagId, true);
+                if ((userStagId = GetUserStagId(studentReq)).Length >= 1) return await CreateUser(userStagId, true);
                 
                 //Student ID not found -> try teacher
                 var teacherReq = stagServicesUrl + "/rest2/users/getUcitIdnoByExternalLogin?login=" + Input.Username;
-                if ((userStagId = GetUserStagId(teacherReq)).Length >= 1)  return CreateUser(userStagId, false);
+                if ((userStagId = GetUserStagId(teacherReq)).Length >= 1)  return await CreateUser(userStagId, false);
                 
                 //Couldn't find any userStagId
                 return null;
@@ -242,7 +243,7 @@ namespace TOS.Areas.Identity.Pages.Account
             }
         }
 
-        private ApplicationUser CreateUser(string osCislo, bool student)
+        private async Task<ApplicationUser> CreateUser(string osCislo, bool student)
         {
             var roleString = student ? "Student" : "Teacher";
             var req = student
@@ -254,10 +255,11 @@ namespace TOS.Areas.Identity.Pages.Account
             var lastnameLowered = info.Item2[..1] + info.Item2[1..].ToLower();
             var user = Seed.CreateUser(info.Item1, lastnameLowered, info.Item3, Input.Username,true, null, _context);
             
-            var roleToInsert = _context.Roles.FirstOrDefault(x => x.Name.Equals(roleString));
-            if (roleToInsert is null) throw new Exception("Role that should exist does not exist: " + roleString);
+            //var roleToInsert = _context.Roles.FirstOrDefault(x => x.Name.Equals(roleString));
+            //if (roleToInsert is null) throw new Exception("Role that should exist does not exist: " + roleString);
             
-            Seed.CreateUserRole(user, roleToInsert, _context);
+            //Seed.CreateUserRole(user, roleToInsert, _context);
+            await RoleHelper.AssignRoles(user, student ? Role.Student : Role.Teacher, _context);
 
             return user;
         }

@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using TOS.Models;
+using TOS.Services;
 
 namespace TOS.Data;
 
 public static class Seed
 {
-    public static void InitSeed(WebApplication app)
+    public static async void InitSeed(WebApplication app)
     {
         using var scope = app.Services.CreateScope();
         var ctx = scope.ServiceProvider.GetService<ApplicationDbContext>();
@@ -15,6 +16,39 @@ public static class Seed
         var teacherRole = CreateRole("Teacher", ctx);
         var studentRole = CreateRole("Student", ctx);
         var externalRole = CreateRole("External", ctx);
+        //Topics
+        CreateRole("CreateTopic", ctx);
+        CreateRole("EditTopic", ctx);
+        CreateRole("EditProposedTopic", ctx);
+        CreateRole("DeleteTopic", ctx);
+        CreateRole("DeleteProposedTopic", ctx);
+        CreateRole("EditAnyTopic", ctx);
+        CreateRole("DeleteAnyTopic", ctx);
+        CreateRole("ProposeTopic", ctx);
+        CreateRole("InterestTopic", ctx);
+        CreateRole("AssignedToTopic", ctx);
+        CreateRole("SupervisorToTopic", ctx);
+        
+        //Groups
+        CreateRole("CreateGroup", ctx);
+        CreateRole("EditGroup", ctx);
+        CreateRole("DeleteGroup", ctx);
+        CreateRole("EditAnyGroup", ctx);
+        CreateRole("DeleteAnyGroup", ctx);
+        CreateRole("AssignedToGroup", ctx);
+        //Comments
+        CreateRole("CreateComment", ctx);
+        CreateRole("CreateAnonymousComment", ctx);
+        CreateRole("DeleteComment", ctx);
+        CreateRole("DeleteAnyComment", ctx);
+        //Administration
+        CreateRole("CreateProgramme", ctx);
+        CreateRole("EditProgramme", ctx);
+        CreateRole("DeleteProgramme", ctx);
+        CreateRole("AssignRoles", ctx);
+
+
+
 
         //Create users
         var adminUser = CreateUser("Admin", "User", "admin@tos.tos","admin@tos.tos", true, "password", ctx);
@@ -23,11 +57,18 @@ public static class Seed
         var externalUser = CreateUser("External", "User", "external@tos.tos", "external@tos.tos",true, "password", ctx);
 
         //Add roles
+        /*
         CreateUserRole(adminUser, adminRole, ctx);
         CreateUserRole(teacherUser, teacherRole, ctx);
         CreateUserRole(studentUser, studentRole, ctx);
         CreateUserRole(externalUser, externalRole, ctx);
+        */
 
+        await RoleHelper.AssignRoles(adminUser, Role.Administrator, ctx);
+        await RoleHelper.AssignRoles(teacherUser, Role.Teacher, ctx);
+        await RoleHelper.AssignRoles(studentUser, Role.Student, ctx);
+        await RoleHelper.AssignRoles(externalUser, Role.External, ctx);
+        
         //Create default Groups: Unassigned, Bachelor, Master for topics
         var unassignedGroup = CreateGroup("Nezařazeno", "Unassigned", adminUser, true, false, ctx);
         var bachelorGroup = CreateGroup("Bakalářská","Bachelor", adminUser, true, true, ctx);
