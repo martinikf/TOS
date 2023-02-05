@@ -35,22 +35,37 @@ public class AdministrationController : Controller
     }
     
     [HttpPost]
-    public async Task<IActionResult> CreateProgramme(Programme programme)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreateProgramme([Bind("ProgrammeId,Name,NameEng,Active,Type")] Programme programme, string typeDropdown)
     {
+        programme.Type = typeDropdown.Equals("Bachelor") ? ProgramType.Bachelor : ProgramType.Master;
+        
         await _context.Programmes.AddAsync(programme);
+        await _context.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
     }
     
-    public IActionResult EditProgramme(int? id)
+    public async Task<IActionResult> EditProgramme(int? id)
     {
+        var p =  await _context.Programmes.FirstOrDefaultAsync(x => x.ProgrammeId == id);
+
+        if (p is null) return NotFound();
+
+        ViewData["IsMaster"] = (bool)(p.Type == ProgramType.Master);
         
+        return View(p);
     }
 
     [HttpPost]
-    public async Task<IActionResult> EditProgramme(Programme programme)
+    public async Task<IActionResult> EditProgramme([Bind("ProgrammeId,Name,NameEng,Active,Type")]Programme programme, string typeDropdown)
     {
+        programme.Type = typeDropdown.Equals("Bachelor") ? ProgramType.Bachelor : ProgramType.Master;
         
+        _context.Update(programme);
+        await _context.SaveChangesAsync();
+        
+        return RedirectToAction(nameof(Index));
     }
     
     
@@ -63,6 +78,6 @@ public class AdministrationController : Controller
     
     public async Task<IActionResult> EditRoles(int? id)
     {
-        
+        return null;
     }
 }

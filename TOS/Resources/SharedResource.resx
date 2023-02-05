@@ -89,4 +89,10 @@
     <data name="Deleted comment" xml:space="preserve">
         <value>Smazaný komentář</value>
     </data>
+    <data name="Bachelor" xml:space="preserve">
+        <value>Bakalář</value>
+    </data>
+    <data name="Master" xml:space="preserve">
+        <value>Magistr</value>
+    </data>
 </root>

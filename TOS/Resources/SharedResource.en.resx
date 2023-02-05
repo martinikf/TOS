@@ -96,4 +96,10 @@
     <data name="Deleted comment" xml:space="preserve">
         <value>Deleted comment</value>
     </data>
+    <data name="Bachelor" xml:space="preserve">
+        <value>Bachelor</value>
+    </data>
+    <data name="Master" xml:space="preserve">
+        <value>Master</value>
+    </data>
 </root>

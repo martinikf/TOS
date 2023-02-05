@@ -13,8 +13,9 @@
 
 @foreach (var programme in Model)
 {
-    <h3>@programme.Name - @programme.Active</h3>
-    <h3>@programme.NameEng</h3>
-                          
-    <a asp-controller="Administration" asp-action="EditProgramme" asp-route-id="@programme.ProgrammeId">Edit</a>
+    <span>
+        @programme.Name - @programme.Active - @programme.NameEng - @programme.Type.ToString() - <a asp-controller="Administration" asp-action="EditProgramme" asp-route-id="@programme.ProgrammeId">Edit</a>
+    </span>
+    <br/>
+  
 }
