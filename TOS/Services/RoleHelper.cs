@@ -72,6 +72,12 @@ public static class RoleHelper
                 throw new ArgumentOutOfRangeException(nameof(role), role, null);
         }
         
+        //Delete users current roles
+        var userRoles = ctx.UserRoles.Where(x => x.UserId == user.Id);
+        ctx.UserRoles.RemoveRange(userRoles);
+        await ctx.SaveChangesAsync();
+        
+        //Add new roles
         foreach (var r in roles)
         {
             var rId = await ctx.Roles.FirstAsync(x => x.Name!.ToLower().Equals(r.ToLower()));
@@ -86,6 +92,7 @@ public static class RoleHelper
             ctx.UserRoles.Add(ur);
             await ctx.SaveChangesAsync();
         }
+        
         return true;
     }
 }

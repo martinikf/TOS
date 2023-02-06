@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using TOS.Data;
 using TOS.Models;
+using TOS.Services;
 
 namespace TOS.Controllers;
 
@@ -68,6 +69,17 @@ public class AdministrationController : Controller
         return RedirectToAction(nameof(Index));
     }
     
+    public async Task<IActionResult> DeleteProgramme(int? id)
+    {
+        //Find programme
+        var p = await _context.Programmes.FirstAsync(x => x.ProgrammeId.Equals(id));
+        //Delete programme
+        _context.Programmes.Remove(p);
+        //Save changes
+        await _context.SaveChangesAsync();
+        
+        return RedirectToAction(nameof(Programmes));
+    }
     
     public async Task<IActionResult> Users()
     {
@@ -78,6 +90,30 @@ public class AdministrationController : Controller
     
     public async Task<IActionResult> EditRoles(int? id)
     {
-        return null;
+        var user = await _context.Users.FirstAsync(x => x.Id.Equals(id));
+        ViewData["Student"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(x => x.Name.Equals("Student")).Id));
+        ViewData["Teacher"] =await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(x => x.Name.Equals("Teacher")).Id));
+        ViewData["Administrator"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(x => x.Name.Equals("Administrator")).Id));
+        ViewData["External"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(x => x.Name.Equals("External")).Id));
+        
+        return View(user);
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> EditRoles(int id, string roleGroup)
+    {
+        var user = await _context.Users.FirstAsync(x => x.Id.Equals(id));
+        
+        var role = roleGroup switch
+        {
+            "Student" => Role.Student,
+            "Teacher" => Role.Teacher,
+            "Administrator" => Role.Administrator,
+            "External" => Role.External,
+            _ => throw new Exception()
+        };
+        
+        await RoleHelper.AssignRoles(user, role, _context);
+        return RedirectToAction(nameof(Users));
     }
 }

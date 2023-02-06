@@ -1,4 +1,9 @@
-﻿@model TOS.Models.ApplicationUser
+﻿@using TOS.Resources
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model TOS.Models.ApplicationUser
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
+
 
 @{
     ViewData["Title"] = "Administration - Edit Roles";
@@ -8,3 +13,44 @@
 
 <h3>Edit Roles</h3>
 
+<form asp-action="EditRoles">
+    <div>
+        @if ((bool) ViewData["Student"]!)
+        {
+            <input type="radio" name="roleGroup" value="Student" checked=""/>
+        }
+        else{
+            <input type="radio" name="roleGroup" value="Student"/>
+        }
+        <label>@SharedLocalizer["Student"]</label>
+        
+        @if ((bool) ViewData["Teacher"]!)
+        {
+            <input type="radio" name="roleGroup" value="Teacher" checked=""/>
+        }
+        else{
+            <input type="radio" name="roleGroup" value="Teacher"/>
+        }
+        <label>@SharedLocalizer["Teacher"]</label>
+        
+        @if ((bool) ViewData["External"]!)
+        {
+            <input type="radio" name="roleGroup" value="External" checked=""/>
+        }
+        else{
+            <input type="radio" name="roleGroup" value="External"/>
+        }
+        <label>@SharedLocalizer["External"]</label>
+        
+        @if ((bool) ViewData["Administrator"]!)
+        {
+            <input type="radio" name="roleGroup" value="Administrator" checked=""/>
+        }
+        else{
+            <input type="radio" name="roleGroup" value="Administrator"/>
+        }
+        <label>@SharedLocalizer["Administrator"]</label>
+    </div>
+    
+    <input type="submit" value="EditRoles" class="btn btn-primary" />
+</form>

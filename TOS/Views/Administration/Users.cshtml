@@ -9,11 +9,6 @@
 @foreach (var user in Model)
 {
     <p>
-        @user.FirstName
-        @user.LastName
-        @user.Email
+        @user.FirstName - @user.LastName - @user.Email - <a asp-controller="Administration" asp-action="EditRoles" asp-route-id="@user.Id">Edit Roles</a>
     </p>
-    
-    <a asp-controller="Administration" asp-action="EditRoles" asp-route-id="@user.Id">Edit</a>
-   
 }
