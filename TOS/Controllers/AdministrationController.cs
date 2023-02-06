@@ -91,10 +91,7 @@ public class AdministrationController : Controller
     public async Task<IActionResult> EditRoles(int? id)
     {
         var user = await _context.Users.FirstAsync(x => x.Id.Equals(id));
-        ViewData["Student"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(x => x.Name.Equals("Student")).Id));
-        ViewData["Teacher"] =await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(x => x.Name.Equals("Teacher")).Id));
-        ViewData["Administrator"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(x => x.Name.Equals("Administrator")).Id));
-        ViewData["External"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(x => x.Name.Equals("External")).Id));
+        ViewData["Roles"] = new List<string> {"Student", "Teacher", "Administrator", "External"};
         
         return View(user);
     }
