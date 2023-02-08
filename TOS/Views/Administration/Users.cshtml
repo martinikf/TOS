@@ -6,6 +6,12 @@
 
 <h1>Administration</h1>
 
+<form asp-action="Users" method="get">
+    <input type="text" name="searchString" value="@ViewData["searchString"]"/>
+    <input type="submit" value="Search"/>
+</form>
+
+
 @foreach (var user in Model)
 {
     <p>

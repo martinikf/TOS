@@ -36,7 +36,8 @@ namespace TOS
             if (searchString.Length > 2)
             {
                 ViewData["searchString"] = searchString;
-                return View(await applicationDbContext.Where(x => x.Name.Contains(searchString) || x.NameEng.Contains(searchString)).ToListAsync());
+                searchString = searchString.ToLower();
+                return View(await applicationDbContext.Where(x => x.Name.ToLower().Contains(searchString) || x.NameEng.ToLower().Contains(searchString)).ToListAsync());
             }
             
             return View(await applicationDbContext.ToListAsync());

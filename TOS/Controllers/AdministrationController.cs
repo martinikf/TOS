@@ -81,11 +81,23 @@ public class AdministrationController : Controller
         return RedirectToAction(nameof(Programmes));
     }
     
-    public async Task<IActionResult> Users()
+    public async Task<IActionResult> Users(string searchString = "")
     {
-        var users = await _context.Users.ToListAsync();
-        
-        return View(users);
+        var users =  _context.Users;
+
+        if (searchString.Length > 2)
+        {
+            ViewData["searchString"] = searchString;
+            searchString = searchString.ToLower();
+
+            return View( await users.Where(x=>x.FirstName!.ToLower().Contains(searchString) 
+                                              || x.LastName!.ToLower().Contains(searchString) ||
+                                              x.Email!.ToLower().Contains(searchString)).ToListAsync());
+        }
+        else
+        {
+            return View(await users.ToListAsync());
+        }
     }
     
     public async Task<IActionResult> EditRoles(int? id)
