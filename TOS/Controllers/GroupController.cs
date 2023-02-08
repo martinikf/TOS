@@ -20,7 +20,7 @@ namespace TOS
         }
 
         // GET: Group
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString = "")
         {
             var applicationDbContext = _context.Groups.Where(x=> !x.Selectable && x.Visible).Include(x => x.Creator);
             
@@ -32,6 +32,13 @@ namespace TOS
                 if(unassignedGroup is null) throw new Exception("Unassigned group should exist!");
                 list.Insert(0, unassignedGroup);
             }
+
+            if (searchString.Length > 2)
+            {
+                ViewData["searchString"] = searchString;
+                return View(await applicationDbContext.Where(x => x.Name.Contains(searchString) || x.NameEng.Contains(searchString)).ToListAsync());
+            }
+            
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -61,8 +68,6 @@ namespace TOS
         }
 
         // POST: Group/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("GroupId,Name,NameEng,CreatorId,Selectable,Visible")] Group group)
@@ -93,8 +98,6 @@ namespace TOS
         }
 
         // POST: Group/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("GroupId,Name,CreatorId,Selectable,Visible")] Group @group)

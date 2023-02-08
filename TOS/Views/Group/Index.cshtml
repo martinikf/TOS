@@ -10,14 +10,16 @@
 
 <h1>@SharedLocalizer["GroupsHeading"]</h1>
 
-@if (User.IsInRole("Teacher"))
-{
-    <p>
-        <a asp-action="Create" >Create New</a>
-    </p>
-}
 
-TODO: Search input here |--------------------------------|
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<form asp-action="Index" method="get">
+    <input type="text" name="searchString" value="@ViewData["searchString"]"/>
+    <input type="submit" value="Search"/>
+</form>
+
 <table class="table">
     <thead>
         <tr>
