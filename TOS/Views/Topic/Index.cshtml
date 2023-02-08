@@ -10,21 +10,48 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>@ViewData["TopicsIndexHeading"]</h1>
-@if (@ViewData["TopicsIndexGroupId"] != null && User.IsInRole("Teacher"))
+<h1>@ViewData["TopicsIndexGroupName"]</h1>
+@if (@ViewData["TopicsIndexGroupId"] != null)
 {
     <a asp-controller="Group" asp-action="Edit" asp-route-id="@ViewData["TopicsIndexGroupId"]">Edit group</a>
 }
-@if (User.IsInRole("Teacher"))
-{
-    <p>
-        <a asp-action="Create" asp-route-groupName="@ViewData["TopicsIndexGroupName"]">Create New Topic</a>
-    </p>
-}
 
-TODO: Filtering, sorting, searching here |-----------------------------------|
+<p>
+    <a asp-action="Create" asp-route-groupName="@ViewData["TopicsIndexGroupName"]">Create New Topic</a>
+</p>
 
-@foreach (Topic item in Model) {
+<form asp-action="Index" method="get">
+    <input type="hidden" name="groupName" value="@ViewData["TopicsIndexGroupName"]"/>
+    <input type="text" name="searchString" placeholder="Search string..."/>
+    <label>Show taken topics</label>
+    @if((bool) ViewData["showTakenTopics"]!)
+    {
+        <input name="showTakenTopics" type="checkbox" value="true" checked/>
+    }
+    else
+    {
+        <input name="showTakenTopics" type="checkbox" value="true"/>
+    }
+    <select name="programmeName">
+        <option value="">@SharedLocalizer["All programmes"]</option>
+        @foreach (var programme in (List<Programme>) ViewData["Programmes"]!)
+        {
+            @if ((string) ViewData["selectedProgramme"]! == programme.NameEng)
+            {
+                <option value="@programme.NameEng" selected>@SelectStringByLanguage(programme.Name, programme.NameEng)</option>
+            }
+            else
+            {
+                <option value="@programme.NameEng">@SelectStringByLanguage(programme.Name, programme.NameEng)</option>
+            }
+        }
+    </select>
+    <input type="submit" value="Search"/>
+</form>
+
+<hr/>
+
+@foreach (var item in Model) {
     <div class="topic">
         
         <div class="topic__name">

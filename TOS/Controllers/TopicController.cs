@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging;
 using TOS.Data;
 using TOS.Models;
 using TOS.Resources;
@@ -29,67 +30,70 @@ namespace TOS.Controllers
         }
 
         // GET: Topic
-        public async Task<IActionResult> Index(string? groupName)
+        public async Task<IActionResult> Index(string groupName = "MyTopics", string programmeName = "", string searchString = "", bool showTakenTopics = false)
         {
-
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName!.Equals(User.Identity!.Name));
+            //If user is not logged in -> show bachelor topics as default
+            if (groupName is "MyTopics" && user != null) groupName = "Bachelor";
+            
+            var topicsToShow = new List<Topic>();
             Group? group = null;
-            //Used for showing edit button for not selectable groups (teacher created groups)
-            ViewData["TopicsIndexGroupId"] = null;
+            ViewData["TopicsIndexGroupName"] = groupName;
+            ViewData["showTakenTopics"] = showTakenTopics;
+            ViewData["selectedProgramme"] = programmeName;
+      
             
-            if (groupName != null) group = await _context.Groups.FirstOrDefaultAsync(x => x.NameEng.Equals(groupName));
-            
-            if (group == null)
+            if (groupName is not "MyTopics")
             {
-                if (groupName != null && groupName.Equals("MyTopics"))
-                {
-                    ViewData["TopicsIndexHeading"] = _sharedLocalizer["My topics"];
-                    ViewData["TopicsIndexGroupName"] = null;
-                    
-                    //get logged in user as ApplicationUser
-                    var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName.Equals(User.Identity.Name));
-
-                    if (user is null) throw new Exception();
-                    
-                    List<Topic> topics = new();
-
-                    topics.AddRange(user.AssignedTopics);
-                    topics.AddRange(user.CreatedTopics);
-                    topics.AddRange(user.SupervisedTopics);
-                    topics.AddRange(user.UserInterestedTopics.Select(t => t.Topic));
-
-                    return View(topics);
-
-                }
-                else
-                {
-                    ViewData["TopicsIndexHeading"] = _sharedLocalizer["Topics"];
-                    ViewData["TopicsIndexGroupName"] = null;
-
-                    //If groupId wasn't provided or groupId is invalid -> Display all Bachelor and Master topics
-                    var applicationDbContext = _context.Topics.Where(x => x.Group.Selectable && x.Group.Visible)
-                        .Include(t => t.AssignedStudent).Include(t => t.Creator)
-                        .Include(t => t.Group).Include(t => t.Supervisor);
-                    return View(await applicationDbContext.ToListAsync());
-                }
-            }
-            else
-            {
-                ViewData["TopicsIndexHeading"] = _sharedLocalizer["Index heading for: " + groupName];
+                group = await _context.Groups.FirstAsync(x => x.NameEng.Equals(groupName));
+                topicsToShow = await _context.Topics.Where(x => x.Group.Equals(group)).ToListAsync();
                 
-                //Shows edit button only for not selectable groups
-                if (!group.Selectable)
-                {
+                //Used for showing edit button for custom groups
+                if(groupName != "Bachelor" && groupName != "Master")
                     ViewData["TopicsIndexGroupId"] = group.GroupId;
-                    ViewData["TopicsIndexHeading"] = _sharedLocalizer["Group of topics for:"].Value + " " + groupName;
-                }
-
-                ViewData["TopicsIndexGroupName"] = group.NameEng;
-                
-                var applicationDbContext = _context.Topics.Where(x => x.Group.NameEng.Equals(groupName) && x.Visible)
-                    .Include(t => t.AssignedStudent).Include(t => t.Creator)
-                    .Include(t => t.Group).Include(t => t.Supervisor);
-                return View(await applicationDbContext.ToListAsync());
+               
             }
+            else if (groupName is "MyTopics")
+            {
+                topicsToShow = await _context.Topics.Where(x=>
+                        x.Creator.Equals(user) || 
+                        ( x.Supervisor != null && x.Supervisor.Equals(user)) ||
+                        ( x.AssignedStudent != null && x.AssignedStudent.Equals(user)) ||
+                        x.UserInterestedTopics.Any(y => y.User.Equals(user)))
+                    .ToListAsync();
+            }
+            
+            if (searchString.Length > 3)
+            {
+                searchString = searchString.ToLower();
+                topicsToShow = topicsToShow.Where(x =>
+                    x.Name.ToLower().Contains(searchString) || x.NameEng.ToLower().Contains(searchString) ||
+                    (x.Supervisor != null && (x.Supervisor.FirstName!.ToLower().Contains(searchString) ||
+                                              x.Supervisor.LastName!.ToLower().Contains(searchString))))
+                    .ToList();
+            }
+            
+            if (!showTakenTopics)
+            {
+                topicsToShow = topicsToShow.Where(x => x.AssignedStudent == null).ToList();
+            }
+
+            if (programmeName.Length > 0)
+            {
+                var programme = _context.Programmes.First(x => x.NameEng.Equals(programmeName));
+                topicsToShow =
+                    topicsToShow.Where(x => x.TopicRecommendedPrograms.Any(y => y.Programme.Equals(programme))).ToList();
+                ViewData["SelectedProgramme"] = programmeName;
+            }
+
+            ViewData["Programmes"] = groupName switch
+            {
+                "Bachelor" => _context.Programmes.Where(x => x.Type == ProgramType.Bachelor).ToList(),
+                "Master" => _context.Programmes.Where(x => x.Type == ProgramType.Master).ToList(),
+                _ => new List<Programme>()
+            };
+
+            return View(topicsToShow);
         }
 
         // GET: Topic/Details/5
@@ -192,8 +196,6 @@ namespace TOS.Controllers
         }
 
         // POST: Topic/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic, int[] programmes, List<IFormFile> files)
@@ -266,8 +268,6 @@ namespace TOS.Controllers
         }
 
         // POST: Topic/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name,DescriptionShort,DescriptionLong,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic, int[] programmes, List<IFormFile> files)
@@ -396,7 +396,6 @@ namespace TOS.Controllers
 
             return RedirectToAction("Details", new { id = id });
         }
-
 
         public async Task<bool> CreateFiles(Topic topic, ApplicationUser user, List<IFormFile> files)
         {
