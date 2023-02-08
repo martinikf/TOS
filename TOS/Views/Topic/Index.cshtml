@@ -10,19 +10,19 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>@ViewData["TopicsIndexGroupName"]</h1>
-@if (@ViewData["TopicsIndexGroupId"] != null)
+<h1>@SharedLocalizer[(string)ViewData["topicsIndexGroupName"]!+ " " + "theses" ]</h1>
+@if (@ViewData["topicsIndexGroupId"] != null)
 {
-    <a asp-controller="Group" asp-action="Edit" asp-route-id="@ViewData["TopicsIndexGroupId"]">Edit group</a>
+    <a asp-controller="Group" asp-action="Edit" asp-route-id="@ViewData["topicsIndexGroupId"]">Edit group</a>
 }
 
 <p>
-    <a asp-action="Create" asp-route-groupName="@ViewData["TopicsIndexGroupName"]">Create New Topic</a>
+    <a asp-action="Create" asp-route-groupName="@ViewData["topicsIndexGroupName"]">Create New Topic</a>
 </p>
 
 <form asp-action="Index" method="get">
-    <input type="hidden" name="groupName" value="@ViewData["TopicsIndexGroupName"]"/>
-    <input type="text" name="searchString" placeholder="Search string..."/>
+    <input type="hidden" name="groupName" value="@ViewData["topicsIndexGroupName"]"/>
+    <input type="text" name="searchString" placeholder="Search string..." value="@ViewData["searchString"]"/>
     <label>Show taken topics</label>
     @if((bool) ViewData["showTakenTopics"]!)
     {
@@ -34,7 +34,7 @@
     }
     <select name="programmeName">
         <option value="">@SharedLocalizer["All programmes"]</option>
-        @foreach (var programme in (List<Programme>) ViewData["Programmes"]!)
+        @foreach (var programme in (List<Programme>) ViewData["programmes"]!)
         {
             @if ((string) ViewData["selectedProgramme"]! == programme.NameEng)
             {

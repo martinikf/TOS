@@ -80,14 +80,14 @@ public static class Seed
         //Bachelor
         var bcITProgramme = CreateProgramme("Informační technologie","Information Technology", true, ProgramType.Bachelor, ctx);
         var bcInfProgramme = CreateProgramme("Informatika", "Informatics",  true, ProgramType.Bachelor, ctx);
-        var bcSwProgramme = CreateProgramme("Vývoj software","Software Development", true, ProgramType.Bachelor, ctx);
-        var bcGeneralInfProgramme = CreateProgramme("Obecná informatika","General Informatics", true, ProgramType.Bachelor, ctx);
+        var bcSwProgramme = CreateProgramme("Informatika - Vývoj software","Informatics - Software Development", true, ProgramType.Bachelor, ctx);
+        var bcGeneralInfProgramme = CreateProgramme("Informatika - Obecná informatika","Informatics - General Informatics", true, ProgramType.Bachelor, ctx);
         //Master
-        var mcInfProgramme = CreateProgramme("Informatika" , "Informatics", true, ProgramType.Master, ctx);
+        var mcInfProgramme = CreateProgramme("Obecná informatika" , "General informatics", true, ProgramType.Master, ctx);
         var mcSwProgramme = CreateProgramme("Vývoj software","Software Development", true, ProgramType.Master, ctx);
-        var mcGeneralInfProgramme = CreateProgramme("Obecná informatika","General Informatics", true, ProgramType.Master, ctx);
-        var mcAIProgramme = CreateProgramme("Úmělá inteligence","Artificial Intelligence", true, ProgramType.Master, ctx);
-        var mcITProgramme = CreateProgramme("Informační technologie", "Information Technlogy", true, ProgramType.Master, ctx);
+        var mcGeneralInfProgramme = CreateProgramme("Úmělá inteligence","Artificial intelligence", true, ProgramType.Master, ctx);
+        CreateProgramme("Počítačové systémy a technologie","Computer systems and technologies", true, ProgramType.Master, ctx);
+
         
         //Create topics
         var tosTopic = CreateTopic("TOS", null, "Krátký popis", "System for offering topics of diploma theses", "Dlouhý popis","Longer description shown in details.", true, teacherUser,

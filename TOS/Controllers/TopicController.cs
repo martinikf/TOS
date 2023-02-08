@@ -38,9 +38,10 @@ namespace TOS.Controllers
             
             var topicsToShow = new List<Topic>();
             Group? group = null;
-            ViewData["TopicsIndexGroupName"] = groupName;
+            ViewData["topicsIndexGroupName"] = groupName;
             ViewData["showTakenTopics"] = showTakenTopics;
             ViewData["selectedProgramme"] = programmeName;
+            ViewData["searchString"] = searchString;
       
             
             if (groupName is not "MyTopics")
@@ -50,7 +51,7 @@ namespace TOS.Controllers
                 
                 //Used for showing edit button for custom groups
                 if(groupName != "Bachelor" && groupName != "Master")
-                    ViewData["TopicsIndexGroupId"] = group.GroupId;
+                    ViewData["topicsIndexGroupId"] = group.GroupId;
                
             }
             else if (groupName is "MyTopics")
@@ -83,10 +84,11 @@ namespace TOS.Controllers
                 var programme = _context.Programmes.First(x => x.NameEng.Equals(programmeName));
                 topicsToShow =
                     topicsToShow.Where(x => x.TopicRecommendedPrograms.Any(y => y.Programme.Equals(programme))).ToList();
+                
                 ViewData["SelectedProgramme"] = programmeName;
             }
 
-            ViewData["Programmes"] = groupName switch
+            ViewData["programmes"] = groupName switch
             {
                 "Bachelor" => _context.Programmes.Where(x => x.Type == ProgramType.Bachelor).ToList(),
                 "Master" => _context.Programmes.Where(x => x.Type == ProgramType.Master).ToList(),

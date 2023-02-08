@@ -95,4 +95,10 @@
     <data name="Master" xml:space="preserve">
         <value>Magistr</value>
     </data>
+    <data name="All programmes" xml:space="preserve">
+        <value>Všechny programy</value>
+    </data>
+    <data name="Master theses" xml:space="preserve">
+        <value>Magisterské práce</value>
+    </data>
 </root>

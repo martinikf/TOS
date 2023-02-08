@@ -102,4 +102,10 @@
     <data name="Master" xml:space="preserve">
         <value>Master</value>
     </data>
+    <data name="All programmes" xml:space="preserve">
+        <value>All programmes</value>
+    </data>
+    <data name="Master theses" xml:space="preserve">
+        <value>Master theses</value>
+    </data>
 </root>
