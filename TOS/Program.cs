@@ -59,6 +59,8 @@ builder.Services.AddSingleton<SmtpEmailSenderSettings, SmtpEmailSenderSettings>(
     });
 builder.Services.AddSingleton<IEmailSender, SmtpEmailSender>();
 
+builder.Services.AddTransient<INotificationManager, NotificationManager>();
+
 var app = builder.Build();
 
 app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
