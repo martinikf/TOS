@@ -272,10 +272,7 @@
     }
 }
 
-@if (User.IsInRole("Teacher"))
-{
-    <div>
-        <a asp-action="Edit" asp-route-id="@Model?.TopicId">Edit</a> |
-         <a asp-action="Delete" asp-route-id="@Model?.TopicId">Delete</a>
-    </div>
-}
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.TopicId">Edit</a> |
+     <a asp-action="Delete" asp-route-id="@Model?.TopicId">Delete</a>
+</div>

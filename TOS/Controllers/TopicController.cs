@@ -245,10 +245,9 @@ namespace TOS.Controllers
             {
                 return NotFound();
             }
-            ViewData["AssignedId"] = new SelectList(_context.Users, "Id", "Email", topic.AssignedId);
-            ViewData["CreatorId"] = new SelectList(_context.Users, "Id", "Email", topic.CreatorId);
-            ViewData["GroupId"] = new SelectList(_context.Groups.Where(x=>x.Selectable || topic.GroupId.Equals(x.GroupId)), "GroupId", "Name", topic.GroupId);
-            ViewData["SupervisorId"] = new SelectList(_context.Users, "Id", "Email", topic.SupervisorId);
+            ViewData["Assigned"] = new SelectList(_context.Users, "Id", "Email", topic.AssignedId);
+            ViewData["Group"] = new SelectList(_context.Groups.Where(x=>x.Selectable || topic.GroupId.Equals(x.GroupId)), "GroupId", "Name", topic.GroupId);
+            ViewData["Supervisor"] = new SelectList(_context.Users, "Id", "Email", topic.SupervisorId);
 
 
             ViewData["Programmes"] = await _context.Programmes
@@ -284,6 +283,9 @@ namespace TOS.Controllers
             if(topic.NameEng == "") topic.NameEng = topic.Name;
             if(topic.DescriptionShortEng == "") topic.DescriptionShortEng = topic.DescriptionShort;
             if(topic.DescriptionLongEng == "") topic.DescriptionLongEng = topic.DescriptionLong;
+            
+            //Why is this needed?
+            topic.Creator = await _context.Users.FirstAsync(x => x.Id.Equals(topic.CreatorId));
       
             _context.Update(topic);
             await _context.SaveChangesAsync();
