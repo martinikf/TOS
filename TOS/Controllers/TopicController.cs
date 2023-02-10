@@ -144,55 +144,20 @@ namespace TOS.Controllers
         // GET: Topic/Create
         public async Task<IActionResult> Create(string? groupName = null)
         {
-            SelectList? groupSelectList = null;
-            
-            //If culture is not cz -> display english group names; Used in SelectList
-            string nameString = "NameEng";
-            if (CultureInfo.CurrentCulture.Name.Contains("cz"))
-            {
-                nameString = "Name";
-            }
-            
-            if (groupName == null)
-            {
-                groupSelectList = new SelectList(_context.Groups.Where(x => x.Selectable), "GroupId", nameString);
-            }
-            else
-            {
-                //Creates selectList for groups when a valid groupName is provided
-                var groupProvided = _context.Groups.FirstOrDefault(x => x.NameEng.ToLower().Equals(groupName.ToLower()));
-                if (groupProvided == null) throw new Exception();
-                
-                if (!groupProvided.Selectable)
-                {
-                    //Block for subject
-                    groupSelectList = new SelectList(_context.Groups.Where(x => x.Equals(groupProvided)),
-                        "GroupId", nameString, groupProvided.GroupId);
-                }
-                else
-                {
-                    groupSelectList = new SelectList(_context.Groups.Where(x => x.Selectable), 
-                        "GroupId", nameString, groupProvided.GroupId);
-                   
-                }
-            }
+            var groupProvided = _context.Groups.FirstOrDefault(x => x.NameEng.ToLower().Equals(groupName.ToLower()));
 
-            ViewData["Programmes"] = await _context.Programmes.Where(x => x.Active).ToListAsync();
-            ViewData["Groups"] = groupSelectList;
-            var studentRole = await _context.Roles.FirstAsync(x => x.Name != null && x.Name.Equals("Student"));
-            ViewData["Students"] =
-                new SelectList(
-                    _context.Users.Where(user =>
-                        _context.UserRoles.Any(ur => ur.UserId == user.Id && ur.RoleId == studentRole.Id)), "Id",
-                    "Email");
+            //For custom groups, allow only the group provided
+            if (groupProvided != null && !groupProvided.Selectable)
+                ViewData["Groups"] = new List<Group> {groupProvided};
+            else //Else allow any selectable group
+                ViewData["Groups"] = await _context.Groups.Where(x => x.Selectable).ToListAsync();
             
-            //Selects all users with role Teacher
-            var user = await _context.Users.FirstAsync(x => User.Identity != null && x.UserName!.Equals(User.Identity.Name));
-            var teacherRole = await _context.Roles.FirstAsync(r => r.Name != null && r.Name.Equals("Teacher"));
-            ViewData["Supervisors"] =
-                new SelectList(
-                    _context.Users.Where(x =>
-                        _context.UserRoles.Any(y => y.UserId == x.Id && y.RoleId == teacherRole.Id)), "Id", "Email", user.Id);
+            ViewData["Programmes"] = await _context.Programmes.Where(x => x.Active).ToListAsync();
+            
+            ViewData["UsersToAssign"] = new SelectList(GetUsersWithRole("AssignedToTopic"), "Id", "Email");
+            
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ViewData["UsersToSupervise"] = new SelectList(GetUsersWithRole("SupervisorToTopic"), "Id", "Email", userId);
             
             return View();
         }
@@ -202,159 +167,99 @@ namespace TOS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic, int[] programmes, List<IFormFile> files)
         {
-            //Set eng fields to czech if not provided
-            if(topic.NameEng == "") topic.NameEng = topic.Name;
-            if(topic.DescriptionShortEng == "") topic.DescriptionShortEng = topic.DescriptionShort;
-            if(topic.DescriptionLongEng == "") topic.DescriptionLongEng = topic.DescriptionLong;
-            
-            topic.CreatorId = _context.Users.First(x => User.Identity != null && x.Email != null && x.Email.Equals(User.Identity.Name)).Id;
-            _context.Add(topic);
-            await _context.SaveChangesAsync();
-            
-            //Delete all recommended programmes
-            _context.TopicRecommendedProgrammes.RemoveRange(_context.TopicRecommendedProgrammes.Where(x=>x.TopicId.Equals(topic.TopicId)));
-            //Re-add new recommended programmes
-            foreach (var programme in programmes)
-            {
-                _context.TopicRecommendedProgrammes.Add(new()
-                {
-                    TopicId = topic.TopicId,
-                    ProgramId = programme
-                });
-            }
-
-            await _context.SaveChangesAsync();
-           
-            //Create uploaded files
-            var user = await _context.Users.FirstAsync(x => User.Identity != null && x.UserName!.Equals(User.Identity.Name));
-            await CreateFiles(topic, user, files);
-            
-            return RedirectToAction(nameof(Index));
+            return await TopicChange(topic, programmes, files, true);
         }
 
         // GET: Topic/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Topics == null)
+            Topic? topic;
+            if (id == null || (topic = await _context.Topics.FindAsync(id)) == null)
             {
                 return NotFound();
             }
-
-            var topic = await _context.Topics.FindAsync(id);
-            if (topic == null)
-            {
-                return NotFound();
-            }
-            ViewData["Assigned"] = new SelectList(_context.Users, "Id", "Email", topic.AssignedId);
+            
+            ViewData["UsersToAssign"] = new SelectList(GetUsersWithRole("AssignedToTopic"), "Id", "Email", topic.AssignedId);
             ViewData["Group"] = new SelectList(_context.Groups.Where(x=>x.Selectable || topic.GroupId.Equals(x.GroupId)), "GroupId", "Name", topic.GroupId);
-            ViewData["Supervisor"] = new SelectList(_context.Users, "Id", "Email", topic.SupervisorId);
+            ViewData["UsersToSupervise"] = new SelectList(GetUsersWithRole("SupervisorToTopic"), "Id", "Email", topic.SupervisorId);
 
-
-            ViewData["Programmes"] = await _context.Programmes
-                .Where(x => x.Active)
-                .Select(p => new Programme
+            var programmes = new HashSet<Programme>();
+            foreach (var programme in _context.Programmes.Where(x=>x.Active).ToList())
+            {
+                if (topic.TopicRecommendedPrograms.Any(x => x.ProgramId.Equals(programme.ProgrammeId)))
                 {
-                    ProgrammeId = p.ProgrammeId,
-                    Name = p.Name,
-                    Active = p.Active,
-                    Type = p.Type,
-                    NameEng = p.NameEng,
-                    Selected = _context.TopicRecommendedProgrammes
-                        .Any(x => x.TopicId.Equals(topic.TopicId) && x.ProgramId.Equals(p.ProgrammeId))
-                })
-                .ToListAsync();
+                    programme.Selected = true;
+                }
+                programmes.Add(programme);
+            }
+            ViewData["Programmes"] = programmes;
 
 
             return View(topic);
         }
-
+        
         // POST: Topic/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name,DescriptionShort,DescriptionLong,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic, int[] programmes, List<IFormFile> files)
         {
+            return await TopicChange(topic, programmes, files);
+        }
+
+        private async Task<IActionResult> TopicChange(Topic topic, IEnumerable<int> programmesId, List<IFormFile> files, bool isNew = false)
+        {
             var user = await _context.Users.FirstAsync(x => User.Identity != null && x.UserName!.Equals(User.Identity.Name));
 
-            if (id != topic.TopicId)
-            {
-                return NotFound();
-            }
-            
+            //Set eng fields to czech if not provided
             if(topic.NameEng == "") topic.NameEng = topic.Name;
             if(topic.DescriptionShortEng == "") topic.DescriptionShortEng = topic.DescriptionShort;
             if(topic.DescriptionLongEng == "") topic.DescriptionLongEng = topic.DescriptionLong;
             
-            //Why is this needed?
-            topic.Creator = await _context.Users.FirstAsync(x => x.Id.Equals(topic.CreatorId));
-      
-            _context.Update(topic);
+            if (isNew)
+            {
+                topic.CreatorId = user.Id;
+                topic.Creator = user;
+                //Create topic
+                _context.Add(topic);
+            }
+            else
+            {
+                //Why is this needed?
+                topic.Creator = await _context.Users.FirstAsync(x => x.Id.Equals(topic.CreatorId));
+                //Update topic
+                _context.Update(topic);
+            }
             await _context.SaveChangesAsync();
           
             //Delete all recommended programmes
             _context.TopicRecommendedProgrammes.RemoveRange(_context.TopicRecommendedProgrammes.Where(x=>x.TopicId.Equals(topic.TopicId)));
             //Re-add new recommended programmes
-            foreach (var programme in programmes)
+            foreach (var programme in programmesId)
             {
-                _context.TopicRecommendedProgrammes.Add(new()
+                _context.TopicRecommendedProgrammes.Add(new TopicRecommendedProgramme
                 {
                     TopicId = topic.TopicId,
                     ProgramId = programme
                 });
             }
-
             await _context.SaveChangesAsync();
 
+            //Create uploaded files
             await CreateFiles(topic, user, files);
             
             return RedirectToAction(nameof(Index));
         }
-
-        // GET: Topic/Delete/5
+       
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Topics == null)
-            {
-                return NotFound();
-            }
+            var topic = await _context.Topics.FirstAsync(x => x.TopicId.Equals(id));
 
-            var topic = await _context.Topics
-                .Include(t => t.AssignedStudent)
-                .Include(t => t.Creator)
-                .Include(t => t.Group)
-                .Include(t => t.Supervisor)
-                .FirstOrDefaultAsync(m => m.TopicId == id);
-            if (topic == null)
-            {
-                return NotFound();
-            }
-
-            return View(topic);
-        }
-
-        // POST: Topic/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Topics == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Topics'  is null.");
-            }
-            var topic = await _context.Topics.FindAsync(id);
-            if (topic != null)
-            {
-                _context.Topics.Remove(topic);
-            }
-            
+            _context.Topics.Remove(topic);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            
+            return RedirectToAction("Index");
         }
-
-        private bool TopicExists(int id)
-        {
-          return (_context.Topics?.Any(e => e.TopicId == id)).GetValueOrDefault();
-        }
-
+        
         public async Task<JsonResult> Interest(int? topicId)
         {
             if (topicId == null) throw new Exception("topicId should be provided");
@@ -380,25 +285,6 @@ namespace TOS.Controllers
             
             await _context.SaveChangesAsync();
             return Json(true);
-        }
-
-        public async Task<IActionResult> AddComment(int id, string text, bool anonymous, int? parentId = null)
-        {
-            //get current user
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName.Equals(User.Identity.Name));
-            
-            var c = new Comment();
-            c.TopicId = id;
-            c.AuthorId = user.Id;
-            c.Author = user;
-            c.CreatedAt = DateTime.Now;
-            c.Text = text;
-            c.ParentCommentId = parentId;
-            c.Anonymous = anonymous;
-            _context.Comments.Add(c);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("Details", new { id = id });
         }
 
         public async Task<bool> CreateFiles(Topic topic, ApplicationUser user, List<IFormFile> files)
@@ -457,7 +343,25 @@ namespace TOS.Controllers
 
             return RedirectToAction("Edit", new { id = topicId });
         }
+        
+        public async Task<IActionResult> AddComment(int id, string text, bool anonymous, int? parentId = null)
+        {
+            //get current user
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName.Equals(User.Identity.Name));
+            
+            var c = new Comment();
+            c.TopicId = id;
+            c.AuthorId = user.Id;
+            c.Author = user;
+            c.CreatedAt = DateTime.Now;
+            c.Text = text;
+            c.ParentCommentId = parentId;
+            c.Anonymous = anonymous;
+            _context.Comments.Add(c);
+            await _context.SaveChangesAsync();
 
+            return RedirectToAction("Details", new { id = id });
+        }
         public async Task<IActionResult> DeleteComment(int commentId, int topicId)
         {
             var comment = await _context.Comments.FirstOrDefaultAsync(x => x.CommentId.Equals(commentId));
@@ -479,6 +383,19 @@ namespace TOS.Controllers
             }
             
             return RedirectToAction("Details", new { id = topicId });
+        }
+
+        private List<ApplicationUser> GetUsersWithRole(string role)
+        {
+            var roleId = _context.Roles.FirstOrDefault(x => x.Name!.ToLower().Equals(role.ToLower()))!.Id;
+
+            List<ApplicationUser> users = new();
+
+            if (roleId != 0)
+                users = _context.Users.Where(x => _context.UserRoles.Any(y => y.UserId == x.Id && y.RoleId == roleId))
+                    .ToList();
+
+            return users;
         }
     }
 }

@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Mvc.Routing
 @using TOS.Resources
 @using System.Globalization
+@using TOS.Extensions
 @model TOS.Models.Topic
 
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
@@ -95,23 +96,21 @@
     
     @foreach(var programme in Model.TopicRecommendedPrograms)
     {
-        <span class="infobox">@SelectStringByLanguage(programme.Programme.Name, programme.Programme.NameEng)</span>
+        <span class="infobox">@Html.SelectStringByLanguage(programme.Programme.NameEng, programme.Programme.Name)</span>
     }
 
     <h5>@SharedLocalizer["Short topic description"]</h5>
-    <p>@SelectStringByLanguage(Model.DescriptionShort, Model.DescriptionShortEng)</p>
+    <p>SelectStringByLanguage(Model.DescriptionShort, Model.DescriptionShortEng)</p>
     <h5>@SharedLocalizer["Long topic description"]</h5>
-    <p>@SelectStringByLanguage(Model.DescriptionLong, Model.DescriptionLongEng)</p>
+    <p>@Html.SelectStringByLanguage(Model.DescriptionLongEng, Model.DescriptionLong)</p>
     <h5>@SharedLocalizer["Supervisor"]</h5>
     <p>
         @Html.DisplayFor(model => model.Supervisor.FirstName) @Html.DisplayFor(model => model.Supervisor.LastName)
         @Html.DisplayFor(model => model.Supervisor.Email)
     </p>
     <h5>@SharedLocalizer["Topic group"]</h5>
-    <p>@SelectStringByLanguage(Model.Group.Name, Model.Group.NameEng)</p>
-    
-
-   <div>
+    <p>@Html.SelectStringByLanguage(Model.Group.NameEng, Model.Group.Name)</p>
+    <div>
        <h2>@SharedLocalizer["Attachments"]</h2>
        <hr/>
        @foreach (var attachment in Model.Attachments)
@@ -257,22 +256,9 @@
         
         return returnComments;
     }
-
-}
-
-@functions{
-
-    private static string SelectStringByLanguage(string cz, string eng)
-    {
-        @if (CultureInfo.CurrentCulture.Name.Contains("cz"))
-        {
-            return cz;
-        }
-        return eng;
-    }
 }
 
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.TopicId">Edit</a> |
-     <a asp-action="Delete" asp-route-id="@Model?.TopicId">Delete</a>
+    <a asp-action="Delete" asp-route-id="@Model?.TopicId">Delete</a>
 </div>

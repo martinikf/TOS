@@ -13,9 +13,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-
-
 <h1>Edit</h1>
 
 <h4>Topic</h4>
@@ -71,14 +68,14 @@
 
             <div class="form-group">
                 <label>@SharedLocalizer["Supervisor"]</label>
-                <select class="form-control" id="ddlSupervisor" asp-for="SupervisorId" asp-items="ViewBag.Supervisor">
+                <select class="form-control" id="ddlSupervisor" asp-for="SupervisorId" asp-items="ViewBag.UsersToSupervise">
                     <option value="null">@SharedLocalizer["Unassigned option"]</option>
                 </select>
             </div>
             
             <div class="form-group">
                 <label>@SharedLocalizer["Assigned student"]</label>
-                <select class="form-control" id="ddlAssigned" asp-for="AssignedId" asp-items="ViewBag.Assigned">
+                <select class="form-control" id="ddlAssigned" asp-for="AssignedId" asp-items="ViewBag.UsersToAssign">
                     <option value="null">@SharedLocalizer["Unassigned option"]</option>
                 </select>
             </div>

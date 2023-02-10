@@ -2,6 +2,7 @@
 @using TOS.Resources
 @using System.Collections
 @using System.Globalization
+@using TOS.Extensions
 @model TOS.Models.Topic
 
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
@@ -46,31 +47,42 @@
                 <label asp-for="DescriptionLongEng" class="control-label"></label>
                 <input asp-for="DescriptionLongEng" class="form-control" />
             </div>
+            
+            <!--Visible-->
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Visible" checked/> @Html.DisplayNameFor(model => model.Visible)
                 </label>
             </div>
             
-           <div class="form-group">
+            <!--Supervisor-->
+            <div class="form-group">
                <label>@SharedLocalizer["Supervisor"]</label>
-               <select class="form-control" id="ddlSupervisor" asp-for="SupervisorId" asp-items="ViewBag.Supervisors">
+               <select class="form-control" id="ddlSupervisor" asp-for="SupervisorId" asp-items="ViewBag.UsersToSupervise">
                    <option value="null">@SharedLocalizer["Unassigned option"]</option>
                </select>
            </div>
            
-           <div class="form-group">
-               <label>@SharedLocalizer["Assigned student"]</label>
-               <select class="form-control" id="ddlAssigned" asp-for="AssignedId" asp-items="ViewBag.Students">
-                   <option value="null">@SharedLocalizer["Unassigned option"]</option>
-               </select>
-           </div>
+            <!--Assigned student-->
+            <div class="form-group">
+                <label>@SharedLocalizer["Assigned student"]</label>
+                <select class="form-control" id="ddlAssigned" asp-for="AssignedId" asp-items="ViewBag.UsersToAssign">
+                    <option value="null">@SharedLocalizer["Unassigned option"]</option>
+                </select>
+            </div>
             
+            <!--Group-->
             <div class="form-group">
                 <label asp-for="GroupId" class="control-label"></label>
-                <select asp-for="GroupId" class ="form-control" asp-items="ViewBag.Groups" onchange="RefreshProgrammes()"></select>
+                <select asp-for="GroupId" class="form-control" onchange="RefreshProgrammes()">
+                    @foreach (Group group in ViewBag.Groups)
+                    {
+                        <option value="@group.GroupId">@Html.SelectStringByLanguage(group.NameEng, group.Name)</option>
+                    }
+                </select>
             </div>
 
+            <!--Programmes-->
             <hr/>
 
             @if (ViewData["Programmes"] != null)
@@ -96,7 +108,8 @@
                 <hr/>
             }
             
-             <div>
+            <!--Attachments-->
+            <div>
                 <h2>@SharedLocalizer["Attachments"]</h2>
                  <!-- FILE SELECT-->
                 <input type="file" name="files" multiple>
