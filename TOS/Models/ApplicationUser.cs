@@ -8,8 +8,18 @@ public class ApplicationUser : IdentityUser<int>
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
 
+    public string? DisplayName
+    {
+        get
+        {
+            if (DisplayName is null)
+                return FirstName + " " + LastName;
+            else return DisplayName;
+        }
+        set => DisplayName = value;
+    }
 
-    [InverseProperty("Creator")] 
+        [InverseProperty("Creator")] 
     public virtual ICollection<Topic> CreatedTopics { get; } = new HashSet<Topic>();
     
     [InverseProperty("Supervisor")]

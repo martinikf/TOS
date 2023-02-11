@@ -61,6 +61,9 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
             
             [Display(Name = "Last name")]
             public string Lastname { get; set; }
+            
+            [Display(Name = "Display name")]
+            public string DisplayName { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -71,13 +74,15 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
             if (currentUser is null) throw new Exception("User should not be null");
             var firstname = currentUser.FirstName;
             var lastname = currentUser.LastName;
+            var displayName = currentUser.DisplayName;
 
             Username = userName;
 
             Input = new InputModel
             {
                 Firstname = firstname,
-                Lastname = lastname
+                Lastname = lastname,
+                DisplayName = displayName
             };
         }
 

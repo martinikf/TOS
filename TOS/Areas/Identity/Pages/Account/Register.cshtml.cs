@@ -95,6 +95,7 @@ namespace TOS.Areas.Identity.Pages.Account
             
             public string Firstname { get; set; }
             public string Lastname { get; set; }
+            public string DisplayName { get; set; }
         }
 
 
@@ -114,6 +115,7 @@ namespace TOS.Areas.Identity.Pages.Account
                 
                 user.FirstName = Input.Firstname;
                 user.LastName = Input.Lastname;
+                user.DisplayName = Input.DisplayName;
                 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
