@@ -51,10 +51,10 @@ public static class Seed
 
 
         //Create users
-        var adminUser = CreateUser("Admin", "User", "admin@tos.tos","admin@tos.tos", true, "password", ctx);
-        var teacherUser = CreateUser("Teacher", "User", "teacher@tos.tos","teacher@tos.tos", true, "password", ctx);
-        var studentUser = CreateUser("Student", "User", "student@tos.tos", "student@tos.tos",true, "password", ctx);
-        var externalUser = CreateUser("External", "User", "external@tos.tos", "external@tos.tos",true, "password", ctx);
+        var adminUser = CreateUser("Admin", "User", "", "admin@tos.tos","admin@tos.tos", true, "password", ctx);
+        var teacherUser = CreateUser("Teacher", "User","",  "teacher@tos.tos","teacher@tos.tos", true, "password", ctx);
+        var studentUser = CreateUser("Student", "User","",  "student@tos.tos", "student@tos.tos",true, "password", ctx);
+        var externalUser = CreateUser("External", "User", "", "external@tos.tos", "external@tos.tos",true, "password", ctx);
 
         //Add roles
         /*
@@ -115,12 +115,109 @@ public static class Seed
         CreateTopicRecommendedProgramme(mcSwProgramme, master2Topic, ctx);
         CreateTopicRecommendedProgramme(mcGeneralInfProgramme, masterTopic, ctx);
 
+    
+    }
 
+    public static async void InfUpolSeed(WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var ctx = scope.ServiceProvider.GetService<ApplicationDbContext>();
+  
+        //Create Roles: Administrator, Teacher, Student, External
+        var adminRole = CreateRole("Administrator", ctx);
+        var teacherRole = CreateRole("Teacher", ctx);
+        var studentRole = CreateRole("Student", ctx);
+        var externalRole = CreateRole("External", ctx);
+        //Topics
+        CreateRole("CreateTopic", ctx);
+        CreateRole("EditTopic", ctx);
+        CreateRole("EditProposedTopic", ctx);
+        CreateRole("DeleteTopic", ctx);
+        CreateRole("DeleteProposedTopic", ctx);
+        CreateRole("EditAnyTopic", ctx);
+        CreateRole("DeleteAnyTopic", ctx);
+        CreateRole("ProposeTopic", ctx);
+        CreateRole("InterestTopic", ctx);
+        CreateRole("AssignedToTopic", ctx);
+        CreateRole("SupervisorToTopic", ctx);
+
+        //Groups
+        CreateRole("CreateGroup", ctx);
+        CreateRole("EditGroup", ctx);
+        CreateRole("DeleteGroup", ctx);
+        CreateRole("EditAnyGroup", ctx);
+        CreateRole("DeleteAnyGroup", ctx);
+        CreateRole("AssignedToGroup", ctx);
+        //Comments
+        CreateRole("CreateComment", ctx);
+        CreateRole("CreateAnonymousComment", ctx);
+        CreateRole("DeleteComment", ctx);
+        CreateRole("DeleteAnyComment", ctx);
+        //Administration
+        CreateRole("CreateProgramme", ctx);
+        CreateRole("EditProgramme", ctx);
+        CreateRole("DeleteProgramme", ctx);
+        CreateRole("AssignRoles", ctx);
+
+        var adminUser = CreateUser("Admin", "User", "ADMIN", "admin@tos.tos", "admin@tos.tos", true, "password",
+            ctx);
+        await RoleHelper.AssignRoles(adminUser, Role.Administrator, ctx);
+        await RoleHelper.AssignRoles(
+            CreateUser("Eduard", "Bartl", "RNDr. Eduard Bartl, Ph.D.", "eduard.bartl@upol.c", "eduard.bartl@upol.c",
+                true, "password", ctx), Role.Teacher, ctx);
+        await RoleHelper.AssignRoles(
+            CreateUser("Jan", "Outrata", "doc. Mgr. Jan Outrata, Ph.D.", "jan.outrata@upol.c", "jan.outrata@upol.c",
+                true, "password", ctx), Role.Teacher, ctx);
+        await RoleHelper.AssignRoles(
+            CreateUser("Martin", "Trnečka", "RNDr. Martin Trnečka, Ph.D.", "martin.trnecka@upol.c",
+                "martin.trnecka@upol.c", true, "password", ctx), Role.Teacher, ctx);
+        await RoleHelper.AssignRoles(
+            CreateUser("Radim", "Bělohlávek", "prof. RNDr. Radim Bělohlávek, DSc.", "radim.belohlavek@upol.c",
+                "radim.belohlavek@upol.c", true, "passowrd", ctx), Role.Teacher, ctx);
+        await RoleHelper.AssignRoles(
+            CreateUser("Michal", "Krupka", "doc. RNDr. Michal Krupka, Ph.D.", "michal.krupka@upol.c",
+                "michal.krupka@upol.c", true, "password", ctx), Role.Teacher, ctx);
+        await RoleHelper.AssignRoles(
+            CreateUser("Petr", "Jančar", "prof. RNDr. Petr Jančar, CSc.", "petr.jancar@upol.c",
+                "petr.jancar@upol.c", true, "password", ctx), Role.Teacher, ctx);
+        await RoleHelper.AssignRoles(
+            CreateUser("Miroslav", "Kolařík", "doc. RNDr. Miroslav Kolařík, Ph.D.", "miroslova.kolarik@upol.c",
+                "miroslova.kolarik@upol.c", true, "password", ctx), Role.Teacher, ctx);
+
+        //create random students
+        for (int i = 0; i < 900; i++)
+        {
+            var student = CreateUser("Student" + i, "Student" + i, null, "student " + i + "@student.tos",
+                "student " + i + "@student.tos", true, "password", ctx);
+            await RoleHelper.AssignRoles(student, Role.Student, ctx);
+        }
+
+        var unassignedGroup = CreateGroup("Nezařazeno", "Unassigned", adminUser, true, false, ctx);
+        var bachelorGroup = CreateGroup("Bakalářská", "Bachelor", adminUser, true, true, ctx);
+        var masterGroup = CreateGroup("Magisterská", "Master", adminUser, true, true, ctx);
+
+        //Create programmees
+        //Bachelor
+        CreateProgramme("Informační technologie", "Information Technology", true, ProgramType.Bachelor, ctx);
+        CreateProgramme("Informatika", "Informatics", true, ProgramType.Bachelor, ctx);
+        CreateProgramme("Informatika - Vývoj software", "Informatics - Software Development", true,
+            ProgramType.Bachelor, ctx);
+        CreateProgramme("Informatika - Obecná informatika", "Informatics - General Informatics", true,
+            ProgramType.Bachelor, ctx);
+        CreateProgramme("Informatika pro vzdělávání", "Informatics for education", true, ProgramType.Bachelor, ctx);
+        //Master
+        CreateProgramme("Obecná informatika", "General informatics", true, ProgramType.Master, ctx);
+        CreateProgramme("Vývoj software", "Software Development", true, ProgramType.Master, ctx);
+        CreateProgramme("Úmělá inteligence", "Artificial intelligence", true, ProgramType.Master, ctx);
+        CreateProgramme("Počítačové systémy a technologie", "Computer systems and technologies", true,
+            ProgramType.Master, ctx);
+        CreateProgramme("Učitelství informatiky pro střední školy", "Teaching informatics for high schools", true,
+            ProgramType.Master, ctx);
+        
     }
 
 
-
-    public static ApplicationUser CreateUser(string firstname, string lastname, string email, string username, bool emailConfirmed, string? password, ApplicationDbContext ctx)
+    public static ApplicationUser CreateUser(string firstname, string lastname, string displayname, string email, string username, bool emailConfirmed, string? password, ApplicationDbContext ctx)
     {
         //Create usef if not exists
         var user = ctx.Users.FirstOrDefault(u => u.Email == email);
@@ -130,6 +227,7 @@ public static class Seed
             {
                 FirstName = firstname,
                 LastName = lastname,
+                DisplayName = displayname,
                 Email = email,
                 EmailConfirmed = emailConfirmed,
                 UserName = username,

@@ -253,7 +253,7 @@ namespace TOS.Areas.Identity.Pages.Account
             var info = GetUserStagInfo(req);
 
             var lastnameLowered = info.Item2[..1] + info.Item2[1..].ToLower();
-            var user = Seed.CreateUser(info.Item1, lastnameLowered, info.Item3, Input.Username,true, null, _context);
+            var user = Seed.CreateUser(info.Item1, lastnameLowered, null, info.Item3,Input.Username,true, null, _context);
             
             //var roleToInsert = _context.Roles.FirstOrDefault(x => x.Name.Equals(roleString));
             //if (roleToInsert is null) throw new Exception("Role that should exist does not exist: " + roleString);

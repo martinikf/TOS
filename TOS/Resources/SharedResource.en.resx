@@ -108,4 +108,16 @@
     <data name="Master theses" xml:space="preserve">
         <value>Master theses</value>
     </data>
+    <data name="orderByName" xml:space="preserve">
+        <value>Name</value>
+    </data>
+    <data name="orderBySupervisor" xml:space="preserve">
+        <value>Supervisor</value>
+    </data>
+    <data name="orderByInterest" xml:space="preserve">
+        <value>Interest</value>
+    </data>
+    <data name="orderBy" xml:space="preserve">
+        <value>Order by</value>
+    </data>
 </root>

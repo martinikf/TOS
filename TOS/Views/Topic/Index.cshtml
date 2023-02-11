@@ -1,6 +1,8 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @using TOS.Resources
 @using System.Globalization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using TOS.Extensions
 @model IEnumerable<TOS.Models.Topic>
 
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
@@ -10,7 +12,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>@SharedLocalizer[(string)ViewData["topicsIndexGroupName"]!+ " " + "theses" ]</h1>
+<h1>@SharedLocalizer[(string)ViewData["topicsIndexGroupName"]!]</h1>
+
 @if (@ViewData["topicsIndexGroupId"] != null)
 {
     <a asp-controller="Group" asp-action="Edit" asp-route-id="@ViewData["topicsIndexGroupId"]">Edit group</a>
@@ -30,6 +33,7 @@
     }
     else
     {
+        @(ViewContext.RouteData.Values[""])
         <input name="showTakenTopics" type="checkbox" value="true"/>
     }
     <select name="programmeName">
@@ -38,40 +42,47 @@
         {
             @if ((string) ViewData["selectedProgramme"]! == programme.NameEng)
             {
-                <option value="@programme.NameEng" selected>@SelectStringByLanguage(programme.Name, programme.NameEng)</option>
+                <option value="@programme.NameEng" selected>@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</option>
             }
             else
             {
-                <option value="@programme.NameEng">@SelectStringByLanguage(programme.Name, programme.NameEng)</option>
+                <option value="@programme.NameEng">@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</option>
             }
         }
+    </select>
+    <label>@SharedLocalizer["orderBy"]</label>
+    <select name="orderBy">
+        @if (!(bool) ViewData["customGroup"]!)
+        {
+            <!-- Display order by option for supervisor only for bachelor, master topics-->
+            @Html.SelectOption("Supervisor", @SharedLocalizer["orderBySupervisor"].Value, (string) ViewData["orderBy"]!)
+        }
+        @Html.SelectOption("Name", @SharedLocalizer["orderByName"].Value, (string)ViewData["orderBy"]!)
+        @Html.SelectOption("Interest", @SharedLocalizer["orderByInterest"].Value, (string)ViewData["orderBy"]!)
     </select>
     <input type="submit" value="Search"/>
 </form>
 
 <hr/>
 
-@foreach (var item in Model) {
+@foreach (var topic in Model) {
     <div class="topic">
-        
         <div class="topic__name">
-            <a asp-action="Details" asp-route-id="@item.TopicId">
-                <h3>@SelectStringByLanguage(item.Name, item.NameEng)</h3>
+            <a asp-action="Details" asp-route-id="@topic.TopicId">
+                <h3>@Html.SelectStringByLanguage(topic.NameEng, topic.Name)</h3>
             </a>
         </div>
-
-        @if (item.Supervisor != null)
+        @if (topic.Supervisor != null)
         {
             <div class="topic__supervisor">
 
-                @Html.DisplayFor(modelItem => item.Supervisor.FirstName)
-                @Html.DisplayFor(modelItem => item.Supervisor.LastName)
+                @Html.DisplayFor(modelItem => topic.Supervisor.FirstName)
+                @Html.DisplayFor(modelItem => topic.Supervisor.LastName)
 
             </div>
         }
-
         <div class="topic__infoboxes">
-            @if (item.AssignedStudent == null)
+            @if (topic.AssignedStudent == null)
             {
                 <span class="infobox">@SharedLocalizer["Free topic"]</span>
             }
@@ -79,34 +90,15 @@
             {
                 <span class="infobox">@SharedLocalizer["Taken topic"]</span>
             }
-            
-            @foreach (var programme in item.TopicRecommendedPrograms)
+            @foreach (var programme in topic.TopicRecommendedPrograms)
             {
-                <span class="infobox">@SelectStringByLanguage(programme.Programme.Name, programme.Programme.NameEng)</span>
+                <span class="infobox">@Html.SelectStringByLanguage(programme.Programme.NameEng, programme.Programme.Name)</span>
             }
         </div>
         
         <div class="topic__description">
-            @SelectStringByLanguage(item.DescriptionShort, item.DescriptionShortEng)
+            @Html.SelectStringByLanguage(topic.DescriptionShortEng, topic.DescriptionShort)
         </div>
         <hr/>
     </div>
 }
-
-@functions{
-
-    private static string SelectStringByLanguage(string cz, string eng)
-    {
-        @if (CultureInfo.CurrentCulture.Name.Contains("cz"))
-        {
-            return cz;
-        }
-        return eng;
-    }
-}
-
-<!--
-<a asp-action="Edit" asp-route-id="item.TopicId">Edit</a>
-<a asp-action="Details" asp-route-id="item.TopicId">Details</a>
-<a asp-action="Delete" asp-route-id="item.TopicId">Delete</a>
--->

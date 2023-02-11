@@ -30,7 +30,7 @@ namespace TOS.Controllers
         }
 
         // GET: Topic
-        public async Task<IActionResult> Index(string groupName = "MyTopics", string programmeName = "", string searchString = "", bool showTakenTopics = false)
+        public async Task<IActionResult> Index(string groupName = "MyTopics", string programmeName = "", string searchString = "", bool showTakenTopics = false, string orderBy = "Supervisor")
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName!.Equals(User.Identity!.Name));
             //If user is not logged in -> show bachelor topics as default
@@ -38,10 +38,17 @@ namespace TOS.Controllers
             
             var topicsToShow = new List<Topic>();
             Group? group = null;
+            
+            ViewData["customGroup"] = false;
+            if(groupName is not "Bachelor" or "Master" or "Unassigned")
+                ViewData["customGroup"] = true;
+           
             ViewData["topicsIndexGroupName"] = groupName;
+            
             ViewData["showTakenTopics"] = showTakenTopics;
             ViewData["selectedProgramme"] = programmeName;
             ViewData["searchString"] = searchString;
+            ViewData["orderBy"] = orderBy;
       
             
             if (groupName is not "MyTopics")
@@ -94,6 +101,19 @@ namespace TOS.Controllers
                 "Master" => _context.Programmes.Where(x => x.Type == ProgramType.Master).ToList(),
                 _ => new List<Programme>()
             };
+
+            switch (orderBy)
+            {
+                case "Supervisor":
+                    topicsToShow = topicsToShow.OrderBy(x => x.Supervisor?.LastName).ThenBy(x => x.Supervisor?.FirstName).ThenBy(x=>x.Name).ToList();
+                    break;
+                case "Name":
+                    topicsToShow = CultureInfo.CurrentCulture.Name.Contains("cz") ? topicsToShow.OrderBy(x => x.Name).ToList() : topicsToShow.OrderBy(x => x.NameEng).ToList();
+                    break;
+                case "Interest":
+                    topicsToShow = topicsToShow.OrderByDescending(x => x.UserInterestedTopics.Count).ToList();
+                    break;
+            }
 
             return View(topicsToShow);
         }

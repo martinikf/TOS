@@ -22,12 +22,12 @@ namespace TOS
         // GET: Group
         public async Task<IActionResult> Index(string searchString = "")
         {
-            var applicationDbContext = _context.Groups.Where(x=> !x.Selectable && x.Visible).Include(x => x.Creator);
+            var groups = _context.Groups.Where(x=> x.Visible).Include(x => x.Creator);
             
             //If current user is in role Teacher display Unassigned group as first item
             if (User.IsInRole("Teacher"))
             {
-                var list = await applicationDbContext.ToListAsync();
+                var list = await groups.ToListAsync();
                 var unassignedGroup = _context.Groups.FirstOrDefault(x => x.NameEng == "Unassigned");
                 if(unassignedGroup is null) throw new Exception("Unassigned group should exist!");
                 list.Insert(0, unassignedGroup);
@@ -37,10 +37,10 @@ namespace TOS
             {
                 ViewData["searchString"] = searchString;
                 searchString = searchString.ToLower();
-                return View(await applicationDbContext.Where(x => x.Name.ToLower().Contains(searchString) || x.NameEng.ToLower().Contains(searchString)).ToListAsync());
+                return View(await groups.Where(x => x.Name.ToLower().Contains(searchString) || x.NameEng.ToLower().Contains(searchString)).ToListAsync());
             }
             
-            return View(await applicationDbContext.ToListAsync());
+            return View(await groups.ToListAsync());
         }
 
         // GET: Group/Details/5
@@ -73,7 +73,7 @@ namespace TOS
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("GroupId,Name,NameEng,CreatorId,Selectable,Visible")] Group group)
         {
-            if(group.NameEng == "") group.NameEng = group.Name;
+            if(group.NameEng == "" || group.NameEng == null) group.NameEng = group.Name;
             
             group.CreatorId = _context.Users.First(x => User.Identity != null && x.UserName == User.Identity.Name).Id;
             
@@ -101,53 +101,26 @@ namespace TOS
         // POST: Group/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("GroupId,Name,CreatorId,Selectable,Visible")] Group @group)
+        public async Task<IActionResult> Edit(int id, [Bind("GroupId,Name,CreatorId,Selectable,Visible")] Group group)
         {
-            if (id != @group.GroupId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(@group);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!GroupExists(@group.GroupId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(@group);
+            group.Creator = _context.Users.First(x => x.Id.Equals(group.CreatorId));
+            _context.Update(group);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Group/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Groups == null)
-            {
-                return NotFound();
-            }
-
-            var @group = await _context.Groups
+            var group = await _context.Groups
                 .Include(x => x.Creator)
                 .FirstOrDefaultAsync(m => m.GroupId == id);
-            if (@group == null)
+            if (group == null)
             {
                 return NotFound();
             }
 
-            return View(@group);
+            return RedirectToAction("Index");
         }
 
         // POST: Group/Delete/5
