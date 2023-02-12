@@ -77,10 +77,9 @@
 
 <h1>Details</h1>
 
-@if (@ViewData["UserInterestHide"] == null && User.IsInRole("Student"))
-{
-    <a href="javascript:void(0)" class="btn btn-primary @ViewData["UserInterestClass"]" id="btn-interest">@ViewData["UserInterestString"] </a>
-}
+
+<a href="javascript:void(0)" class="btn btn-primary @ViewData["UserInterestClass"]" id="btn-interest">@ViewData["UserInterestString"] </a>
+
 
 <div>
     <h4>@Html.DisplayFor(model => model.Name)</h4>

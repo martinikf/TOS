@@ -213,7 +213,7 @@ public static class Seed
             ProgramType.Master, ctx);
         CreateProgramme("Učitelství informatiky pro střední školy", "Teaching informatics for high schools", true,
             ProgramType.Master, ctx);
-        
+
     }
 
 

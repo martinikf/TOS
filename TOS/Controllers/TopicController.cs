@@ -231,9 +231,9 @@ namespace TOS.Controllers
             var user = await _context.Users.FirstAsync(x => User.Identity != null && x.UserName!.Equals(User.Identity.Name));
 
             //Set eng fields to czech if not provided
-            if(topic.NameEng == "") topic.NameEng = topic.Name;
-            if(topic.DescriptionShortEng == "") topic.DescriptionShortEng = topic.DescriptionShort;
-            if(topic.DescriptionLongEng == "") topic.DescriptionLongEng = topic.DescriptionLong;
+            if(topic.NameEng is "" or null) topic.NameEng = topic.Name;
+            if(topic.DescriptionShortEng is "" or null) topic.DescriptionShortEng = topic.DescriptionShort;
+            if (topic.DescriptionLongEng is "" or null) topic.DescriptionLongEng = topic.DescriptionLong;
             
             if (isNew)
             {

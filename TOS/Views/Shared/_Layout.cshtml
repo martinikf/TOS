@@ -44,6 +44,12 @@
                             <a class="nav-link text-dark" asp-action="Index" asp-controller="Topic" asp-route-groupName="MyTopics" asp-route-showTakenTopics="true">@SharedLocalizer["MyTopics"]</a>
                         </li>
                     }
+                    @if (User.IsInRole("Administrator"))
+                    {
+                        <li class="nav-item">>
+                            <a class="nav-link text-dark" asp-action="Index" asp-controller="Administration">@SharedLocalizer["Administration"]</a>
+                        </li>
+                    }
                 </ul>
                 <partial name="_Culture"/>
                 <partial name="_LoginPartial" />
