@@ -33,7 +33,6 @@
     }
     else
     {
-        @(ViewContext.RouteData.Values[""])
         <input name="showTakenTopics" type="checkbox" value="true"/>
     }
     <select name="programmeName">
@@ -64,15 +63,34 @@
 </form>
 
 <hr/>
+@{ ApplicationUser lastSupervisor = null;}
 
 @foreach (var topic in Model) {
+    
+    @if ((string) ViewData["orderBy"]! == "Supervisor")
+    {
+        @if (topic.Supervisor == null)
+        {
+            <h2>@SharedLocalizer["TopicsWithoutSupervisor"]</h2>
+        }
+        else
+        {
+            @if (lastSupervisor == null || lastSupervisor.Id != topic.Supervisor.Id)
+            {
+                <h2>@topic.Supervisor.DisplayName</h2>
+                @{lastSupervisor = topic.Supervisor;}
+            }
+        }
+    }
+    
     <div class="topic">
         <div class="topic__name">
             <a asp-action="Details" asp-route-id="@topic.TopicId">
                 <h3>@Html.SelectStringByLanguage(topic.NameEng, topic.Name)</h3>
             </a>
         </div>
-        @if (topic.Supervisor != null)
+        <!-- Don't show if orderBy is Supervisor-->
+        @if ((string) ViewData["orderBy"]! != "Supervisor" && topic.Supervisor != null)
         {
             <div class="topic__supervisor">
 
