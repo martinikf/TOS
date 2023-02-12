@@ -26,6 +26,7 @@
 <form asp-action="Index" method="get">
     <input type="hidden" name="groupName" value="@ViewData["topicsIndexGroupName"]"/>
     <input type="text" name="searchString" placeholder="Search string..." value="@ViewData["searchString"]"/>
+    
     <label>Show taken topics</label>
     @if((bool) ViewData["showTakenTopics"]!)
     {
@@ -35,6 +36,16 @@
     {
         <input name="showTakenTopics" type="checkbox" value="true"/>
     }
+    <label>Show hidden topics</label>
+    @if ((bool) ViewData["showHidden"]!)
+    {
+        <input name="showHidden" type="checkbox" value="true" checked/>
+    }
+    else
+    {
+        <input name="showHidden" type="checkbox" value="true"/>
+    }
+    
     <select name="programmeName">
         <option value="">@SharedLocalizer["All programmes"]</option>
         @foreach (var programme in (List<Programme>) ViewData["programmes"]!)
@@ -49,6 +60,7 @@
             }
         }
     </select>
+    
     <label>@SharedLocalizer["orderBy"]</label>
     <select name="orderBy">
         @if (!(bool) ViewData["customGroup"]!)
@@ -59,6 +71,7 @@
         @Html.SelectOption("Name", @SharedLocalizer["orderByName"].Value, (string)ViewData["orderBy"]!)
         @Html.SelectOption("Interest", @SharedLocalizer["orderByInterest"].Value, (string)ViewData["orderBy"]!)
     </select>
+    
     <input type="submit" value="Search"/>
 </form>
 
@@ -78,7 +91,7 @@
             @if (lastSupervisor == null || lastSupervisor.Id != topic.Supervisor.Id)
             {
                 <h2>@topic.Supervisor.DisplayName</h2>
-                @{lastSupervisor = topic.Supervisor;}
+                {lastSupervisor = topic.Supervisor;}
             }
         }
     }

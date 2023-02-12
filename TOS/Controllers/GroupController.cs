@@ -20,27 +20,43 @@ namespace TOS
         }
 
         // GET: Group
-        public async Task<IActionResult> Index(string searchString = "")
+        public async Task<IActionResult> Index(string searchString = "", bool showHidden = false)
         {
-            var groups = _context.Groups.Where(x=> x.Visible).Include(x => x.Creator);
-            
-            //If current user is in role Teacher display Unassigned group as first item
-            if (User.IsInRole("Teacher"))
+            var groups = await _context.Groups.Include(x => x.Creator).ToListAsync();
+
+            //Show hidden
+            ViewData["showHidden"] = showHidden;
+            if (!showHidden)
             {
-                var list = await groups.ToListAsync();
-                var unassignedGroup = _context.Groups.FirstOrDefault(x => x.NameEng == "Unassigned");
-                if(unassignedGroup is null) throw new Exception("Unassigned group should exist!");
-                list.Insert(0, unassignedGroup);
+                groups = groups.Where(x => x.Visible).ToList();
             }
 
+            //Search
             if (searchString.Length > 2)
             {
                 ViewData["searchString"] = searchString;
                 searchString = searchString.ToLower();
-                return View(await groups.Where(x => x.Name.ToLower().Contains(searchString) || x.NameEng.ToLower().Contains(searchString)).ToListAsync());
+                groups = groups.Where(x =>
+                    x.Name.ToLower().Contains(searchString) || x.NameEng.ToLower().Contains(searchString)).ToList();
+            }
+
+            //Higlight used groups
+            var user = _context.Users.FirstOrDefault(x => User.Identity != null && x.UserName == User.Identity.Name);
+            if (user is not null)
+            {
+                foreach (var group in groups
+                             .Where(group =>
+                                 user.AssignedTopics.Any(x => x.GroupId == group.GroupId) ||
+                                 user.SupervisedTopics.Any(x => x.GroupId == group.GroupId) ||
+                                 user.CreatedGroups.Any(x => x.GroupId == group.GroupId) ||
+                                 user.CreatedTopics.Any(x => x.GroupId == group.GroupId) ||
+                                 group.NameEng is "Bachelor" or "Master" or "Unassigned"))
+                {
+                    group.Highlight = true;
+                }
             }
             
-            return View(await groups.ToListAsync());
+            return View(groups);
         }
 
         // GET: Group/Details/5

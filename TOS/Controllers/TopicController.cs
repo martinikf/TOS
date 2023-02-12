@@ -30,7 +30,7 @@ namespace TOS.Controllers
         }
 
         // GET: Topic
-        public async Task<IActionResult> Index(string groupName = "MyTopics", string programmeName = "", string searchString = "", bool showTakenTopics = false, string orderBy = "Supervisor")
+        public async Task<IActionResult> Index(string groupName = "MyTopics", string programmeName = "", string searchString = "", bool showTakenTopics = false, string orderBy = "Supervisor", bool showHidden = false)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName!.Equals(User.Identity!.Name));
             //If user is not logged in -> show bachelor topics as default
@@ -49,6 +49,7 @@ namespace TOS.Controllers
             ViewData["selectedProgramme"] = programmeName;
             ViewData["searchString"] = searchString;
             ViewData["orderBy"] = orderBy;
+            ViewData["showHidden"] = showHidden;
       
             
             if (groupName is not "MyTopics")
@@ -69,6 +70,12 @@ namespace TOS.Controllers
                         ( x.AssignedStudent != null && x.AssignedStudent.Equals(user)) ||
                         x.UserInterestedTopics.Any(y => y.User.Equals(user)))
                     .ToListAsync();
+            }
+
+            //Shows only topics with visible = true, based on parameter
+            if (!showHidden)
+            {
+                topicsToShow = topicsToShow.Where(x => x.Visible).ToList();
             }
             
             if (searchString.Length > 3)

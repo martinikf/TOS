@@ -23,4 +23,7 @@ public class Group
 
     [InverseProperty("Group")]
     public virtual ICollection<Topic> Topics { get; } = new HashSet<Topic>();
+    
+    [NotMapped]
+    public bool Highlight { get; set; }
 }

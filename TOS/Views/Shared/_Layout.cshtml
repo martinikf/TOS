@@ -38,6 +38,12 @@
                     <li class ="nav-item">
                         <a class="nav-link text-dark" asp-action="Index" asp-controller="Group">@SharedLocalizer["NavGroups"]</a>
                     </li>
+                    @if (User.IsInRole("EditProposedTopic"))
+                    {
+                        <li class ="nav-item">
+                            <a class="nav-link text-dark" asp-action="Index" asp-controller="Topic" asp-route-groupName="Unassigned" asp-route-showHidden="true">@SharedLocalizer["NavUnassigned"]</a>
+                        </li>
+                    }
                     @if(User.Identity.IsAuthenticated)
                     {
                         <li class ="nav-item">
