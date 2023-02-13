@@ -34,7 +34,7 @@ namespace TOS.Controllers
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName!.Equals(User.Identity!.Name));
             //If user is not logged in -> show bachelor topics as default
-            if (groupName is "MyTopics" && user != null) groupName = "Bachelor";
+            if (groupName is "MyTopics" && user is null) groupName = "Bachelor";
             
             var topicsToShow = new List<Topic>();
             Group? group = null;
