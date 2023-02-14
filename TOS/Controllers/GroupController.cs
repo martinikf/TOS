@@ -70,7 +70,7 @@ namespace TOS
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("GroupId,Name,NameEng,CreatorId,Selectable,Visible")] Group group)
         {
-            if(group.NameEng == "" || group.NameEng == null) group.NameEng = group.Name;
+            if(group.NameEng == "") group.NameEng = group.Name;
             
             group.CreatorId = _context.Users.First(x => User.Identity != null && x.UserName == User.Identity.Name).Id;
             
@@ -82,17 +82,9 @@ namespace TOS
         // GET: Group/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Groups == null)
-            {
-                return NotFound();
-            }
+            var group = await _context.Groups.FindAsync(id);
 
-            var @group = await _context.Groups.FindAsync(id);
-            if (@group == null)
-            {
-                return NotFound();
-            }
-            return View(@group);
+            return View(group);
         }
 
         // POST: Group/Edit/5
@@ -100,9 +92,14 @@ namespace TOS
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("GroupId,Name,CreatorId,Selectable,Visible")] Group group)
         {
+            if(group.NameEng == "") group.NameEng = group.Name;
+            
+            //Why
             group.Creator = _context.Users.First(x => x.Id.Equals(group.CreatorId));
+            
             _context.Update(group);
             await _context.SaveChangesAsync();
+            
             return RedirectToAction(nameof(Index));
         }
 
@@ -115,10 +112,11 @@ namespace TOS
             
             foreach (var topic in group.Topics)
             {
-                topic.Group.GroupId = unassigned.GroupId;
                 topic.Group = unassigned;
                 _context.Topics.Update(topic);
             }
+            
+            await _context.SaveChangesAsync();
             
             _context.Groups.Remove(group);
             
