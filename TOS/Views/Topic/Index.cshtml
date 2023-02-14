@@ -76,17 +76,25 @@
 </form>
 
 <hr/>
-@{ ApplicationUser lastSupervisor = null;}
+@{ 
+    ApplicationUser lastSupervisor = null;
+    //Used is used to prevent multiple headers with the same name
+    var used = false;
+    
+}
 
 @foreach (var topic in Model) {
     
     @if ((string) ViewData["orderBy"]! == "Supervisor")
     {
-        @if (topic.Supervisor == null)
+        @if (topic.Supervisor == null && !used)
         {
             <h2>@SharedLocalizer["TopicsWithoutSupervisor"]</h2>
+            {
+                used = true;
+            }
         }
-        else
+        else if(topic.Supervisor != null)
         {
             @if (lastSupervisor == null || lastSupervisor.Id != topic.Supervisor.Id)
             {
