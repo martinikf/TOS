@@ -44,7 +44,6 @@ namespace TOS.Controllers
                 ViewData["customGroup"] = false;
            
             ViewData["topicsIndexGroupName"] = groupName;
-            
             ViewData["showTakenTopics"] = showTakenTopics;
             ViewData["selectedProgramme"] = programmeName;
             ViewData["searchString"] = searchString;
@@ -207,7 +206,15 @@ namespace TOS.Controllers
             }
             
             ViewData["UsersToAssign"] = new SelectList(GetUsersWithRole("AssignedToTopic"), "Id", "Email", topic.AssignedId);
-            ViewData["Group"] = new SelectList(_context.Groups.Where(x=>x.Selectable || topic.GroupId.Equals(x.GroupId)), "GroupId", "Name", topic.GroupId);
+            if (topic.Group.Selectable)
+            {
+                ViewData["Group"] = new SelectList(_context.Groups.Where(x=>x.Selectable), "GroupId", "Name", topic.GroupId);
+            }
+            else
+            {
+                ViewData["Group"] = new SelectList(new List<Group> {topic.Group}, "GroupId", "Name", topic.GroupId);
+            }
+            
             ViewData["UsersToSupervise"] = new SelectList(GetUsersWithRole("SupervisorToTopic"), "Id", "Email", topic.SupervisorId);
 
             var programmes = new HashSet<Programme>();

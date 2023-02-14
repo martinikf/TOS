@@ -108,18 +108,12 @@ namespace TOS
         {
             var group = await _context.Groups.FirstAsync(m => m.GroupId == id);
 
-            var unassigned = _context.Groups.First(x => x.NameEng == "Unassigned");
-            
-            foreach (var topic in group.Topics)
-            {
-                topic.Group = unassigned;
-                _context.Topics.Update(topic);
-            }
-            
+            //Delete group's topics
+            _context.Topics.RemoveRange(group.Topics);
             await _context.SaveChangesAsync();
             
+            //Delete grop
             _context.Groups.Remove(group);
-            
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
