@@ -58,26 +58,7 @@ namespace TOS
             
             return View(groups);
         }
-
-        // GET: Group/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Groups == null)
-            {
-                return NotFound();
-            }
-
-            var group = await _context.Groups
-                .Include(x => x.Creator)
-                .FirstOrDefaultAsync(m => m.GroupId == id);
-            if (group == null)
-            {
-                return NotFound();
-            }
-
-            return View(group);
-        }
-
+        
         // GET: Group/Create
         public IActionResult Create()
         {
@@ -128,13 +109,20 @@ namespace TOS
         // GET: Group/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            var group = await _context.Groups
-                .Include(x => x.Creator)
-                .FirstOrDefaultAsync(m => m.GroupId == id);
-            if (group == null)
+            var group = await _context.Groups.FirstAsync(m => m.GroupId == id);
+
+            var unassigned = _context.Groups.First(x => x.NameEng == "Unassigned");
+            
+            foreach (var topic in group.Topics)
             {
-                return NotFound();
+                topic.Group.GroupId = unassigned.GroupId;
+                topic.Group = unassigned;
+                _context.Topics.Update(topic);
             }
+            
+            _context.Groups.Remove(group);
+            
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");
         }

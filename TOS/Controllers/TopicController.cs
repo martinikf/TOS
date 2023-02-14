@@ -39,9 +39,9 @@ namespace TOS.Controllers
             var topicsToShow = new List<Topic>();
             Group? group = null;
             
-            ViewData["customGroup"] = false;
-            if(groupName is not "Bachelor" or "Master" or "Unassigned")
-                ViewData["customGroup"] = true;
+            ViewData["customGroup"] = true;
+            if(groupName is "Bachelor"  or "Master" or "Unassigned")
+                ViewData["customGroup"] = false;
            
             ViewData["topicsIndexGroupName"] = groupName;
             
