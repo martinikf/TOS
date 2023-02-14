@@ -21,6 +21,8 @@ public class Topic
         public string? DescriptionLongEng { get; set; }
 
         public bool Visible { get; set; }
+
+        public bool Proposed { get; set; } = false;
         
         public int CreatorId { get; set; }
         [ForeignKey("CreatorId")]

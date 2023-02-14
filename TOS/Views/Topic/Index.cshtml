@@ -19,9 +19,10 @@
     <a asp-controller="Group" asp-action="Edit" asp-route-id="@ViewData["topicsIndexGroupId"]">Edit group</a>
 }
 
-<p>
-    <a asp-action="Create" asp-route-groupName="@ViewData["topicsIndexGroupName"]">Create New Topic</a>
-</p>
+<a asp-action="Create" asp-route-groupName="@ViewData["topicsIndexGroupName"]">Create New Topic</a>
+<br>
+<a asp-action="Propose" asp-route-groupName="@ViewData["topicsIndexGroupName"]">Propose New Topic</a>
+<br>
 
 <form asp-action="Index" method="get">
     <input type="hidden" name="groupName" value="@ViewData["topicsIndexGroupName"]"/>
@@ -61,6 +62,16 @@
         }
     </select>
     
+     <label>Show only proposed topics</label>
+        @if ((bool) ViewData["showProposed"]!)
+        {
+            <input name="showProposed" type="checkbox" value="true" checked/>
+        }
+        else
+        {
+            <input name="showProposed" type="checkbox" value="true"/>
+        }
+    
     <label>@SharedLocalizer["orderBy"]</label>
     <select name="orderBy">
         @if (!(bool) ViewData["customGroup"]!)
@@ -71,7 +82,7 @@
         @Html.SelectOption("Name", @SharedLocalizer["orderByName"].Value, (string)ViewData["orderBy"]!)
         @Html.SelectOption("Interest", @SharedLocalizer["orderByInterest"].Value, (string)ViewData["orderBy"]!)
     </select>
-    
+
     <input type="submit" value="Search"/>
 </form>
 
@@ -128,6 +139,10 @@
             else
             {
                 <span class="infobox">@SharedLocalizer["Taken topic"]</span>
+            }
+            @if (topic.Proposed)
+            {
+                <span class="infobox">@SharedLocalizer["Proposed"]</span>
             }
             @foreach (var programme in topic.TopicRecommendedPrograms)
             {

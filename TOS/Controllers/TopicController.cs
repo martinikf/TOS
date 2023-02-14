@@ -30,7 +30,7 @@ namespace TOS.Controllers
         }
 
         // GET: Topic
-        public async Task<IActionResult> Index(string groupName = "MyTopics", string programmeName = "", string searchString = "", bool showTakenTopics = false, string orderBy = "Supervisor", bool showHidden = false)
+        public async Task<IActionResult> Index(string groupName = "MyTopics", string programmeName = "", string searchString = "", bool showTakenTopics = false, string orderBy = "Supervisor", bool showHidden = false, bool showProposed = false)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName!.Equals(User.Identity!.Name));
             //If user is not logged in -> show bachelor topics as default
@@ -49,8 +49,9 @@ namespace TOS.Controllers
             ViewData["searchString"] = searchString;
             ViewData["orderBy"] = orderBy;
             ViewData["showHidden"] = showHidden;
-      
-            
+            ViewData["showProposed"] = showProposed;
+
+
             if (groupName is not "MyTopics")
             {
                 group = await _context.Groups.FirstAsync(x => x.NameEng.Equals(groupName));
@@ -70,6 +71,8 @@ namespace TOS.Controllers
                         x.UserInterestedTopics.Any(y => y.User.Equals(user)))
                     .ToListAsync();
             }
+
+           
 
             //Shows only topics with visible = true, based on parameter
             if (!showHidden)
@@ -119,6 +122,11 @@ namespace TOS.Controllers
                 case "Interest":
                     topicsToShow = topicsToShow.OrderByDescending(x => x.UserInterestedTopics.Count).ToList();
                     break;
+            }
+
+            if (showProposed)
+            {
+                topicsToShow = topicsToShow.Where(x => x.Proposed).ToList();
             }
 
             return View(topicsToShow);
@@ -196,6 +204,47 @@ namespace TOS.Controllers
             return await TopicChange(topic, programmes, files, true);
         }
 
+        public async Task<IActionResult> Propose(string groupName = "Unassigned")
+        {
+            var group = _context.Groups.First(x => x.NameEng.Equals(groupName));
+            if (group.Selectable)
+            {
+                var list = await _context.Groups.Where(x => x.Selectable).ToListAsync();
+                foreach (var g in list.Where(g => g.GroupId.Equals(group.GroupId)))
+                    g.Highlight = true;
+
+                ViewData["Groups"] = list;
+            }
+            else
+            {
+                ViewData["Groups"] = await _context.Groups.Where(x => x.GroupId.Equals(group.GroupId)).ToListAsync();
+            }
+
+            return View();
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Propose([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,CreatorId,GroupId")] Topic topic, List<IFormFile> files)
+        {
+            if(topic.NameEng is "" or null) topic.NameEng = topic.Name;
+            if(topic.DescriptionShortEng is "" or null) topic.DescriptionShortEng = topic.DescriptionShort;
+            if (topic.DescriptionLongEng is "" or null) topic.DescriptionLongEng = topic.DescriptionLong;
+            
+            topic.Creator = await _context.Users.FirstAsync(x => x.UserName.Equals(User.Identity.Name));
+            topic.Visible = false;
+            topic.Proposed = true;
+
+            _context.Add(topic);
+            await _context.SaveChangesAsync();
+            
+            //Save files
+            await CreateFiles(topic, topic.Creator,files);
+            
+            return RedirectToAction(nameof(Details), new {id = topic.TopicId});
+        }
+        
+        
         // GET: Topic/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -237,6 +286,12 @@ namespace TOS.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name,DescriptionShort,DescriptionLong,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic, int[] programmes, List<IFormFile> files)
         {
+            //For proposed topic if supervisor or visibility is edited -> someone adopted the topics -> change proposed to false
+            if (topic.Proposed && (topic.Supervisor != null || topic.Visible != false))
+            {
+                topic.Proposed = false;
+            }
+            
             return await TopicChange(topic, programmes, files);
         }
 
