@@ -114,7 +114,7 @@ namespace TOS.Areas.Identity.Pages.Account
             if (Input.Username.ToLower().EndsWith("@upol.cz"))
             {
                 //User used his email
-                var userFromEmailInput = _context.Users.FirstOrDefault(x => x.Email.Equals(Input.Username));
+                var userFromEmailInput = _context.Users.FirstOrDefault(x => x.Email.ToLower().Equals(Input.Username));
                 if (userFromEmailInput != null)
                 {
                     if(userFromEmailInput.UserName is null) throw new Exception("User has no username");
@@ -130,12 +130,14 @@ namespace TOS.Areas.Identity.Pages.Account
             Input.Username = Input.Username.ToLower();
         }
 
+        //For first login user has to use portalID or portalID + upol.cz. For logins after that user can also use full email
+        //Teacher must use their external login, TODO: not sure how they look like, but it probably works now..
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             
             //Convert input username to lowercase
-            Input.Username = Input.Username.ToLower();
+            Input.Username = Input.Username.Trim().ToLower();
 
             //Set Input.Username to correct format
             PrepareInputUsername();
@@ -186,35 +188,6 @@ namespace TOS.Areas.Identity.Pages.Account
             {
                 return false;
             }
-            /*
-             Doesn't work under linux
-            try
-            {
-                var authType = AuthType.Negotiate;
-
-                if (!OperatingSystem.IsWindows())
-                {
-                    authType = AuthType.Basic;
-                }
-
-                //TODO extract to conf file
-                var connection = new LdapConnection(new LdapDirectoryIdentifier("158.194.64.3", 389))
-                {
-                    AuthType = authType,
-                    Credential = new NetworkCredential(username, password)
-                };
-
-                connection.SessionOptions.ProtocolVersion = 3;
-                //Success
-                connection.Bind();
-            }
-            catch
-            {
-                return false;
-            }
-            
-            return true;
-            */
         }
 
         private async Task<ApplicationUser> CreateLdapUser()
@@ -231,8 +204,8 @@ namespace TOS.Areas.Identity.Pages.Account
                 if ((userStagId = GetUserStagId(studentReq)).Length >= 1) return await CreateUser(userStagId, true);
                 
                 //Student ID not found -> try teacher
-                var teacherReq = stagServicesUrl + "/rest2/users/getUcitIdnoByExternalLogin?login=" + Input.Username;
-                if ((userStagId = GetUserStagId(teacherReq)).Length >= 1)  return await CreateUser(userStagId, false);
+                var teacherReq = stagServicesUrl + "/rest2/users/getUcitIdnoByExternalLogin?externalLogin=" + Input.Username;
+                if ((userStagId = GetUserStagId(teacherReq, true)).Length >= 1)  return await CreateUser(userStagId, false);
                 
                 //Couldn't find any userStagId
                 return null;
@@ -253,12 +226,8 @@ namespace TOS.Areas.Identity.Pages.Account
             var info = GetUserStagInfo(req);
 
             var lastnameLowered = info.Item2[..1] + info.Item2[1..].ToLower();
-            var user = Seed.CreateUser(info.Item1, lastnameLowered, null, info.Item3,Input.Username,true, null, _context);
+            var user = Seed.CreateUser(info.Item1, lastnameLowered, null, info.Item3, Input.Username,true, null, _context);
             
-            //var roleToInsert = _context.Roles.FirstOrDefault(x => x.Name.Equals(roleString));
-            //if (roleToInsert is null) throw new Exception("Role that should exist does not exist: " + roleString);
-            
-            //Seed.CreateUserRole(user, roleToInsert, _context);
             await RoleHelper.AssignRoles(user, student ? Role.Student : Role.Teacher, _context);
 
             return user;
@@ -292,7 +261,7 @@ namespace TOS.Areas.Identity.Pages.Account
             }
         }
 
-        private string GetUserStagId(string reqString)
+        private string GetUserStagId(string reqString, bool teacher = false)
         {
             try
             {
@@ -301,14 +270,21 @@ namespace TOS.Areas.Identity.Pages.Account
 
                 var response = client.GetAsync(reqString).Result;
                 var responseString = response.Content.ReadAsStringAsync().Result;
-
-                var xml = XDocument.Parse(responseString);
-
-                return xml.Descendants("osCislo").First().Value;
+               
+                if (teacher)
+                {
+                    //Teacher http response is different -> not xml, contains only value in string
+                    return responseString;
+                }
+                else
+                {
+                    var xml = XDocument.Parse(responseString);
+                    return xml.Descendants("osCislo").First().Value;
+                }
             }
             catch
             {
-                throw new Exception("STAGAPI connection failed");
+                return "";
             }
         }
         
