@@ -10,9 +10,11 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using TOS.Models;
+using TOS.Resources;
 
 namespace TOS.Areas.Identity.Pages.Account
 {
@@ -24,13 +26,15 @@ namespace TOS.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IHtmlLocalizer<SharedResource> _sharedLocalizer;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IHtmlLocalizer<SharedResource> sharedLocalizer)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -38,6 +42,7 @@ namespace TOS.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _sharedLocalizer = sharedLocalizer;
         }
 
         /// <summary>
@@ -134,8 +139,8 @@ namespace TOS.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _emailSender.SendEmailAsync(Input.Email, _sharedLocalizer["Confirm your email - subject"].Value,
+                        _sharedLocalizer["Confirm your email - body"].Value + "<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>"+ _sharedLocalizer["Confirm your email - click"].Value +"</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

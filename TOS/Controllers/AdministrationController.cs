@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TOS.Data;
 using TOS.Models;
@@ -6,6 +7,7 @@ using TOS.Services;
 
 namespace TOS.Controllers;
 
+[Authorize(Roles ="Administrator")]
 public class AdministrationController : Controller
 {
     
@@ -104,6 +106,11 @@ public class AdministrationController : Controller
     {
         var user = await _context.Users.FirstAsync(x => x.Id.Equals(id));
         ViewData["Roles"] = new List<string> {"Student", "Teacher", "Administrator", "External"};
+
+        ViewData["Student"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name == "Student").Id));
+        ViewData["Teacher"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name =="Teacher")!.Id));
+        ViewData["Administrator"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name =="Administrator")!.Id));
+        ViewData["External"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name =="External")!.Id));
         
         return View(user);
     }

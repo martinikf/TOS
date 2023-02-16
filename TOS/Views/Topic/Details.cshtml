@@ -68,7 +68,6 @@
             else {
                 div.style.display = 'block';
                 console.log(replyForm + ", show");
-        
             }
         }
     </script>
@@ -77,9 +76,10 @@
 
 <h1>Details</h1>
 
-
-<a href="javascript:void(0)" class="btn btn-primary @ViewData["UserInterestClass"]" id="btn-interest">@ViewData["UserInterestString"] </a>
-
+@if (User.IsInRole("InterestTopic"))
+{
+    <a href="javascript:void(0)" class="btn btn-primary @ViewData["UserInterestClass"]" id="btn-interest">@ViewData["UserInterestString"] </a>
+}
 
 <div>
     <h4>@Html.DisplayFor(model => model.Name)</h4>
@@ -109,21 +109,25 @@
     </p>
     <h5>@SharedLocalizer["Topic group"]</h5>
     <p>@Html.SelectStringByLanguage(Model.Group.NameEng, Model.Group.Name)</p>
-    <div>
-       <h2>@SharedLocalizer["Attachments"]</h2>
-       <hr/>
-       @foreach (var attachment in Model.Attachments)
-       {
-           <div class="Attachment border border-dark rounded p-2 m-2 col-sm-4">
-               <h4>@attachment.Name</h4>
-               @attachment.Creator.Email
-               <!-- FILE -->
-               <a href="/files/@attachment.TopicId/@attachment.Name">Download File</a>
-           </div>
-       }
-   </div>
     
-    @if (User.Identity.Name != null)
+    @if (Model.Attachments.Count > 0)
+    {
+        <div>
+            <h2>@SharedLocalizer["Attachments"]</h2>
+            <hr/>
+            @foreach (var attachment in Model.Attachments)
+            {
+                <div class="Attachment border border-dark rounded p-2 m-2 col-sm-4">
+                    <h4>@attachment.Name</h4>
+                    @attachment.Creator.Email
+                    <!-- FILE -->
+                    <a href="/files/@attachment.TopicId/@attachment.Name">Download File</a>
+                </div>
+            }
+        </div>
+    }
+    
+    @if (User.IsInRole("SeeComments"))
     {
         <div class="CommentSection">
             <div class="Comments">
@@ -134,7 +138,7 @@
                         <div class=" border border-dark rounded p-2 m-2">
 
                             <div class="Comment__body">
-                                @if (!comment.Anonymous || User.IsInRole("Teacher") || User.Identity.Name.Equals(comment.Author.UserName))
+                                @if (!comment.Anonymous || User.IsInRole("SeeAuthorOfAnonymousComment") || User.Identity.Name.Equals(comment.Author.UserName))
                                 {
                                     if (comment.Anonymous)
                                     {
@@ -164,7 +168,7 @@
                                     }
                                 </p>
                                 <button class="ReplyButton" value="@comment.CommentId" onclick="ReplyButtonClick(this.value)">Reply</button>
-                                @if(User.Identity.Name.Equals(comment.Author.UserName) || User.IsInRole("Teacher"))
+                                @if((User.Identity.Name.Equals(comment.Author.UserName) && User.IsInRole("DeleteComment")) || User.IsInRole("DeleteAnyComment"))
                                 {
                                     <a class="DeleteCommentButton" asp-action="DeleteComment" asp-route-commentId="@comment.CommentId" asp-route-topicId="@Model.TopicId">Delete</a>
                                 }
@@ -179,7 +183,7 @@
                                             <label class="control-label">Reply</label>
                                             <textarea name="text" class="form-control" rows="3"></textarea>
                                         </div>
-                                        @if (User.IsInRole("Student"))
+                                        @if (User.IsInRole("CreateAnonymousComment"))
                                         {
                                             <label class="control-label">@SharedLocalizer["Anonymous"]</label>
                                             <input type="checkbox" name="anonymous" value="true"/>
@@ -207,7 +211,7 @@
                                 <textarea name="text" class="form-control" rows="3"></textarea>
                             </div>
 
-                            @if (User.IsInRole("Student"))
+                            @if (User.IsInRole("CreateAnonymousComment"))
                             {
                                 <label class="control-label">@SharedLocalizer["Anonymous"]</label>
                                 <input type="checkbox" name="anonymous" value="true"/>
@@ -223,6 +227,19 @@
         </div>
     }
 </div>
+
+<div>
+    @if (User.IsInRole("EditAnyTopic") || User.IsInRole("EditTopic"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.TopicId">Edit</a>
+    }
+
+    @if(User.IsInRole("DeleteAnyTopic") || User.IsInRole("DeleteTopic"))
+    {
+        <a asp-action="Delete" asp-route-id="@Model?.TopicId">Delete</a>
+    }
+</div>
+
 
 @functions{
 
@@ -256,7 +273,3 @@
     }
 }
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.TopicId">Edit</a> |
-    <a asp-action="Delete" asp-route-id="@Model?.TopicId">Delete</a>
-</div>

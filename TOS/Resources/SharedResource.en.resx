@@ -120,4 +120,7 @@
     <data name="orderBy" xml:space="preserve">
         <value>Order by</value>
     </data>
+    <data name="NavUnassigned" xml:space="preserve">
+        <value>Unassigned topics</value>
+    </data>
 </root>

@@ -41,7 +41,7 @@
                     @if (User.IsInRole("EditProposedTopic"))
                     {
                         <li class ="nav-item">
-                            <a class="nav-link text-dark" asp-action="Index" asp-controller="Topic" asp-route-groupName="Unassigned" asp-route-showHidden="true">@SharedLocalizer["NavUnassigned"]</a>
+                            <a class="nav-link text-dark" asp-action="Index" asp-controller="Topic" asp-route-groupName="Unassigned" asp-route-showHidden="true" asp-route-showProposed="true">@SharedLocalizer["NavUnassigned"]</a>
                         </li>
                     }
                     @if(User.Identity.IsAuthenticated)
@@ -52,7 +52,7 @@
                     }
                     @if (User.IsInRole("Administrator"))
                     {
-                        <li class="nav-item">>
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-action="Index" asp-controller="Administration">@SharedLocalizer["Administration"]</a>
                         </li>
                     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -60,6 +61,8 @@ namespace TOS
         }
         
         // GET: Group/Create
+        
+        [Authorize(Roles ="CreateGroup")]
         public IActionResult Create()
         {
             return View();
@@ -68,9 +71,10 @@ namespace TOS
         // POST: Group/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles ="CreateGroup")]
         public async Task<IActionResult> Create([Bind("GroupId,Name,NameEng,CreatorId,Selectable,Visible")] Group group)
         {
-            if(group.NameEng == "") group.NameEng = group.Name;
+            if(string.IsNullOrEmpty(group.NameEng)) group.NameEng = group.Name;
             
             group.CreatorId = _context.Users.First(x => User.Identity != null && x.UserName == User.Identity.Name).Id;
             
@@ -80,18 +84,30 @@ namespace TOS
         }
 
         // GET: Group/Edit/5
+        
+        [Authorize(Roles ="EditGroup,EditAnyGroup")]
         public async Task<IActionResult> Edit(int? id)
         {
             var group = await _context.Groups.FindAsync(id);
-
+            
             return View(group);
         }
 
         // POST: Group/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles ="EditGroup,EditAnyGroup")]
         public async Task<IActionResult> Edit(int id, [Bind("GroupId,Name,CreatorId,Selectable,Visible")] Group group)
         {
+            //If user has only Role EditGroup, check if he is the owner of the group
+            if (User.IsInRole("EditGroup") && !User.IsInRole("EditAnyGroup"))
+            {
+                if (group is null || group.CreatorId != _context.Users.First(x => User.Identity != null && x.UserName == User.Identity.Name).Id)
+                {
+                    return Forbid();
+                }
+            }
+
             if(group.NameEng == "") group.NameEng = group.Name;
             
             //Why
@@ -104,10 +120,20 @@ namespace TOS
         }
 
         // GET: Group/Delete/5
+        [Authorize(Roles ="DeleteGroup,DeleteAnyGroup")]
         public async Task<IActionResult> Delete(int? id)
         {
             var group = await _context.Groups.FirstAsync(m => m.GroupId == id);
 
+            //If use has only Role DeleteGroup, check if he is the owner of the group
+            if (User.IsInRole("DeleteGroup") && !User.IsInRole("DeleteAnyGroup"))
+            {
+                if (group is null || group.CreatorId != _context.Users.First(x => User.Identity != null && x.UserName == User.Identity.Name).Id)
+                {
+                    return Forbid();
+                }
+            }
+            
             //Delete group's topics
             _context.Topics.RemoveRange(group.Topics);
             await _context.SaveChangesAsync();
@@ -118,29 +144,6 @@ namespace TOS
 
             return RedirectToAction("Index");
         }
-
-        // POST: Group/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Groups == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Groups'  is null.");
-            }
-            var @group = await _context.Groups.FindAsync(id);
-            if (@group != null)
-            {
-                _context.Groups.Remove(@group);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool GroupExists(int id)
-        {
-          return (_context.Groups?.Any(e => e.GroupId == id)).GetValueOrDefault();
-        }
+        
     }
 }

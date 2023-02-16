@@ -41,7 +41,10 @@
 </div>
 
 <div>
-    <a asp-action="Delete" asp-route-id="@Model.GroupId">Delete</a>
+    @if (User.IsInRole("DeleteGroup") || User.IsInRole("DeleteAnyGroup"))
+    {
+        <a asp-action="Delete" asp-route-id="@Model.GroupId">Delete</a>
+    }
     <a asp-action="Index">Back to List</a>
 </div>
 

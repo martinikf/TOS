@@ -14,15 +14,19 @@
 
 <h1>@SharedLocalizer[(string)ViewData["topicsIndexGroupName"]!]</h1>
 
-@if (@ViewData["topicsIndexGroupId"] != null)
+@if (@ViewData["topicsIndexGroupId"] != null && (User.IsInRole("EditGroup") || User.IsInRole("EditAnyGroup")))
 {
     <a asp-controller="Group" asp-action="Edit" asp-route-id="@ViewData["topicsIndexGroupId"]">Edit group</a>
 }
 
-<a asp-action="Create" asp-route-groupName="@ViewData["topicsIndexGroupName"]">Create New Topic</a>
-<br>
-<a asp-action="Propose" asp-route-groupName="@ViewData["topicsIndexGroupName"]">Propose New Topic</a>
-<br>
+@if (User.IsInRole("CreateTopic"))
+{
+    <a asp-action="Create" asp-route-groupName="@ViewData["topicsIndexGroupName"]">Create New Topic</a>
+}
+@if (User.IsInRole("ProposeTopic"))
+{
+    <a asp-action="Propose" asp-route-groupName="@ViewData["topicsIndexGroupName"]">Propose New Topic</a>
+}
 
 <form asp-action="Index" method="get">
     <input type="hidden" name="groupName" value="@ViewData["topicsIndexGroupName"]"/>
@@ -37,14 +41,17 @@
     {
         <input name="showTakenTopics" type="checkbox" value="true"/>
     }
-    <label>Show hidden topics</label>
-    @if ((bool) ViewData["showHidden"]!)
+    @if (User.IsInRole("SeeHiddenTopics"))
     {
-        <input name="showHidden" type="checkbox" value="true" checked/>
-    }
-    else
-    {
-        <input name="showHidden" type="checkbox" value="true"/>
+        <label>Show hidden topics</label>
+        @if ((bool) ViewData["showHidden"]!)
+        {
+            <input name="showHidden" type="checkbox" value="true" checked/>
+        }
+        else
+        {
+            <input name="showHidden" type="checkbox" value="true"/>
+        }
     }
     
     <select name="programmeName">
@@ -61,8 +68,9 @@
             }
         }
     </select>
-    
-     <label>Show only proposed topics</label>
+    @if (User.IsInRole("SeeProposedTopics"))
+    {
+        <label>Show only proposed topics</label>
         @if ((bool) ViewData["showProposed"]!)
         {
             <input name="showProposed" type="checkbox" value="true" checked/>
@@ -71,6 +79,7 @@
         {
             <input name="showProposed" type="checkbox" value="true"/>
         }
+    }
     
     <label>@SharedLocalizer["orderBy"]</label>
     <select name="orderBy">

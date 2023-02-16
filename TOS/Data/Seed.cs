@@ -140,7 +140,9 @@ public static class Seed
         CreateRole("InterestTopic", ctx);
         CreateRole("AssignedToTopic", ctx);
         CreateRole("SupervisorToTopic", ctx);
-
+        CreateRole("SeeHiddenTopics", ctx);
+        CreateRole("UploadAttachments", ctx);
+        CreateRole("SeeProposedTopics", ctx);
         //Groups
         CreateRole("CreateGroup", ctx);
         CreateRole("EditGroup", ctx);
@@ -148,11 +150,13 @@ public static class Seed
         CreateRole("EditAnyGroup", ctx);
         CreateRole("DeleteAnyGroup", ctx);
         CreateRole("AssignedToGroup", ctx);
+        CreateRole("ShowHiddenGroups", ctx);
         //Comments
         CreateRole("CreateComment", ctx);
         CreateRole("CreateAnonymousComment", ctx);
         CreateRole("DeleteComment", ctx);
         CreateRole("DeleteAnyComment", ctx);
+        CreateRole("SeeComments", ctx);
         //Administration
         CreateRole("CreateProgramme", ctx);
         CreateRole("EditProgramme", ctx);
@@ -192,7 +196,7 @@ public static class Seed
             await RoleHelper.AssignRoles(student, Role.Student, ctx);
         }
 
-        var unassignedGroup = CreateGroup("Nezařazeno", "Unassigned", adminUser, true, false, ctx);
+        var unassignedGroup = CreateGroup("Nezařazeno", "Unassigned", adminUser, false, false, ctx);
         var bachelorGroup = CreateGroup("Bakalářská", "Bachelor", adminUser, true, true, ctx);
         var masterGroup = CreateGroup("Magisterská", "Master", adminUser, true, true, ctx);
 

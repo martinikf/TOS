@@ -22,6 +22,7 @@ public static class RoleHelper
                 roles.Add("DeleteComment");
                 roles.Add("AssignedToTopic");
                 roles.Add("AssignedToGroup");
+                roles.Add("SeeComments");
                 break;
             case Role.Teacher:
                 roles.Add("Teacher");
@@ -37,6 +38,11 @@ public static class RoleHelper
                 roles.Add("EditGroup");
                 roles.Add("DeleteGroup");
                 roles.Add("SupervisorToTopic");
+                roles.Add("ShowHiddenGroups");
+                roles.Add("SeeHiddenTopics");
+                roles.Add("SeeProposedTopics");
+                roles.Add("UploadAttachments");
+                roles.Add("SeeComments");
                 break;
             case Role.External:
                 roles.Add("External");
@@ -45,6 +51,8 @@ public static class RoleHelper
                 roles.Add("DeleteTopic");
                 roles.Add("CreateComment");
                 roles.Add("DeleteComment");
+                roles.Add("UploadAttachments");
+                roles.Add("SeeComments");
                 break;
             case Role.Administrator:
                 roles.Add("Administrator");
@@ -64,9 +72,15 @@ public static class RoleHelper
                 roles.Add("DeleteGroup");
                 roles.Add("DeleteAnyGroup");
                 roles.Add("AssignRoles");
+                roles.Add("SeeComments");
                 roles.Add("CreateProgramme");
                 roles.Add("EditProgramme");
                 roles.Add("DeleteProgramme");
+                roles.Add("ShowHiddenGroups");
+                roles.Add("UploadAttachments");
+                roles.Add("SeeProposedTopics");
+                roles.Add("SeeHiddenTopics");
+
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(role), role, null);

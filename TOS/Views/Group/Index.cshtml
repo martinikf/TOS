@@ -12,21 +12,23 @@
 <h1>@SharedLocalizer["GroupsHeading"]</h1>
 
 
-<p>
+@if (User.IsInRole("CreateGroup"))
+{
     <a asp-action="Create">Create New</a>
-</p>
+}
 
 <form asp-action="Index" method="get">
     <input type="text" name="searchString" value="@ViewData["searchString"]"/>
-    
-    <label>Show hidden groups</label>
-    @if ((bool) ViewData["showHidden"]!)
-    {
-        <input name="showHidden" type="checkbox" value="true" checked/>
-    }
-    else
-    {
-        <input name="showHidden" type="checkbox" value="true"/>
+    @if(User.IsInRole("ShowHiddenGroups")){
+        <label>Show hidden groups</label>
+        @if ((bool) ViewData["showHidden"]!)
+        {
+            <input name="showHidden" type="checkbox" value="true" checked/>
+        }
+        else
+        {
+            <input name="showHidden" type="checkbox" value="true"/>
+        }
     }
     
     <input type="submit" value="Search"/>
@@ -34,22 +36,22 @@
 
 <h3>@SharedLocalizer["Used groups"]</h3>
 @foreach (var group in Model.Where(x=>x.Highlight is true)) {
-
     <div>
         <a asp-action="Index" asp-controller="Topic" asp-route-groupName="@group.NameEng">
             @Html.SelectStringByLanguage(group.NameEng, group.Name)
         </a>
         @group.Topics.Count
     </div>
-    
 }
 
 <hr/>
 <h3>@SharedLocalizer["Other groups"]</h3>
 @foreach (var group in Model.Where(x=> x.Highlight is false)) {
-
-    <a asp-action="Index" asp-controller="Topic" asp-route-groupName="@group.NameEng">
-        @Html.SelectStringByLanguage(group.NameEng, group.Name)
-    </a>
+    <div>
+        <a asp-action="Index" asp-controller="Topic" asp-route-groupName="@group.NameEng">
+            @Html.SelectStringByLanguage(group.NameEng, group.Name)
+        </a>
+        @group.Topics.Count
+    </div>
 }
 

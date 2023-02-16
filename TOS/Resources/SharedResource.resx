@@ -113,4 +113,7 @@
     <data name="orderBy" xml:space="preserve">
         <value>Seřadit podle</value>
     </data>
+    <data name="NavUnassigned" xml:space="preserve">
+        <value>Nezařazené práce</value>
+    </data>
 </root>
