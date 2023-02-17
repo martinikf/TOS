@@ -22,16 +22,14 @@ public class AdministrationController : Controller
     {
         return View();
     }
-    
-    
+
     public async Task<IActionResult> Programmes()
     {
         var programmes = await _context.Programmes.ToListAsync();
         
         return View(programmes);
     }
-    
-   
+
     public IActionResult CreateProgramme()
     {
         return View();
@@ -46,7 +44,7 @@ public class AdministrationController : Controller
         await _context.Programmes.AddAsync(programme);
         await _context.SaveChangesAsync();
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Programmes));
     }
     
     public async Task<IActionResult> EditProgramme(int? id)
@@ -68,7 +66,7 @@ public class AdministrationController : Controller
         _context.Update(programme);
         await _context.SaveChangesAsync();
         
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Programmes));
     }
     
     public async Task<IActionResult> DeleteProgramme(int? id)
@@ -111,7 +109,7 @@ public class AdministrationController : Controller
         ViewData["Teacher"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name =="Teacher")!.Id));
         ViewData["Administrator"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name =="Administrator")!.Id));
         ViewData["External"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name =="External")!.Id));
-        
+
         return View(user);
     }
     
@@ -130,6 +128,7 @@ public class AdministrationController : Controller
         };
         
         await RoleHelper.AssignRoles(user, role, _context);
+        
         return RedirectToAction(nameof(Users));
     }
 }

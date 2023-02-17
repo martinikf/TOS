@@ -80,6 +80,7 @@ namespace TOS
             
             _context.Add(group);
             await _context.SaveChangesAsync();
+            
             return RedirectToAction(nameof(Index));
         }
 
@@ -141,9 +142,8 @@ namespace TOS
             //Delete grop
             _context.Groups.Remove(group);
             await _context.SaveChangesAsync();
-
-            return RedirectToAction("Index");
+            
+            return RedirectToAction(nameof(Index));
         }
-        
     }
 }

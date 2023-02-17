@@ -25,8 +25,7 @@ namespace TOS.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly INotificationManager _notificationManager;
 
-        public TopicController(ApplicationDbContext context, IHtmlLocalizer<SharedResource> sharedLocalizer,
-            IWebHostEnvironment env, INotificationManager notificationManager)
+        public TopicController(ApplicationDbContext context, IHtmlLocalizer<SharedResource> sharedLocalizer, IWebHostEnvironment env, INotificationManager notificationManager)
         {
             _context = context;
             _sharedLocalizer = sharedLocalizer;
@@ -264,12 +263,10 @@ namespace TOS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "CreateTopic")]
-        public async Task<IActionResult> Create(
-            [Bind(
-                "TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,Visible,CreatorId,SupervisorId,AssignedId,GroupId")]
-            Topic topic, int[] programmes, List<IFormFile> files)
+        public async Task<IActionResult> Create([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic, int[] programmes, List<IFormFile> files)
         {
-            return await TopicChange(topic, programmes, files, true);
+            await TopicChange(topic, programmes, files, true);
+            return RedirectToAction(nameof(Details), new {id = topic.TopicId});
         }
 
         [Authorize(Roles = "ProposeTopic,ProposeTopicExternal")]
@@ -295,10 +292,7 @@ namespace TOS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "ProposeTopic,ProposeTopicExternal")]
-        public async Task<IActionResult> Propose(
-            [Bind(
-                "TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,CreatorId,GroupId")]
-            Topic topic, List<IFormFile> files)
+        public async Task<IActionResult> Propose([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,CreatorId,GroupId")] Topic topic, List<IFormFile> files)
         {
             if (topic.NameEng is "" or null) topic.NameEng = topic.Name;
             if (topic.DescriptionShortEng is "" or null) topic.DescriptionShortEng = topic.DescriptionShort;
@@ -368,9 +362,7 @@ namespace TOS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "EditTopic,EditAnyTopic")]
-        public async Task<IActionResult> Edit(int id,
-            [Bind("TopicId,Name,DescriptionShort,DescriptionLong,Visible,CreatorId,SupervisorId,AssignedId,GroupId")]
-            Topic topic, int[] programmes, List<IFormFile> files)
+        public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name,DescriptionShort,DescriptionLong,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic, int[] programmes, List<IFormFile> files)
         {
             if (User.IsInRole("EditTopic") && !User.IsInRole("EditAnyTopic"))
             {
@@ -386,11 +378,11 @@ namespace TOS.Controllers
                 topic.Proposed = false;
             }
 
-            return await TopicChange(topic, programmes, files);
+            await TopicChange(topic, programmes, files);
+            return RedirectToAction(nameof(Details), new {id = topic.TopicId});
         }
 
-        private async Task<IActionResult> TopicChange(Topic topic, IEnumerable<int> programmesId, List<IFormFile> files,
-            bool isNew = false)
+        private async Task TopicChange(Topic topic, IEnumerable<int> programmesId, List<IFormFile> files, bool isNew = false)
         {
             var user = await _context.Users.FirstAsync(x =>
                 User.Identity != null && x.UserName!.Equals(User.Identity.Name));
@@ -434,8 +426,6 @@ namespace TOS.Controllers
 
             //Create uploaded files
             await CreateFiles(topic, user, files);
-
-            return RedirectToAction(nameof(Index));
         }
 
         [Authorize(Roles = "DeleteTopic,DeleteAnyTopic")]
@@ -454,7 +444,7 @@ namespace TOS.Controllers
             _context.Topics.Remove(topic);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index), new {groupName = topic.Group.NameEng});
         }
 
         [Authorize(Roles = "InterestTopic")]
@@ -488,7 +478,7 @@ namespace TOS.Controllers
         }
 
         [Authorize(Roles = "UploadAttachments")]
-        public async Task<bool> CreateFiles(Topic topic, ApplicationUser user, List<IFormFile> files)
+        public async Task CreateFiles(Topic topic, ApplicationUser user, List<IFormFile> files)
         {
             foreach (var file in files)
             {
@@ -526,8 +516,6 @@ namespace TOS.Controllers
             }
 
             await _context.SaveChangesAsync();
-
-            return true;
         }
 
         [Authorize(Roles = "EditTopic,EditAnyTopic")]
