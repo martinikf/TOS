@@ -1,0 +1,91 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@using TOS.Resources
+@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using TOS.Extensions
+
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@SharedLocalizer["MyTopics"]</h1>
+
+<div>
+    <form asp-action="MyTopics" method="get">
+        <input type="hidden" name="groupName" value="@ViewData["topicsIndexGroupName"]"/>
+        <input type="text" name="searchString" placeholder="Search string..." value="@ViewData["searchString"]"/>
+        <select name="topicGroup">
+            @Html.SelectOption("All", @SharedLocalizer["Show all"].Value, ViewData["topicGroup"] as string)
+                @if (User.IsInRole("SupervisorToTopic"))
+            {
+                @Html.SelectOption("Supervisor", @SharedLocalizer["Supervisor"].Value, ViewData["topicGroup"] as string)
+            }
+            @if (User.IsInRole("AssignedToTopic"))
+            {
+                @Html.SelectOption("Assigned", @SharedLocalizer["Assigned"].Value, ViewData["topicGroup"] as string)
+            }
+            @if (User.IsInRole("InterestTopic"))
+            {
+                @Html.SelectOption("Interest", @SharedLocalizer["Interest"].Value, ViewData["topicGroup"] as string)
+            }
+            @if (User.IsInRole("CreateTopic") || User.IsInRole("ProposeTopic") || User.IsInRole("ProposeTopicExternal"))
+            {
+                @Html.SelectOption("Creator", @SharedLocalizer["Creator"].Value, ViewData["topicGroup"] as string)
+            }
+        </select>
+        <input type="submit" value="Search"/>
+    </form>
+</div>
+
+@foreach(var topicGroup in new[]{"Supervisor", "Assigned", "Interest", "Creator"})
+{
+    if ((ICollection<Topic>?)ViewData[topicGroup] != null && ((ICollection<Topic>)ViewData[topicGroup]!).Count > 0)
+    {
+        <h3>@SharedLocalizer[topicGroup]</h3>
+        foreach (var topic in (ICollection<Topic>) ViewData[topicGroup]!)
+        {
+            <div class="topic">
+                <div class="topic__name">
+                    <a asp-action="Details" asp-route-id="@topic.TopicId">
+                        <h3>@Html.SelectStringByLanguage(topic.NameEng, topic.Name)</h3>
+                    </a>
+                </div>
+                
+                    <div class="topic__supervisor">
+
+                        @Html.DisplayFor(modelItem => topic.Supervisor.FirstName)
+                        @Html.DisplayFor(modelItem => topic.Supervisor.LastName)
+
+                    </div>
+                
+                <div class="topic__infoboxes">
+                    @if (topic.AssignedStudent == null)
+                    {
+                        <span class="infobox">@SharedLocalizer["Free topic"]</span>
+                    }
+                    else
+                    {
+                        <span class="infobox">@SharedLocalizer["Taken topic"]</span>
+                    }
+                    @if (topic.Proposed)
+                    {
+                        <span class="infobox">@SharedLocalizer["Proposed"]</span>
+                    }
+                    @foreach (var programme in topic.TopicRecommendedPrograms)
+                    {
+                        <span class="infobox">@Html.SelectStringByLanguage(programme.Programme.NameEng, programme.Programme.Name)</span>
+                    }
+                </div>
+                
+                <div class="topic__description">
+                    @Html.SelectStringByLanguage(topic.DescriptionShortEng, topic.DescriptionShort)
+                </div>
+            </div>
+            <hr/>
+        }
+    }
+}
+

@@ -38,6 +38,10 @@
                     <li class ="nav-item">
                         <a class="nav-link text-dark" asp-action="Index" asp-controller="Group">@SharedLocalizer["NavGroups"]</a>
                     </li>
+                    @if (User.IsInRole("ProposeTopicExternal"))
+                    {
+                        <a class="nav-link text-dark" asp-action="Propose" asp-controller="Topic">@SharedLocalizer["Propose topic"]</a>
+                    }
                     @if (User.IsInRole("EditProposedTopic"))
                     {
                         <li class ="nav-item">
@@ -47,7 +51,7 @@
                     @if(User.Identity.IsAuthenticated)
                     {
                         <li class ="nav-item">
-                            <a class="nav-link text-dark" asp-action="Index" asp-controller="Topic" asp-route-groupName="MyTopics" asp-route-showTakenTopics="true">@SharedLocalizer["MyTopics"]</a>
+                            <a class="nav-link text-dark" asp-action="MyTopics" asp-controller="Topic">@SharedLocalizer["MyTopics"]</a>
                         </li>
                     }
                     @if (User.IsInRole("Administrator"))

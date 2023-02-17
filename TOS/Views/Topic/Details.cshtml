@@ -107,6 +107,11 @@
         @Html.DisplayFor(model => model.Supervisor.FirstName) @Html.DisplayFor(model => model.Supervisor.LastName)
         @Html.DisplayFor(model => model.Supervisor.Email)
     </p>
+    <p>
+        Created by:
+        @Html.DisplayFor(model => model.Creator.FirstName) @Html.DisplayFor(model => model.Creator.LastName)
+        @Html.DisplayFor(model => model.Creator.Email)
+    </p>
     <h5>@SharedLocalizer["Topic group"]</h5>
     <p>@Html.SelectStringByLanguage(Model.Group.NameEng, Model.Group.Name)</p>
     

@@ -48,23 +48,26 @@
                 <input asp-for="DescriptionLongEng" class="form-control" />
             </div>
 
-            <!--Group-->
-            <div class="form-group">
-                <label asp-for="GroupId" class="control-label"></label>
-                <select asp-for="GroupId" class="form-control" onchange="RefreshProgrammes()">
-                    @foreach (Group group in ViewBag.Groups)
-                    {
-                        if (group.Highlight)
+            @if (User.IsInRole("ProposeTopic"))
+            {
+                <!--Group-->
+                <div class="form-group">
+                    <label asp-for="GroupId" class="control-label"></label>
+                    <select asp-for="GroupId" class="form-control" onchange="RefreshProgrammes()">
+                        @foreach (Group group in ViewBag.Groups)
                         {
-                            <option value="@group.GroupId" selected="selected">@Html.SelectStringByLanguage(group.NameEng, group.Name)</option>
+                            if (group.Highlight)
+                            {
+                                <option value="@group.GroupId" selected="selected">@Html.SelectStringByLanguage(group.NameEng, group.Name)</option>
+                            }
+                            else
+                            {
+                                <option value="@group.GroupId">@Html.SelectStringByLanguage(group.NameEng, group.Name)</option>
+                            }
                         }
-                        else
-                        {
-                            <option value = "@group.GroupId">@Html.SelectStringByLanguage(group.NameEng, group.Name)</option>
-                        }
-                    }
-                </select>
-            </div>
+                    </select>
+                </div>
+            }
             
             @if (User.IsInRole("UploadAttachments"))
             {

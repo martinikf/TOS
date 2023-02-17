@@ -137,6 +137,7 @@ public static class Seed
         CreateRole("EditAnyTopic", ctx);
         CreateRole("DeleteAnyTopic", ctx);
         CreateRole("ProposeTopic", ctx);
+        CreateRole("ProposeTopicExternal", ctx);
         CreateRole("InterestTopic", ctx);
         CreateRole("AssignedToTopic", ctx);
         CreateRole("SupervisorToTopic", ctx);

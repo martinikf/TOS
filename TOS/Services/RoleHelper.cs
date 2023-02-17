@@ -46,7 +46,7 @@ public static class RoleHelper
                 break;
             case Role.External:
                 roles.Add("External");
-                roles.Add("ProposeTopic");
+                roles.Add("ProposeTopicExternal");
                 roles.Add("EditTopic");
                 roles.Add("DeleteTopic");
                 roles.Add("CreateComment");

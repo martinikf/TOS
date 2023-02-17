@@ -66,7 +66,7 @@ public class NotificationManager : INotificationManager
     }
 }
 
-interface INotificationManager
+public interface INotificationManager
 {
     void TopicEdit(Topic topic, ApplicationUser user);
     
