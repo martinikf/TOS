@@ -19,11 +19,11 @@
         <input type="text" name="searchString" placeholder="Search string..." value="@ViewData["searchString"]"/>
         <select name="topicGroup">
             @Html.SelectOption("All", @SharedLocalizer["Show all"].Value, ViewData["topicGroup"] as string)
-                @if (User.IsInRole("SupervisorToTopic"))
+                @if (User.IsInRole("SuperviseTopic"))
             {
                 @Html.SelectOption("Supervisor", @SharedLocalizer["Supervisor"].Value, ViewData["topicGroup"] as string)
             }
-            @if (User.IsInRole("AssignedToTopic"))
+            @if (User.IsInRole("AssignedTopic"))
             {
                 @Html.SelectOption("Assigned", @SharedLocalizer["Assigned"].Value, ViewData["topicGroup"] as string)
             }
@@ -31,7 +31,7 @@
             {
                 @Html.SelectOption("Interest", @SharedLocalizer["Interest"].Value, ViewData["topicGroup"] as string)
             }
-            @if (User.IsInRole("CreateTopic") || User.IsInRole("ProposeTopic") || User.IsInRole("ProposeTopicExternal"))
+            @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic") || User.IsInRole("ProposeTopic"))
             {
                 @Html.SelectOption("Creator", @SharedLocalizer["Creator"].Value, ViewData["topicGroup"] as string)
             }

@@ -11,15 +11,15 @@
 
 <h1>@SharedLocalizer["GroupsHeading"]</h1>
 
-
-@if (User.IsInRole("CreateGroup"))
+@if (User.IsInRole("Group") || User.IsInRole("AnyGroup"))
 {
     <a asp-action="Create">Create New</a>
 }
 
 <form asp-action="Index" method="get">
     <input type="text" name="searchString" value="@ViewData["searchString"]"/>
-    @if(User.IsInRole("ShowHiddenGroups")){
+    @if(User.IsInRole("Group") || User.IsInRole("AnyGroup"))
+    {
         <label>Show hidden groups</label>
         @if ((bool) ViewData["showHidden"]!)
         {

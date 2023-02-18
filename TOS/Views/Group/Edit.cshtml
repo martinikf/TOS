@@ -41,7 +41,7 @@
 </div>
 
 <div>
-    @if (User.IsInRole("DeleteGroup") || User.IsInRole("DeleteAnyGroup"))
+    @if ((User.IsInRole("Group") && User.Identity?.Name == Model.Creator.UserName) || User.IsInRole("AnyGroup"))
     {
         <a asp-action="Delete" asp-route-id="@Model.GroupId">Delete</a>
     }

@@ -14,12 +14,12 @@
 
 <h1>@SharedLocalizer[(string)ViewData["topicsIndexGroupName"]!]</h1>
 
-@if (@ViewData["topicsIndexGroupId"] != null && (User.IsInRole("EditGroup") || User.IsInRole("EditAnyGroup")))
+@if (@ViewData["topicsIndexGroupId"] != null && (User.IsInRole("Group") || User.IsInRole("AnyGroup")))
 {
     <a asp-controller="Group" asp-action="Edit" asp-route-id="@ViewData["topicsIndexGroupId"]">Edit group</a>
 }
 
-@if (User.IsInRole("CreateTopic"))
+@if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
 {
     <a asp-action="Create" asp-route-groupName="@ViewData["topicsIndexGroupName"]">Create New Topic</a>
 }
@@ -41,7 +41,7 @@
     {
         <input name="showTakenTopics" type="checkbox" value="true"/>
     }
-    @if (User.IsInRole("SeeHiddenTopics"))
+    @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
     {
         <label>Show hidden topics</label>
         @if ((bool) ViewData["showHidden"]!)
@@ -68,7 +68,7 @@
             }
         }
     </select>
-    @if (User.IsInRole("SeeProposedTopics"))
+    @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
     {
         <label>Show only proposed topics</label>
         @if ((bool) ViewData["showProposed"]!)

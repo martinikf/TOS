@@ -132,7 +132,7 @@
         </div>
     }
     
-    @if (User.IsInRole("SeeComments"))
+    @if (User.IsInRole("Comment"))
     {
         <div class="CommentSection">
             <div class="Comments">
@@ -173,7 +173,7 @@
                                     }
                                 </p>
                                 <button class="ReplyButton" value="@comment.CommentId" onclick="ReplyButtonClick(this.value)">Reply</button>
-                                @if((User.Identity.Name.Equals(comment.Author.UserName) && User.IsInRole("DeleteComment")) || User.IsInRole("DeleteAnyComment"))
+                                @if(@Html.CanDeleteComment(comment, User.Identity?.Name, User.IsInRole("Comment"), User.IsInRole("AnyComment")))
                                 {
                                     <a class="DeleteCommentButton" asp-action="DeleteComment" asp-route-commentId="@comment.CommentId" asp-route-topicId="@Model.TopicId">Delete</a>
                                 }
@@ -216,7 +216,7 @@
                                 <textarea name="text" class="form-control" rows="3"></textarea>
                             </div>
 
-                            @if (User.IsInRole("CreateAnonymousComment"))
+                            @if (User.IsInRole("AnonymousComment"))
                             {
                                 <label class="control-label">@SharedLocalizer["Anonymous"]</label>
                                 <input type="checkbox" name="anonymous" value="true"/>
@@ -234,12 +234,12 @@
 </div>
 
 <div>
-    @if (User.IsInRole("EditAnyTopic") || User.IsInRole("EditTopic"))
+    @if (@Html.CanEditTopic(Model, User.Identity?.Name, User.IsInRole("Topic"), User.IsInRole("AnyTopic"), User.IsInRole("ProposeTopic")))
     {
         <a asp-action="Edit" asp-route-id="@Model?.TopicId">Edit</a>
     }
 
-    @if(User.IsInRole("DeleteAnyTopic") || User.IsInRole("DeleteTopic"))
+    @if(@Html.CanDeleteTopic(Model, User.Identity?.Name, User.IsInRole("Topic"), User.IsInRole("AnyTopic"), User.IsInRole("ProposeTopic")))
     {
         <a asp-action="Delete" asp-route-id="@Model?.TopicId">Delete</a>
     }

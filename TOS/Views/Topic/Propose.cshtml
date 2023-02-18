@@ -48,7 +48,7 @@
                 <input asp-for="DescriptionLongEng" class="form-control" />
             </div>
 
-            @if (User.IsInRole("ProposeTopic"))
+            @if (!User.IsInRole("External"))
             {
                 <!--Group-->
                 <div class="form-group">
@@ -68,17 +68,14 @@
                     </select>
                 </div>
             }
-            
-            @if (User.IsInRole("UploadAttachments"))
-            {
-                <!--Attachments-->
-                <div>
-                    <h2>@SharedLocalizer["Attachments"]</h2>
-                    <!-- FILE SELECT-->
-                    <input type="file" name="files" multiple>
-                </div>
-            }
-            
+
+            <!--Attachments-->
+            <div>
+                <h2>@SharedLocalizer["Attachments"]</h2>
+                <!-- FILE SELECT-->
+                <input type="file" name="files" multiple>
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Propose" class="btn btn-primary"/>
             </div>

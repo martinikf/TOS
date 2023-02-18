@@ -16,40 +16,57 @@ public static class Seed
         var teacherRole = CreateRole("Teacher", ctx);
         var studentRole = CreateRole("Student", ctx);
         var externalRole = CreateRole("External", ctx);
+        /*
         //Topics
         CreateRole("CreateTopic", ctx);
+        CreateRole("ProposeTopic", ctx);
+
         CreateRole("EditTopic", ctx);
         CreateRole("EditProposedTopic", ctx);
+        CreateRole("EditAnyTopic", ctx);
+
         CreateRole("DeleteTopic", ctx);
         CreateRole("DeleteProposedTopic", ctx);
-        CreateRole("EditAnyTopic", ctx);
         CreateRole("DeleteAnyTopic", ctx);
-        CreateRole("ProposeTopic", ctx);
+        
         CreateRole("InterestTopic", ctx);
         CreateRole("AssignedToTopic", ctx);
         CreateRole("SupervisorToTopic", ctx);
         
         //Groups
         CreateRole("CreateGroup", ctx);
+        
         CreateRole("EditGroup", ctx);
-        CreateRole("DeleteGroup", ctx);
         CreateRole("EditAnyGroup", ctx);
+
+        CreateRole("DeleteGroup", ctx);
         CreateRole("DeleteAnyGroup", ctx);
+        
         CreateRole("AssignedToGroup", ctx);
+        
         //Comments
         CreateRole("CreateComment", ctx);
         CreateRole("CreateAnonymousComment", ctx);
+        
         CreateRole("DeleteComment", ctx);
         CreateRole("DeleteAnyComment", ctx);
-        //Administration
-        CreateRole("CreateProgramme", ctx);
-        CreateRole("EditProgramme", ctx);
-        CreateRole("DeleteProgramme", ctx);
-        CreateRole("AssignRoles", ctx);
+*/
+        CreateRole("Topic", ctx);
+        CreateRole("ProposeTopic", ctx);
+        CreateRole("AnyTopic", ctx);
 
+        CreateRole("Group", ctx);
+        CreateRole("AnyGroup", ctx);
+        
+        CreateRole("Comment", ctx);
+        CreateRole("AnonymousComment", ctx);
+        CreateRole("AnyComment", ctx);
 
-
-
+        CreateRole("InterestTopic", ctx);
+        CreateRole("AssignedTopic", ctx);
+        CreateRole("SuperviseTopic", ctx);
+        
+        
         //Create users
         var adminUser = CreateUser("Admin", "User", "", "admin@tos.tos","admin@tos.tos", true, "password", ctx);
         var teacherUser = CreateUser("Teacher", "User","",  "teacher@tos.tos","teacher@tos.tos", true, "password", ctx);
@@ -128,41 +145,20 @@ public static class Seed
         var teacherRole = CreateRole("Teacher", ctx);
         var studentRole = CreateRole("Student", ctx);
         var externalRole = CreateRole("External", ctx);
-        //Topics
-        CreateRole("CreateTopic", ctx);
-        CreateRole("EditTopic", ctx);
-        CreateRole("EditProposedTopic", ctx);
-        CreateRole("DeleteTopic", ctx);
-        CreateRole("DeleteProposedTopic", ctx);
-        CreateRole("EditAnyTopic", ctx);
-        CreateRole("DeleteAnyTopic", ctx);
+        CreateRole("Topic", ctx);
         CreateRole("ProposeTopic", ctx);
-        CreateRole("ProposeTopicExternal", ctx);
+        CreateRole("AnyTopic", ctx);
+
+        CreateRole("Group", ctx);
+        CreateRole("AnyGroup", ctx);
+        
+        CreateRole("Comment", ctx);
+        CreateRole("AnonymousComment", ctx);
+        CreateRole("AnyComment", ctx);
+
         CreateRole("InterestTopic", ctx);
-        CreateRole("AssignedToTopic", ctx);
-        CreateRole("SupervisorToTopic", ctx);
-        CreateRole("SeeHiddenTopics", ctx);
-        CreateRole("UploadAttachments", ctx);
-        CreateRole("SeeProposedTopics", ctx);
-        //Groups
-        CreateRole("CreateGroup", ctx);
-        CreateRole("EditGroup", ctx);
-        CreateRole("DeleteGroup", ctx);
-        CreateRole("EditAnyGroup", ctx);
-        CreateRole("DeleteAnyGroup", ctx);
-        CreateRole("AssignedToGroup", ctx);
-        CreateRole("ShowHiddenGroups", ctx);
-        //Comments
-        CreateRole("CreateComment", ctx);
-        CreateRole("CreateAnonymousComment", ctx);
-        CreateRole("DeleteComment", ctx);
-        CreateRole("DeleteAnyComment", ctx);
-        CreateRole("SeeComments", ctx);
-        //Administration
-        CreateRole("CreateProgramme", ctx);
-        CreateRole("EditProgramme", ctx);
-        CreateRole("DeleteProgramme", ctx);
-        CreateRole("AssignRoles", ctx);
+        CreateRole("AssignedTopic", ctx);
+        CreateRole("SuperviseTopic", ctx);
 
         var adminUser = CreateUser("Admin", "User", "ADMIN", "admin@tos.tos", "admin@tos.tos", true, "password",
             ctx);
@@ -190,10 +186,10 @@ public static class Seed
                 "miroslova.kolarik@upol.c", true, "password", ctx), Role.Teacher, ctx);
 
         //create random students
-        for (int i = 0; i < 900; i++)
+        for (int i = 0; i < 50; i++)
         {
-            var student = CreateUser("Student" + i, "Student" + i, null, "student " + i + "@student.tos",
-                "student " + i + "@student.tos", true, "password", ctx);
+            var student = CreateUser("Student" + i, "Student" + i, null, "student" + i + "@student.tos",
+                "student" + i + "@student.tos", true, "password", ctx);
             await RoleHelper.AssignRoles(student, Role.Student, ctx);
         }
 

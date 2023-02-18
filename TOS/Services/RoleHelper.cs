@@ -15,72 +15,45 @@ public static class RoleHelper
         {
             case Role.Student:
                 roles.Add("Student");
+                
                 roles.Add("ProposeTopic");
                 roles.Add("InterestTopic");
-                roles.Add("CreateComment");
-                roles.Add("CreateAnonymousComment");
-                roles.Add("DeleteComment");
-                roles.Add("AssignedToTopic");
-                roles.Add("AssignedToGroup");
-                roles.Add("SeeComments");
+                
+                roles.Add("Comment");
+                roles.Add("AnonymousComment");
+
+                roles.Add("AssignedTopic");
                 break;
             case Role.Teacher:
                 roles.Add("Teacher");
-                roles.Add("CreateTopic");
-                roles.Add("EditTopic");
-                roles.Add("EditProposedTopic");
-                roles.Add("DeleteTopic");
-                roles.Add("DeleteProposedTopic");
-                roles.Add("CreateComment");
-                roles.Add("DeleteComment");
-                roles.Add("DeleteAnyComment");
-                roles.Add("CreateGroup");
-                roles.Add("EditGroup");
-                roles.Add("DeleteGroup");
-                roles.Add("SupervisorToTopic");
-                roles.Add("ShowHiddenGroups");
-                roles.Add("SeeHiddenTopics");
-                roles.Add("SeeProposedTopics");
-                roles.Add("UploadAttachments");
-                roles.Add("SeeComments");
+                
+                roles.Add("Topic");
+
+                roles.Add("Comment");
+                roles.Add("AnyComment");
+                
+                roles.Add("Group");
+
+                roles.Add("SuperviseTopic");
                 break;
             case Role.External:
                 roles.Add("External");
-                roles.Add("ProposeTopicExternal");
-                roles.Add("EditTopic");
-                roles.Add("DeleteTopic");
-                roles.Add("CreateComment");
-                roles.Add("DeleteComment");
-                roles.Add("UploadAttachments");
-                roles.Add("SeeComments");
+                
+                roles.Add("ProposeTopic");
+                
+                roles.Add("Comment");
                 break;
             case Role.Administrator:
                 roles.Add("Administrator");
-                roles.Add("CreateTopic");
-                roles.Add("EditTopic");
-                roles.Add("EditProposedTopic");
-                roles.Add("EditAnyTopic");
-                roles.Add("DeleteTopic");
-                roles.Add("DeleteProposedTopic");
-                roles.Add("DeleteAnyTopic");
-                roles.Add("CreateComment");
-                roles.Add("DeleteComment");
-                roles.Add("DeleteAnyComment");
-                roles.Add("CreateGroup");
-                roles.Add("EditGroup");
-                roles.Add("EditAnyGroup");
-                roles.Add("DeleteGroup");
-                roles.Add("DeleteAnyGroup");
-                roles.Add("AssignRoles");
-                roles.Add("SeeComments");
-                roles.Add("CreateProgramme");
-                roles.Add("EditProgramme");
-                roles.Add("DeleteProgramme");
-                roles.Add("ShowHiddenGroups");
-                roles.Add("UploadAttachments");
-                roles.Add("SeeProposedTopics");
-                roles.Add("SeeHiddenTopics");
 
+                roles.Add("Topic");
+                roles.Add("AnyTopic");
+
+                roles.Add("Comment");
+                roles.Add("AnyComment");
+                
+                roles.Add("Group");
+                roles.Add("AnyGroup");
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(role), role, null);

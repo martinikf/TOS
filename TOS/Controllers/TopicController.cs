@@ -63,7 +63,7 @@ namespace TOS.Controllers
                 ViewData["topicsIndexGroupId"] = group.GroupId;
             
             //Shows only topics with visible = true, based on parameter
-            if (!showHidden && !showProposed || !User.IsInRole("SeeHiddenTopics"))
+            if (!showHidden && !showProposed || !(User.IsInRole("Group") || User.IsInRole("AnyGroup")))
             {
                 topicsToShow = topicsToShow.Where(x => x.Visible).ToList();
             }
@@ -116,7 +116,7 @@ namespace TOS.Controllers
                     break;
             }
 
-            if (showProposed && User.IsInRole("SeeProposedTopics"))
+            if (showProposed && User.IsInRole("Group") || User.IsInRole("AnyGroup"))
             {
                 topicsToShow = topicsToShow.Where(x => x.Proposed).ToList();
             }
@@ -141,7 +141,7 @@ namespace TOS.Controllers
             if (topicGroup is "Supervisor" or "All")
             {
                 ViewData["Supervisor"] = await _context.Topics
-                    .Where(x=>x.Supervisor.UserName.Equals(User.Identity!.Name))
+                    .Where(x=>x.Supervisor != null && x.Supervisor.UserName!.Equals(User.Identity!.Name))
                     .Where(y =>
                     y.Name.ToLower().Contains(searchString) ||
                     y.NameEng.ToLower().Contains(searchString) ||
@@ -232,13 +232,13 @@ namespace TOS.Controllers
             return View(topic);
         }
 
-        [Authorize(Roles = "CreateTopic")]
-        public async Task<IActionResult> Create(string? groupName = null)
+        [Authorize(Roles = "Topic,AnyTopic")]
+        public async Task<IActionResult> Create(string? groupName = "Unassigned")
         {
             var groupProvided = _context.Groups.FirstOrDefault(x => x.NameEng.ToLower().Equals(groupName.ToLower()));
 
             //For custom groups, allow only the group provided
-            if (groupProvided != null && !groupProvided.Selectable)
+            if (groupProvided != null && !groupProvided.Selectable && groupName != "Unassigned")
                 ViewData["Groups"] = new List<Group> {groupProvided};
             else //Else allow any selectable group
             {
@@ -251,10 +251,10 @@ namespace TOS.Controllers
 
             ViewData["Programmes"] = await _context.Programmes.Where(x => x.Active).ToListAsync();
 
-            ViewData["UsersToAssign"] = new SelectList(GetUsersWithRole("AssignedToTopic"), "Id", "Email");
+            ViewData["UsersToAssign"] = new SelectList(GetUsersWithRole("AssignedTopic"), "Id", "Email");
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            ViewData["UsersToSupervise"] = new SelectList(GetUsersWithRole("SupervisorToTopic"), "Id", "Email", userId);
+            ViewData["UsersToSupervise"] = new SelectList(GetUsersWithRole("SuperviseTopic"), "Id", "Email", userId);
 
             return View();
         }
@@ -262,14 +262,14 @@ namespace TOS.Controllers
         // POST: Topic/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "CreateTopic")]
+        [Authorize(Roles = "Topic,AnyTopic")]
         public async Task<IActionResult> Create([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic, int[] programmes, List<IFormFile> files)
         {
             await TopicChange(topic, programmes, files, true);
             return RedirectToAction(nameof(Details), new {id = topic.TopicId});
         }
 
-        [Authorize(Roles = "ProposeTopic,ProposeTopicExternal")]
+        [Authorize(Roles = "ProposeTopic")]
         public async Task<IActionResult> Propose(string? groupName = "Unassigned")
         {
             var group = _context.Groups.First(x => x.NameEng.Equals(groupName));
@@ -291,7 +291,7 @@ namespace TOS.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "ProposeTopic,ProposeTopicExternal")]
+        [Authorize(Roles = "ProposeTopic")]
         public async Task<IActionResult> Propose([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,CreatorId,GroupId")] Topic topic, List<IFormFile> files)
         {
             if (topic.NameEng is "" or null) topic.NameEng = topic.Name;
@@ -318,7 +318,7 @@ namespace TOS.Controllers
         }
 
 
-        [Authorize(Roles = "EditTopic,EditAnyTopic")]
+        [Authorize(Roles = "Topic,AnyTopic,ProposeTopic")]
         public async Task<IActionResult> Edit(int? id)
         {
             Topic? topic;
@@ -327,8 +327,7 @@ namespace TOS.Controllers
                 return NotFound();
             }
 
-            ViewData["UsersToAssign"] =
-                new SelectList(GetUsersWithRole("AssignedToTopic"), "Id", "Email", topic.AssignedId);
+            ViewData["UsersToAssign"] = new SelectList(GetUsersWithRole("AssignedTopic"), "Id", "Email", topic.AssignedId);
             if (topic.Group.Selectable)
             {
                 ViewData["Group"] = new SelectList(_context.Groups.Where(x => x.Selectable), "GroupId", "Name",
@@ -339,8 +338,7 @@ namespace TOS.Controllers
                 ViewData["Group"] = new SelectList(new List<Group> {topic.Group}, "GroupId", "Name", topic.GroupId);
             }
 
-            ViewData["UsersToSupervise"] =
-                new SelectList(GetUsersWithRole("SupervisorToTopic"), "Id", "Email", topic.SupervisorId);
+            ViewData["UsersToSupervise"] = new SelectList(GetUsersWithRole("SupervisorTopic"), "Id", "Email", topic.SupervisorId);
 
             var programmes = new HashSet<Programme>();
             foreach (var programme in _context.Programmes.Where(x => x.Active).ToList())
@@ -361,23 +359,21 @@ namespace TOS.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "EditTopic,EditAnyTopic")]
+        [Authorize(Roles = "Topic,AnyTopic,ProposeTopic")]
         public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name,DescriptionShort,DescriptionLong,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic, int[] programmes, List<IFormFile> files)
         {
-            if (User.IsInRole("EditTopic") && !User.IsInRole("EditAnyTopic"))
-            {
-                var user = await _context.Users.FirstAsync(x =>
-                    User.Identity != null && x.UserName!.Equals(User.Identity.Name));
-                if (topic.CreatorId != user.Id && topic.SupervisorId != user.Id)
-                    return Forbid();
-            }
+            var user = await _context.Users.FirstAsync(x => User.Identity != null && x.UserName!.Equals(User.Identity.Name));
+            var canEdit = User.IsInRole("AnyTopic");
+            
+            //User can edit topics he created or supervise
+            if (User.IsInRole("Topic") && topic.CreatorId == user.Id || topic.SupervisorId == user.Id || topic.Proposed)
+                canEdit = true;
+            if(User.IsInRole("ProposeTopic") && topic.Proposed && topic.CreatorId == user.Id)
+                canEdit = true;
 
-            //For proposed topic if supervisor or visibility is edited -> someone adopted the topics -> change proposed to false
-            if (topic.Proposed && (topic.Supervisor != null || topic.Visible != false))
-            {
-                topic.Proposed = false;
-            }
-
+            if (!canEdit)
+                return Forbid();
+                
             await TopicChange(topic, programmes, files);
             return RedirectToAction(nameof(Details), new {id = topic.TopicId});
         }
@@ -428,23 +424,29 @@ namespace TOS.Controllers
             await CreateFiles(topic, user, files);
         }
 
-        [Authorize(Roles = "DeleteTopic,DeleteAnyTopic")]
+        [Authorize(Roles = "Topic,AnyTopic,ProposeTopic")]
         public async Task<IActionResult> Delete(int? id)
         {
             var topic = await _context.Topics.FirstAsync(x => x.TopicId.Equals(id));
+            var groupName = topic.Group.NameEng;
 
-            if (User.IsInRole("DeleteTopic") && !User.IsInRole("DeleteAnyTopic"))
-            {
-                var user = await _context.Users.FirstAsync(x =>
-                    User.Identity != null && x.UserName!.Equals(User.Identity.Name));
-                if (topic.CreatorId != user.Id && topic.SupervisorId != user.Id)
-                    return Forbid();
-            }
+            var user = await _context.Users.FirstAsync(x => User.Identity != null && x.UserName!.Equals(User.Identity.Name));
+            var canEdit = User.IsInRole("AnyTopic");
+            
+            //User can edit topics he created or supervise
+            if (User.IsInRole("Topic") && topic.CreatorId == user.Id || topic.SupervisorId == user.Id || topic.Proposed)
+                canEdit = true;
+            if(User.IsInRole("ProposeTopic") && topic.Proposed && topic.CreatorId == user.Id)
+                canEdit = true;
+
+            if (!canEdit)
+                return Forbid();
+            
 
             _context.Topics.Remove(topic);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index), new {groupName = topic.Group.NameEng});
+            return RedirectToAction(nameof(Index), new {groupName = groupName});
         }
 
         [Authorize(Roles = "InterestTopic")]
@@ -453,7 +455,7 @@ namespace TOS.Controllers
             if (topicId == null) throw new Exception("topicId should be provided");
 
             //Current user
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName.Equals(User.Identity.Name));
+            var user = await _context.Users.FirstAsync(x => x.UserName!.Equals(User.Identity!.Name));
 
             //Topic
             var topic = await _context.Topics.FirstAsync(x => x.TopicId.Equals(topicId));
@@ -477,7 +479,7 @@ namespace TOS.Controllers
             return Json(true);
         }
 
-        [Authorize(Roles = "UploadAttachments")]
+        [Authorize(Roles = "Attachment,AnyAttachment")]
         public async Task CreateFiles(Topic topic, ApplicationUser user, List<IFormFile> files)
         {
             foreach (var file in files)
@@ -518,10 +520,10 @@ namespace TOS.Controllers
             await _context.SaveChangesAsync();
         }
 
-        [Authorize(Roles = "EditTopic,EditAnyTopic")]
+        [Authorize(Roles = "Attachment,AnyAttachment")]
         public async Task<IActionResult> DeleteAttachment(int attachmentId, int topicId)
         {
-            if (User.IsInRole("DeleteTopic") && !User.IsInRole("DeleteAnyTopic"))
+            if (User.IsInRole("Topic") && !User.IsInRole("AnyTopic"))
             {
                 var user = await _context.Users.FirstAsync(x =>
                     User.Identity != null && x.UserName!.Equals(User.Identity.Name));
@@ -546,7 +548,7 @@ namespace TOS.Controllers
             return RedirectToAction("Edit", new {id = topicId});
         }
 
-        [Authorize(Roles = "CreateComment")]
+        [Authorize(Roles = "Comment,AnyComment")]
         public async Task<IActionResult> AddComment(int id, string text, bool anonymous, int? parentId = null)
         {
             //get current user
@@ -566,7 +568,7 @@ namespace TOS.Controllers
             return RedirectToAction("Details", new {id = id});
         }
 
-        [Authorize(Roles = "DeleteComment,DeleteAnyComment")]
+        [Authorize(Roles = "Comment,AnyComment")]
         public async Task<IActionResult> DeleteComment(int commentId, int topicId)
         {
             var comment = await _context.Comments.FirstOrDefaultAsync(x => x.CommentId.Equals(commentId));

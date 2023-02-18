@@ -117,7 +117,7 @@
             }
             
             <!--Attachments-->
-            @if (User.IsInRole("UploadAttachments"))
+            @if (User.IsInRole("Attachment") || User.IsInRole("AnyAttachment"))
             {
                 <div>
                     <h2>@SharedLocalizer["Attachments"]</h2>
