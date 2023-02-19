@@ -2,6 +2,7 @@
 @using TOS.Resources
 @using System.Collections
 @using System.Globalization
+@using TOS.Data
 @using TOS.Extensions
 @model TOS.Models.Topic
 
@@ -20,6 +21,7 @@
     <div class="col-md-4">
         <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Type" value="@ViewData["TopicType"]"/>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -55,22 +57,25 @@
                 </label>
             </div>
             
-            <!--Supervisor-->
+             <!--Supervisor-->
             <div class="form-group">
-               <label>@SharedLocalizer["Supervisor"]</label>
-               <select class="form-control" id="ddlSupervisor" asp-for="SupervisorId" asp-items="ViewBag.UsersToSupervise">
-                   <option value="null">@SharedLocalizer["Unassigned option"]</option>
-               </select>
-           </div>
-           
-            <!--Assigned student-->
-            <div class="form-group">
-                <label>@SharedLocalizer["Assigned student"]</label>
-                <select class="form-control" id="ddlAssigned" asp-for="AssignedId" asp-items="ViewBag.UsersToAssign">
+                <label>@SharedLocalizer["Supervisor"]</label>
+                <select class="form-control" id="ddlSupervisor" asp-for="SupervisorId" asp-items="ViewBag.UsersToSupervise">
                     <option value="null">@SharedLocalizer["Unassigned option"]</option>
                 </select>
             </div>
             
+             @if ((TopicType) ViewData["TopicType"]! != TopicType.Homework)
+             {
+                 <!--Assigned student-->
+                <div class="form-group">
+                    <label>@SharedLocalizer["Assigned student"]</label>
+                    <select class="form-control" id="ddlAssigned" asp-for="AssignedId" asp-items="ViewBag.UsersToAssign">
+                        <option value="null">@SharedLocalizer["Unassigned option"]</option>
+                    </select>
+                </div>
+            }
+
             <!--Group-->
             <div class="form-group">
                 <label asp-for="GroupId" class="control-label"></label>
@@ -90,30 +95,32 @@
                 </select>
             </div>
 
-            <!--Programmes-->
-            <hr/>
-
-            @if (ViewData["Programmes"] != null)
+            @if ((TopicType) ViewData["TopicType"]! == TopicType.Thesis)
             {
-                <div class="form-group">
-                    <ul>
-                        @foreach (var programme in (IEnumerable<Programme>) ViewData["Programmes"]!)
-                        {
-                            <li class="Programme @programme.Type">
-                                <input type="checkbox" name="programmes" value="@programme.ProgrammeId"/>
-                                @if (CultureInfo.CurrentCulture.Name.Contains("cz"))
-                                {
-                                    <label>@programme.Name</label>
-                                }
-                                else
-                                {
-                                    <label>@programme.NameEng</label>
-                                }
-                            </li>
-                        }   
-                    </ul>
-                </div>
+                <!--Programmes-->
                 <hr/>
+                @if (ViewData["Programmes"] != null)
+                {
+                    <div class="form-group">
+                        <ul>
+                            @foreach (var programme in (IEnumerable<Programme>) ViewData["Programmes"]!)
+                            {
+                                <li class="Programme @programme.Type">
+                                    <input type="checkbox" name="programmes" value="@programme.ProgrammeId"/>
+                                    @if (CultureInfo.CurrentCulture.Name.Contains("cz"))
+                                    {
+                                        <label>@programme.Name</label>
+                                    }
+                                    else
+                                    {
+                                        <label>@programme.NameEng</label>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <hr/>
+                }
             }
             
             <!--Attachments-->

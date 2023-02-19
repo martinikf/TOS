@@ -121,6 +121,6 @@
         <value>Order by</value>
     </data>
     <data name="NavUnassigned" xml:space="preserve">
-        <value>Unassigned topics</value>
+        <value>Proposed topics by external users</value>
     </data>
 </root>

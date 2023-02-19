@@ -42,26 +42,20 @@ namespace TOS.Controllers
 
             var topicsToShow = new List<Topic>();
             Group? group = null;
-
-            ViewData["customGroup"] = true;
-            if (groupName is "Bachelor" or "Master" or "Unassigned")
-                ViewData["customGroup"] = false;
-
+            
             ViewData["topicsIndexGroupName"] = groupName;
             ViewData["showTakenTopics"] = showTakenTopics;
             ViewData["selectedProgramme"] = programmeName;
             ViewData["searchString"] = searchString;
+            ViewData["showProposed"] = showProposed;
+            if (showProposed)
+                orderBy = "Name";
             ViewData["orderBy"] = orderBy;
             ViewData["showHidden"] = showHidden;
-            ViewData["showProposed"] = showProposed;
-            
-            group = await _context.Groups.FirstAsync(x => x.NameEng.Equals(groupName));
-            topicsToShow = await _context.Topics.Where(x => x.Group.Equals(group)).ToListAsync();
 
-            //Used for showing edit button for custom groups
-            if (groupName != "Bachelor" && groupName != "Master" && groupName != "Unassigned")
-                ViewData["topicsIndexGroupId"] = group.GroupId;
-            
+            group = await _context.Groups.FirstAsync(x => x.NameEng.Equals(groupName));
+            topicsToShow = await _context.Topics.Where(x => x.Group.Equals(group) && x.Type==TopicType.Thesis).ToListAsync();
+
             //Shows only topics with visible = true, based on parameter
             if (!showHidden && !showProposed || !(User.IsInRole("Group") || User.IsInRole("AnyGroup")))
             {
@@ -124,6 +118,48 @@ namespace TOS.Controllers
             return View(topicsToShow);
         }
 
+        
+        public async Task<IActionResult> Group(string groupName, string searchString = "", bool showTakenTopics = false, bool showHidden = false, bool showProposed = false)
+        {
+            var group = await _context.Groups.FirstAsync(x => x.NameEng.Equals(groupName));
+            
+            ViewData["topicsIndexGroupName"] = groupName;
+            ViewData["topicsIndexGroupId"] = group.GroupId;
+            ViewData["showTakenTopics"] = showTakenTopics;
+            ViewData["searchString"] = searchString;
+            ViewData["showHidden"] = showHidden;
+            ViewData["showProposed"] = showProposed;
+            
+            var topicsToShow = await _context.Topics.Where(x => x.Group.Equals(group)).ToListAsync();
+            
+            if (!showHidden && !showProposed || !(User.IsInRole("Topic") || User.IsInRole("AnyTopic")))
+            {
+                topicsToShow = topicsToShow.Where(x => x.Visible).ToList();
+            }
+            
+            if (searchString.Length > 2)
+            {
+                searchString = searchString.ToLower();
+                topicsToShow = topicsToShow.Where(x =>
+                        x.Name.ToLower().Contains(searchString) || x.NameEng.ToLower().Contains(searchString) ||
+                        (x.Supervisor != null && (x.Supervisor.FirstName!.ToLower().Contains(searchString) ||
+                                                  x.Supervisor.LastName!.ToLower().Contains(searchString))))
+                    .ToList();
+            }
+            
+            if (!showTakenTopics)
+            {
+                topicsToShow = topicsToShow.Where(x => x.AssignedStudent == null).ToList();
+            }
+            
+            if (showProposed && User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
+            {
+                topicsToShow = topicsToShow.Where(x => x.Proposed).ToList();
+            }
+            
+            return View(topicsToShow);
+        }
+        
         public async Task<IActionResult> MyTopics(string searchString = "", string topicGroup = "All")
         {
             ViewData["topicGroup"] = topicGroup;
@@ -233,7 +269,7 @@ namespace TOS.Controllers
         }
 
         [Authorize(Roles = "Topic,AnyTopic")]
-        public async Task<IActionResult> Create(string? groupName = "Unassigned")
+        public async Task<IActionResult> Create(string? groupName = "Unassigned", TopicType type = TopicType.Thesis)
         {
             var groupProvided = _context.Groups.FirstOrDefault(x => x.NameEng.ToLower().Equals(groupName.ToLower()));
 
@@ -248,9 +284,10 @@ namespace TOS.Controllers
 
                 ViewData["Groups"] = gr;
             }
+            
+            ViewData["TopicType"] = type;
 
             ViewData["Programmes"] = await _context.Programmes.Where(x => x.Active).ToListAsync();
-
             ViewData["UsersToAssign"] = new SelectList(GetUsersWithRole("AssignedTopic"), "Id", "Email");
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -263,14 +300,14 @@ namespace TOS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Topic,AnyTopic")]
-        public async Task<IActionResult> Create([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic, int[] programmes, List<IFormFile> files)
+        public async Task<IActionResult> Create([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,Visible,CreatorId,SupervisorId,AssignedId,GroupId,Type")] Topic topic, int[] programmes, List<IFormFile> files)
         {
             await TopicChange(topic, programmes, files, true);
             return RedirectToAction(nameof(Details), new {id = topic.TopicId});
         }
 
         [Authorize(Roles = "ProposeTopic")]
-        public async Task<IActionResult> Propose(string? groupName = "Unassigned")
+        public async Task<IActionResult> Propose(string? groupName = "Unassigned", TopicType type = TopicType.Thesis)
         {
             var group = _context.Groups.First(x => x.NameEng.Equals(groupName));
             if (group.Selectable)
@@ -285,6 +322,8 @@ namespace TOS.Controllers
             {
                 ViewData["Groups"] = await _context.Groups.Where(x => x.GroupId.Equals(group.GroupId)).ToListAsync();
             }
+            
+            ViewData["TopicType"] = type;
 
             return View();
         }
@@ -292,13 +331,13 @@ namespace TOS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "ProposeTopic")]
-        public async Task<IActionResult> Propose([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,CreatorId,GroupId")] Topic topic, List<IFormFile> files)
+        public async Task<IActionResult> Propose([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,CreatorId,GroupId,Type")] Topic topic, List<IFormFile> files)
         {
             if (topic.NameEng is "" or null) topic.NameEng = topic.Name;
             if (topic.DescriptionShortEng is "" or null) topic.DescriptionShortEng = topic.DescriptionShort;
             if (topic.DescriptionLongEng is "" or null) topic.DescriptionLongEng = topic.DescriptionLong;
 
-            if (topic.Group == null || topic.GroupId == null)
+            if (topic.GroupId == -1)
             {
                 topic.Group = await _context.Groups.FirstAsync(x => x.NameEng.Equals("Unassigned"));
                 topic.GroupId = topic.Group.GroupId;
@@ -339,6 +378,8 @@ namespace TOS.Controllers
             }
 
             ViewData["UsersToSupervise"] = new SelectList(GetUsersWithRole("SupervisorTopic"), "Id", "Email", topic.SupervisorId);
+            
+            ViewData["TopicType"] = topic.Type;
 
             var programmes = new HashSet<Programme>();
             foreach (var programme in _context.Programmes.Where(x => x.Active).ToList())
@@ -360,7 +401,7 @@ namespace TOS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Topic,AnyTopic,ProposeTopic")]
-        public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name,DescriptionShort,DescriptionLong,Visible,CreatorId,SupervisorId,AssignedId,GroupId")] Topic topic, int[] programmes, List<IFormFile> files)
+        public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name,DescriptionShort,DescriptionLong,Visible,CreatorId,SupervisorId,AssignedId,GroupId,Type")] Topic topic, int[] programmes, List<IFormFile> files)
         {
             var user = await _context.Users.FirstAsync(x => User.Identity != null && x.UserName!.Equals(User.Identity.Name));
             var canEdit = User.IsInRole("AnyTopic");

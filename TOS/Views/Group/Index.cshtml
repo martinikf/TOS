@@ -37,7 +37,7 @@
 <h3>@SharedLocalizer["Used groups"]</h3>
 @foreach (var group in Model.Where(x=>x.Highlight is true)) {
     <div>
-        <a asp-action="Index" asp-controller="Topic" asp-route-groupName="@group.NameEng">
+        <a asp-action="Group" asp-controller="Topic" asp-route-groupName="@group.NameEng">
             @Html.SelectStringByLanguage(group.NameEng, group.Name)
         </a>
         @group.Topics.Count
@@ -48,7 +48,7 @@
 <h3>@SharedLocalizer["Other groups"]</h3>
 @foreach (var group in Model.Where(x=> x.Highlight is false)) {
     <div>
-        <a asp-action="Index" asp-controller="Topic" asp-route-groupName="@group.NameEng">
+        <a asp-action="Group" asp-controller="Topic" asp-route-groupName="@group.NameEng">
             @Html.SelectStringByLanguage(group.NameEng, group.Name)
         </a>
         @group.Topics.Count

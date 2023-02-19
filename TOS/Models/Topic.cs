@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TOS.Data;
 
 namespace TOS.Models;
 
@@ -24,6 +25,8 @@ public class Topic
 
         public bool Proposed { get; set; } = false;
         
+        public TopicType Type { get; set; }
+
         public int CreatorId { get; set; }
         [ForeignKey("CreatorId")]
         [InverseProperty("CreatedTopics")]
@@ -46,7 +49,7 @@ public class Topic
         [ForeignKey("GroupId")]
         [InverseProperty("Topics")]
         public virtual Group Group { get; set; } = null!;
-        
+
         public virtual ICollection<TopicRecommendedProgramme> TopicRecommendedPrograms { get; } = new HashSet<TopicRecommendedProgramme>();
 
         [InverseProperty("Topic")]

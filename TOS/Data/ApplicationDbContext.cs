@@ -109,6 +109,11 @@ namespace TOS.Data
                     v => v.ToString(),
                     v => (ProgramType)Enum.Parse(typeof(ProgramType), v));
 
+            builder.Entity<Topic>()
+                .Property(x => x.Type)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (TopicType)Enum.Parse(typeof(TopicType), v));
 
         }
     }

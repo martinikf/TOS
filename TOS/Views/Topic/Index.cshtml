@@ -14,11 +14,6 @@
 
 <h1>@SharedLocalizer[(string)ViewData["topicsIndexGroupName"]!]</h1>
 
-@if (@ViewData["topicsIndexGroupId"] != null && (User.IsInRole("Group") || User.IsInRole("AnyGroup")))
-{
-    <a asp-controller="Group" asp-action="Edit" asp-route-id="@ViewData["topicsIndexGroupId"]">Edit group</a>
-}
-
 @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
 {
     <a asp-action="Create" asp-route-groupName="@ViewData["topicsIndexGroupName"]">Create New Topic</a>
@@ -83,11 +78,7 @@
     
     <label>@SharedLocalizer["orderBy"]</label>
     <select name="orderBy">
-        @if (!(bool) ViewData["customGroup"]!)
-        {
-            <!-- Display order by option for supervisor only for bachelor, master topics-->
-            @Html.SelectOption("Supervisor", @SharedLocalizer["orderBySupervisor"].Value, (string) ViewData["orderBy"]!)
-        }
+        @Html.SelectOption("Supervisor", @SharedLocalizer["orderBySupervisor"].Value, (string) ViewData["orderBy"]!)
         @Html.SelectOption("Name", @SharedLocalizer["orderByName"].Value, (string)ViewData["orderBy"]!)
         @Html.SelectOption("Interest", @SharedLocalizer["orderByInterest"].Value, (string)ViewData["orderBy"]!)
     </select>
@@ -100,7 +91,6 @@
     ApplicationUser lastSupervisor = null;
     //Used is used to prevent multiple headers with the same name
     var used = false;
-    
 }
 
 @foreach (var topic in Model) {
@@ -153,6 +143,7 @@
             {
                 <span class="infobox">@SharedLocalizer["Proposed"]</span>
             }
+            <span class="infobox">@topic.Type</span>
             @foreach (var programme in topic.TopicRecommendedPrograms)
             {
                 <span class="infobox">@Html.SelectStringByLanguage(programme.Programme.NameEng, programme.Programme.Name)</span>

@@ -1,0 +1,95 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@using TOS.Resources
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using TOS.Data
+@model IEnumerable<TOS.Models.Topic>
+
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@SharedLocalizer[(string)ViewData["topicsIndexGroupName"]!]</h1>
+
+<a asp-controller="Group" asp-action="Edit" asp-route-id="@ViewData["topicsIndexGroupId"]">Edit group</a>
+<br/>
+<a asp-action="Create" asp-route-groupName="@ViewData["topicsIndexGroupName"]" asp-route-type="Homework">Create New Homework</a>
+<br/>
+<a asp-action="Create" asp-route-groupName="@ViewData["topicsIndexGroupName"]" asp-route-type="Project">Create New  Project</a>
+<br/>
+<a asp-action="Propose" asp-route-groupName="@ViewData["topicsIndexGroupName"]" asp-route-type="Project">Propose new Project</a>
+<br/>
+
+<form asp-action="Group" method="get">
+    <input type="hidden" name="groupName" value="@ViewData["topicsIndexGroupName"]"/>
+    <input type="text" name="searchString" placeholder="Search string..." value="@ViewData["searchString"]"/>
+    
+    <label>Show taken topics</label>
+    @if((bool) ViewData["showTakenTopics"]!)
+    {
+        <input name="showTakenTopics" type="checkbox" value="true" checked/>
+    }
+    else
+    {
+        <input name="showTakenTopics" type="checkbox" value="true"/>
+    }
+    @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
+    {
+        <label>Show hidden topics</label>
+        @if ((bool) ViewData["showHidden"]!)
+        {
+            <input name="showHidden" type="checkbox" value="true" checked/>
+        }
+        else
+        {
+            <input name="showHidden" type="checkbox" value="true"/>
+        }
+    }
+    
+    @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
+    {
+        <label>Show only proposed topics</label>
+        @if ((bool) ViewData["showProposed"]!)
+        {
+            <input name="showProposed" type="checkbox" value="true" checked/>
+        }
+        else
+        {
+            <input name="showProposed" type="checkbox" value="true"/>
+        }
+    }
+    
+    <input type="submit" value="Search"/>
+</form>
+
+<hr/>
+@if (Model.Any(x => x.Type == TopicType.Homework))
+{
+    <h4>Homeworks</h4>
+
+    @foreach (var hw in Model.Where(x => x.Type == TopicType.Homework))
+    {
+        <div class="homework">
+            <a asp-controller="Topic" asp-action="Details" asp-route-id="@hw.TopicId">@hw.Name</a>
+            <br/>
+            @hw.DescriptionShort
+        </div>
+    }
+}
+
+<hr/>
+
+@if (Model.Any(x => x.Type == TopicType.Project))
+{
+    <h4>Projects</h4>
+    @foreach (var project in Model.Where(x => x.Type == TopicType.Project))
+    {
+        <div class="project">
+            <a asp-controller="Topic" asp-action="Details" asp-route-id="@project.TopicId">@project.Name</a>
+            <br/>
+            @project.DescriptionShort
+        </div>
+    }
+}

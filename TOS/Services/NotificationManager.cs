@@ -17,7 +17,8 @@ public class NotificationManager : INotificationManager
     {
         foreach (var u in SelectUsers(topic, user))
         {
-            _emailSender.SendEmailAsync(u.Email, "Téma změněno - Topic edited", "Téma " + topic.Name + " bylo změněno." + "\n---\n" + "Topic " + topic.NameEng + " was edited");
+            _emailSender.SendEmailAsync(u.Email, "Téma změněno - Topic edited",
+                "Téma " + topic.Name + " bylo změněno." + "\n---\n" + "Topic " + topic.NameEng + " was edited");
         }
     }
 

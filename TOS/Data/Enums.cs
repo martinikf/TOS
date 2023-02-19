@@ -13,3 +13,10 @@ public enum Role
     Administrator,
     External
 }
+
+public enum TopicType
+{
+    Thesis,
+    Project,
+    Homework
+}

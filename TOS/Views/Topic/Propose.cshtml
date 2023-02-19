@@ -20,6 +20,7 @@
     <div class="col-md-4">
         <form asp-action="Propose" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Type" value="@ViewData["TopicType"]"/>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -67,6 +68,10 @@
                         }
                     </select>
                 </div>
+            }
+            else
+            {
+                <input type="hidden" asp-for="GroupId" value="-1"/>
             }
 
             <!--Attachments-->
