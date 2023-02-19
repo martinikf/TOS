@@ -1,0 +1,30 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Options
+@using TOS.Resources
+@using TOS.Extensions
+@model TOS.Models.Topic
+
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
+
+<section class="topic__preview">
+    <h3><a asp-controller="Topic" asp-action="Details" asp-route-id="@Model.TopicId">@Html.SelectStringByLanguage(Model.NameEng, Model.Name)</a></h3>
+    @if (Model.SupervisorId != null)
+    {
+        <p>@Model.Supervisor!.DisplayName</p>
+    }
+    @if (Model.Proposed)
+    {
+        <span>@SharedLocalizer["Proposed topic"]</span>
+    }
+    @if(Model.AssignedId == null)
+    {
+        <span>@SharedLocalizer["Free topic"]</span>
+    }
+    @foreach (var programme in Model.TopicRecommendedPrograms.Select(x=>x.Programme))
+    {
+        <span>@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</span>
+    }
+    <span>@Model.UserInterestedTopics.Count</span>
+    
+    <p>@Html.SelectStringByLanguage(Model.DescriptionShortEng, Model.DescriptionShort)</p>
+</section>

@@ -160,69 +160,41 @@ namespace TOS.Controllers
             return View(topicsToShow);
         }
         
-        public async Task<IActionResult> MyTopics(string searchString = "", string topicGroup = "All")
+        public async Task<IActionResult> MyTopics(string searchString = "", bool showHidden = false)
         {
-            ViewData["topicGroup"] = topicGroup;
-
-            if (searchString.Length > 2)
-            {
-                searchString = searchString.ToLower();
-            }
-            else
-            {
+            searchString = searchString.Trim();
+            if(searchString.Length < 3)
                 searchString = "";
-            }
             ViewData["searchString"] = searchString;
+               ViewData["showHidden"] = showHidden;
+            
+            if(User.Identity == null)
+                return RedirectToAction("Index", "Home");
+            
+            var user = await _context.Users.FirstAsync(x => x.UserName!.Equals(User.Identity.Name));
 
-            if (topicGroup is "Supervisor" or "All")
-            {
-                ViewData["Supervisor"] = await _context.Topics
-                    .Where(x=>x.Supervisor != null && x.Supervisor.UserName!.Equals(User.Identity!.Name))
-                    .Where(y =>
-                    y.Name.ToLower().Contains(searchString) ||
-                    y.NameEng.ToLower().Contains(searchString) ||
-                    (y.Supervisor != null && (y.Supervisor.FirstName!.ToLower().Contains(searchString) ||
-                                              y.Supervisor.LastName!.ToLower().Contains(searchString))))
-                    .ToListAsync();
-            }
-            
-            if(topicGroup is "Assigned" or "All")
-            {
-                ViewData["Assigned"] = await _context.Topics
-                    .Where(x=> x.AssignedStudent != null && x.AssignedStudent.UserName!.Equals(User.Identity!.Name))
-                    .Where(y =>
-                    y.Name.ToLower().Contains(searchString) ||
-                    y.NameEng.ToLower().Contains(searchString) ||
-                    (y.Supervisor != null && (y.Supervisor.FirstName!.ToLower().Contains(searchString) ||
-                                              y.Supervisor.LastName!.ToLower().Contains(searchString))))
-                    .ToListAsync();
-            }
-            
-            if(topicGroup is "Interest" or "All")
-            {
-                ViewData["Interest"] = await _context.Topics
-                    .Where(x => x.UserInterestedTopics.Any(y => y.User.UserName!.Equals(User.Identity!.Name)))
-                    .Where(y =>
-                    y.Name.ToLower().Contains(searchString) ||
-                    y.NameEng.ToLower().Contains(searchString) ||
-                    (y.Supervisor != null && (y.Supervisor.FirstName!.ToLower().Contains(searchString) ||
-                                              y.Supervisor.LastName!.ToLower().Contains(searchString))))
-                    .ToListAsync();
-            }
-            
-            if(topicGroup is "Creator" or "All")
-            {
-                ViewData["Creator"] = await _context.Topics
-                    .Where(x=> x.Creator.UserName!.Equals(User.Identity!.Name))
-                    .Where(y =>
-                    y.Name.ToLower().Contains(searchString) ||
-                    y.NameEng.ToLower().Contains(searchString) ||
-                    (y.Supervisor != null && (y.Supervisor.FirstName!.ToLower().Contains(searchString) ||
-                                              y.Supervisor.LastName!.ToLower().Contains(searchString))))
-                    .ToListAsync();
-            }
-            
-            return View();
+            var topics = await _context.Topics
+                .Where(x =>
+                    x.CreatorId == user.Id ||
+                    x.SupervisorId == user.Id ||
+                    x.AssignedId == user.Id ||
+                    x.UserInterestedTopics.Any(y => y.UserId == user.Id))
+                .Where(x =>
+                   (x.Name.ToLower().Contains(searchString.ToLower()) ||
+                        x.NameEng.ToLower().Contains(searchString.ToLower()) ||
+                        (x.Supervisor != null && (x.Supervisor.FirstName!.ToLower().Contains(searchString.ToLower()) ||
+                                                  x.Supervisor.LastName!.ToLower().Contains(searchString.ToLower()))) ||
+                        x.DescriptionShort.ToLower().Contains(searchString.ToLower()) ||
+                        x.DescriptionShortEng.ToLower().Contains(searchString.ToLower()) ||
+                        (x.DescriptionLong != null && x.DescriptionLong.ToLower().Contains(searchString.ToLower())) ||
+                        (x.DescriptionLongEng != null && x.DescriptionLongEng.ToLower().Contains(searchString.ToLower())) ||
+                        x.TopicRecommendedPrograms.Any(y =>
+                            y.Programme.NameEng.ToLower().Contains(searchString.ToLower()) ||
+                            y.Programme.Name.ToLower().Contains(searchString.ToLower()))))
+                .Where(x=> showHidden? x.Visible : x.Visible || !x.Visible)
+                .ToListAsync();
+
+            return View(topics);
         }
 
         // GET: Topic/Details/5

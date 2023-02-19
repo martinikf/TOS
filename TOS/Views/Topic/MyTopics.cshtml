@@ -1,8 +1,9 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @using TOS.Resources
-@using System.Globalization
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using TOS.Data
 @using TOS.Extensions
+@model IEnumerable<TOS.Models.Topic>
 
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
 
@@ -17,75 +18,49 @@
     <form asp-action="MyTopics" method="get">
         <input type="hidden" name="groupName" value="@ViewData["topicsIndexGroupName"]"/>
         <input type="text" name="searchString" placeholder="Search string..." value="@ViewData["searchString"]"/>
-        <select name="topicGroup">
-            @Html.SelectOption("All", @SharedLocalizer["Show all"].Value, ViewData["topicGroup"] as string)
-                @if (User.IsInRole("SuperviseTopic"))
-            {
-                @Html.SelectOption("Supervisor", @SharedLocalizer["Supervisor"].Value, ViewData["topicGroup"] as string)
-            }
-            @if (User.IsInRole("AssignedTopic"))
-            {
-                @Html.SelectOption("Assigned", @SharedLocalizer["Assigned"].Value, ViewData["topicGroup"] as string)
-            }
-            @if (User.IsInRole("InterestTopic"))
-            {
-                @Html.SelectOption("Interest", @SharedLocalizer["Interest"].Value, ViewData["topicGroup"] as string)
-            }
-            @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic") || User.IsInRole("ProposeTopic"))
-            {
-                @Html.SelectOption("Creator", @SharedLocalizer["Creator"].Value, ViewData["topicGroup"] as string)
-            }
-        </select>
+        <label>Show hidden topics</label>
+        @if ((bool) ViewData["showHidden"]!)
+        {
+            <input name="showHidden" type="checkbox" value="true" checked/>
+        }
+        else
+        {
+            <input name="showHidden" type="checkbox" value="true"/>
+        }
         <input type="submit" value="Search"/>
     </form>
 </div>
 
-@foreach(var topicGroup in new[]{"Supervisor", "Assigned", "Interest", "Creator"})
+<h4>@SharedLocalizer["Bachelor theses"]</h4>
+@foreach (var topic in Model.Where(x=>x.Type == TopicType.Thesis && x.Group.NameEng == "Bachelor"))
 {
-    if ((ICollection<Topic>?)ViewData[topicGroup] != null && ((ICollection<Topic>)ViewData[topicGroup]!).Count > 0)
-    {
-        <h3>@SharedLocalizer[topicGroup]</h3>
-        foreach (var topic in (ICollection<Topic>) ViewData[topicGroup]!)
-        {
-            <div class="topic">
-                <div class="topic__name">
-                    <a asp-action="Details" asp-route-id="@topic.TopicId">
-                        <h3>@Html.SelectStringByLanguage(topic.NameEng, topic.Name)</h3>
-                    </a>
-                </div>
-                
-                    <div class="topic__supervisor">
-
-                        @Html.DisplayFor(modelItem => topic.Supervisor.FirstName)
-                        @Html.DisplayFor(modelItem => topic.Supervisor.LastName)
-
-                    </div>
-                
-                <div class="topic__infoboxes">
-                    @if (topic.AssignedStudent == null)
-                    {
-                        <span class="infobox">@SharedLocalizer["Free topic"]</span>
-                    }
-                    else
-                    {
-                        <span class="infobox">@SharedLocalizer["Taken topic"]</span>
-                    }
-                    @if (topic.Proposed)
-                    {
-                        <span class="infobox">@SharedLocalizer["Proposed"]</span>
-                    }
-                    @foreach (var programme in topic.TopicRecommendedPrograms)
-                    {
-                        <span class="infobox">@Html.SelectStringByLanguage(programme.Programme.NameEng, programme.Programme.Name)</span>
-                    }
-                </div>
-                
-                <div class="topic__description">
-                    @Html.SelectStringByLanguage(topic.DescriptionShortEng, topic.DescriptionShort)
-                </div>
-            </div>
-            <hr/>
-        }
-    }
+    <partial name="TopicPreview" model="topic"/>
 }
 
+<h4>@SharedLocalizer["Master theses"]</h4>
+@foreach (var topic in Model.Where(x=>x.Type == TopicType.Thesis && x.Group.NameEng == "Master"))
+{
+    <partial name="TopicPreview" model="topic"/>
+}
+
+@foreach (var group in Model.Where(x => x.Type != TopicType.Thesis).Select(g => g.Group).Distinct())
+{
+    @if (group.Topics.Any(x => x.Type == TopicType.Homework))
+    {
+        <h4>@Html.SelectStringByLanguage(group.NameEng, group.Name)</h4>
+        <h5>@SharedLocalizer["Homeworks"]</h5>
+        @foreach (var topic in Model.Where(x => x.Group == group && x.Type == TopicType.Homework))
+        {
+            <partial name="TopicPreview" model="topic"/>
+        }
+    }
+    @if (group.Topics.Any(x => x.Type == TopicType.Project))
+    {
+        <h5>@SharedLocalizer["Projects"]</h5>
+        @foreach (var topic in Model.Where(x => x.Group == group && x.Type == TopicType.Project))
+        {
+            <partial name="TopicPreview" model="topic"/>
+        }
+    }
+    <hr/>
+}
