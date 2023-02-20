@@ -13,18 +13,25 @@ public class NotificationManager : INotificationManager
         _emailSender = emailSender;
     }
     
-    public void TopicEdit(Topic topic, ApplicationUser user)
+    public Task TopicEdit(Topic topic, ApplicationUser user)
     {
-        foreach (var u in SelectUsers(topic, user))
+        var users = SelectUsers(topic, user);
+        if (users.Count == 0) return Task.CompletedTask;
+        
+        foreach (var u in users)
         {
-            _emailSender.SendEmailAsync(u.Email, "Téma změněno - Topic edited",
+            _emailSender.SendEmailAsync(u.Email!, "Téma změněno - Topic edited",
                 "Téma " + topic.Name + " bylo změněno." + "\n---\n" + "Topic " + topic.NameEng + " was edited");
         }
+        
+        return Task.CompletedTask;
     }
 
-    public void NewComment(Topic topic, Comment comment)
+    public Task NewComment(Comment comment)
     {
+        var topic = comment.Topic;
         var users = SelectUsers(topic, comment.Author);
+       
         //If comment is a reply, notify the author of the parent comment
         if (comment.ParentComment != null)
         {
@@ -34,21 +41,38 @@ public class NotificationManager : INotificationManager
         
         foreach(var u in users)
         {
-            _emailSender.SendEmailAsync(u.Email, "Nový komentář - New comment", "Byl přidán nový komentář k tématu " + topic.Name + "." + "\n---\n" + "New comment was added to topic " + topic.NameEng + ".");
+            _emailSender.SendEmailAsync(u.Email!, "Nový komentář - New comment", "Byl přidán nový komentář k tématu " + topic.Name + "." + "\n---\n" + "New comment was added to topic " + topic.NameEng + ".");
         }
+        
+        return Task.CompletedTask;
     }
 
-    public void TopicAssigned(Topic topic, ApplicationUser author)
+    public Task TopicAssigned(Topic topic, ApplicationUser student)
     {
-        foreach (var u in SelectUsers(topic, author))
+        if (topic.AssignedStudent == null)
+        {
+            topic.AssignedStudent = student;
+        }
+        
+        foreach (var u in topic.UserInterestedTopics.Select(x=>x.User).Union(new[] {topic.AssignedStudent}))
         {
             if(topic.AssignedStudent != u)
-                _emailSender.SendEmailAsync(u.Email, "Téma přiřazeno - Topic assigned", "Téma " + topic.Name + " bylo přiřazeno studentovi." + "\n---\n" + "Topic " + topic.NameEng + " was assigned to student.");
+                _emailSender.SendEmailAsync(u.Email!, "Téma přiřazeno - Topic assigned", "Téma " + topic.Name + " bylo přiřazeno studentovi." + "\n---\n" + "Topic " + topic.NameEng + " was assigned to student.");
             else
-                _emailSender.SendEmailAsync(u.Email, "Téma přiřazeno - Topic assigned", "Téma " + topic.Name + " bylo přiřazeno vám." + "\n---\n" + "Topic " + topic.NameEng + " was assigned to you.");
+                _emailSender.SendEmailAsync(u.Email!, "Téma přiřazeno - Topic assigned", "Téma " + topic.Name + " bylo přiřazeno vám." + "\n---\n" + "Topic " + topic.NameEng + " was assigned to you.");
         }
+        return Task.CompletedTask;
     }
 
+    public Task TopicAdopted(Topic topic)
+    {
+        var user = topic.Creator.Email;
+        
+        _emailSender.SendEmailAsync(user, "Téma přijato - Topic adopted", "Téma " + topic.Name + " bylo přijato." + "\n---\n" + "Topic " + topic.NameEng + " was adopted.");
+
+        return Task.CompletedTask;
+    }
+    
     private ICollection<ApplicationUser> SelectUsers(Topic topic, ApplicationUser author)
     {
         var users = new HashSet<ApplicationUser>();
@@ -69,10 +93,12 @@ public class NotificationManager : INotificationManager
 
 public interface INotificationManager
 {
-    void TopicEdit(Topic topic, ApplicationUser user);
+    Task TopicEdit(Topic topic, ApplicationUser user);
     
     //Notify interested users, supervisor, owner, assigned, parent comment author about new comment. Do not notify the author of the comment.
-    void NewComment(Topic topic, Comment comment);
+    Task NewComment(Comment comment);
     
-    void TopicAssigned(Topic topic, ApplicationUser author);
+    Task TopicAssigned(Topic topic, ApplicationUser student);
+
+    Task TopicAdopted(Topic topic);
 }

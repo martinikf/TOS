@@ -339,7 +339,7 @@ namespace TOS.Controllers
             }
 
             ViewData["UsersToAssign"] = new SelectList(GetUsersWithRole("AssignedTopic"), "Id", "Email", topic.AssignedId);
-            if (topic.Group.Selectable)
+            if (topic.Group.Selectable || topic.Group.NameEng.Equals("Unassigned"))
             {
                 ViewData["Group"] = new SelectList(_context.Groups.Where(x => x.Selectable), "GroupId", "Name",
                     topic.GroupId);
@@ -349,7 +349,7 @@ namespace TOS.Controllers
                 ViewData["Group"] = new SelectList(new List<Group> {topic.Group}, "GroupId", "Name", topic.GroupId);
             }
 
-            ViewData["UsersToSupervise"] = new SelectList(GetUsersWithRole("SupervisorTopic"), "Id", "Email", topic.SupervisorId);
+            ViewData["UsersToSupervise"] = new SelectList(GetUsersWithRole("SuperviseTopic"), "Id", "Email", topic.SupervisorId);
             
             ViewData["TopicType"] = topic.Type;
 
@@ -365,6 +365,7 @@ namespace TOS.Controllers
             }
 
             ViewData["Programmes"] = programmes;
+            ViewData["OldAssigned"] = topic.AssignedId;
 
 
             return View(topic);
@@ -373,25 +374,27 @@ namespace TOS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Topic,AnyTopic,ProposeTopic")]
-        public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name,DescriptionShort,DescriptionLong,Visible,CreatorId,SupervisorId,AssignedId,GroupId,Type")] Topic topic, int[] programmes, List<IFormFile> files)
+        public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name,DescriptionShort,DescriptionLong,Visible,CreatorId,SupervisorId,AssignedId,GroupId,Type,Proposed")] Topic topic, int[] programmes, List<IFormFile> files, int oldAssigned)
         {
             var user = await _context.Users.FirstAsync(x => User.Identity != null && x.UserName!.Equals(User.Identity.Name));
-            var canEdit = User.IsInRole("AnyTopic");
             
+            var canEdit = User.IsInRole("AnyTopic");
             //User can edit topics he created or supervise
             if (User.IsInRole("Topic") && topic.CreatorId == user.Id || topic.SupervisorId == user.Id || topic.Proposed)
                 canEdit = true;
             if(User.IsInRole("ProposeTopic") && topic.Proposed && topic.CreatorId == user.Id)
                 canEdit = true;
-
             if (!canEdit)
                 return Forbid();
-                
-            await TopicChange(topic, programmes, files);
-            return RedirectToAction(nameof(Details), new {id = topic.TopicId});
+
+            if (await TopicChange(topic, programmes, files, false, oldAssigned))
+            {
+                return RedirectToAction(nameof(Details), new {id = topic.TopicId});
+            }
+            return RedirectToAction("Edit", new {id = topic.TopicId});
         }
 
-        private async Task TopicChange(Topic topic, IEnumerable<int> programmesId, List<IFormFile> files, bool isNew = false)
+        private async Task<bool> TopicChange(Topic topic, IEnumerable<int> programmesId, List<IFormFile> files, bool isNew = false, int oldAssigned = -1)
         {
             var user = await _context.Users.FirstAsync(x =>
                 User.Identity != null && x.UserName!.Equals(User.Identity.Name));
@@ -412,8 +415,29 @@ namespace TOS.Controllers
             {
                 //Why is this needed?
                 topic.Creator = await _context.Users.FirstAsync(x => x.Id.Equals(topic.CreatorId));
+
+                //Notify users
+                if (topic.Proposed && topic.SupervisorId > 0)
+                {
+                    if (topic.GroupId == _context.Groups.First(x => x.NameEng.Equals("Unassigned")).GroupId)
+                    {
+                        //When adopting topic from external, supervisor and group must be changed at once
+                        return false;
+                    }
+                    topic.Proposed = true;
+                    await _notificationManager.TopicAdopted(topic);
+                }
+                else if(topic.AssignedId != null && oldAssigned != topic.AssignedId)
+                {
+                    await _notificationManager.TopicAssigned(topic, _context.Users.First(x=>x.Id.Equals(topic.AssignedId)));
+                }
+                else
+                {
+                    await _notificationManager.TopicEdit(topic, user);
+                }
+                
                 //Update topic
-                _context.Update(topic);
+                _context.Topics.Update(topic);
             }
 
             await _context.SaveChangesAsync();
@@ -435,6 +459,8 @@ namespace TOS.Controllers
 
             //Create uploaded files
             await CreateFiles(topic, user, files);
+
+            return true;
         }
 
         [Authorize(Roles = "Topic,AnyTopic,ProposeTopic")]
@@ -555,7 +581,7 @@ namespace TOS.Controllers
             }
 
             //Update database
-            _context.Attachments.Remove(_context.Attachments.FirstOrDefault(x => x.AttachmentId.Equals(attachmentId)));
+            _context.Attachments.Remove(_context.Attachments.First(x => x.AttachmentId.Equals(attachmentId)));
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Edit", new {id = topicId});
@@ -565,20 +591,27 @@ namespace TOS.Controllers
         public async Task<IActionResult> AddComment(int id, string text, bool anonymous, int? parentId = null)
         {
             //get current user
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName.Equals(User.Identity.Name));
+            var user = await _context.Users.FirstAsync(x => x.UserName!.Equals(User.Identity!.Name));
 
-            var c = new Comment();
-            c.TopicId = id;
-            c.AuthorId = user.Id;
-            c.Author = user;
-            c.CreatedAt = DateTime.Now;
-            c.Text = text;
-            c.ParentCommentId = parentId;
-            c.Anonymous = anonymous;
+            var c = new Comment
+            {
+                TopicId = id,
+                Topic = _context.Topics.First(x=>x.TopicId == id),
+                AuthorId = user.Id,
+                Author = user,
+                CreatedAt = DateTime.Now,
+                Text = text,
+                ParentCommentId = parentId,
+                Anonymous = anonymous
+            };
+            
             _context.Comments.Add(c);
+            
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Details", new {id = id});
+            await _notificationManager.NewComment(c);
+
+            return RedirectToAction("Details", new { id });
         }
 
         [Authorize(Roles = "Comment,AnyComment")]

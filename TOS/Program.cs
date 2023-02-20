@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
 using TOS.Data;
 using TOS.Models;
@@ -15,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options => options
         .UseLazyLoadingProxies()
         .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-    );
+);
 
 //DateTime - postgres compatibility
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -47,7 +48,7 @@ builder.Services.Configure<RequestLocalizationOptions>(
 
 
 //Register email sender
-builder.Services.AddSingleton<SmtpEmailSenderSettings, SmtpEmailSenderSettings>(
+builder.Services.AddScoped<SmtpEmailSenderSettings, SmtpEmailSenderSettings>(
     _ => new SmtpEmailSenderSettings()
     {
         Username = builder.Configuration["SendinBlue:Username"] ?? throw new Exception("Secrets are not set"),
@@ -57,9 +58,9 @@ builder.Services.AddSingleton<SmtpEmailSenderSettings, SmtpEmailSenderSettings>(
         SmtpServer = "smtp-relay.sendinblue.com",
         EnableSsl = true
     });
-builder.Services.AddSingleton<IEmailSender, SmtpEmailSender>();
+builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 
-builder.Services.AddTransient<INotificationManager, NotificationManager>();
+builder.Services.AddScoped<INotificationManager, NotificationManager>();
 
 var app = builder.Build();
 

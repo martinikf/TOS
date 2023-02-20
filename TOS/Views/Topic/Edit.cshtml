@@ -25,6 +25,8 @@
             <input type="hidden" asp-for="TopicId" />
             <input type="hidden" asp-for="CreatorId" />
             <input type="hidden" asp-for="Type"/>
+            <input type="hidden" asp-for="Proposed"/>
+            <input type="hidden" name="oldAssigned" value="@ViewData["OldAssigned"]"/>
             
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
