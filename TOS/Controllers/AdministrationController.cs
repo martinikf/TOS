@@ -55,12 +55,8 @@ public class AdministrationController : Controller
     
     public async Task<IActionResult> EditProgramme(int? id)
     {
-        var p =  await _context.Programmes.FirstOrDefaultAsync(x => x.ProgrammeId == id);
+        var p =  await _context.Programmes.FirstAsync(x => x.ProgrammeId == id);
 
-        if (p is null) return NotFound();
-
-        ViewData["IsMaster"] = (bool)(p.Type == ProgramType.Master);
-        
         return View(p);
     }
 
@@ -110,9 +106,9 @@ public class AdministrationController : Controller
         ViewData["Roles"] = new List<string> {"Student", "Teacher", "Administrator", "External"};
 
         ViewData["Student"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name == "Student").Id));
-        ViewData["Teacher"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name =="Teacher")!.Id));
-        ViewData["Administrator"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name =="Administrator")!.Id));
-        ViewData["External"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name =="External")!.Id));
+        ViewData["Teacher"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name =="Teacher").Id));
+        ViewData["Administrator"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name =="Administrator").Id));
+        ViewData["External"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name =="External").Id));
 
         return View(user);
     }

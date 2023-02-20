@@ -23,7 +23,7 @@ public class Topic
 
         public bool Visible { get; set; }
 
-        public bool Proposed { get; set; } = false;
+        public bool Proposed { get; set; }
         
         public TopicType Type { get; set; }
 

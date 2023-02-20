@@ -1,16 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Reflection;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Packaging;
 using TOS.Data;
 using TOS.Models;
 using TOS.Resources;
@@ -38,11 +32,6 @@ namespace TOS.Controllers
             string searchString = "", bool showTakenTopics = false, string orderBy = "Supervisor",
             bool showHidden = false, bool showProposed = false)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName!.Equals(User.Identity!.Name));
-
-            var topicsToShow = new List<Topic>();
-            Group? group = null;
-            
             ViewData["topicsIndexGroupName"] = groupName;
             ViewData["showTakenTopics"] = showTakenTopics;
             ViewData["selectedProgramme"] = programmeName;
@@ -53,8 +42,8 @@ namespace TOS.Controllers
             ViewData["orderBy"] = orderBy;
             ViewData["showHidden"] = showHidden;
 
-            group = await _context.Groups.FirstAsync(x => x.NameEng.Equals(groupName));
-            topicsToShow = await _context.Topics.Where(x => x.Group.Equals(group) && x.Type==TopicType.Thesis).ToListAsync();
+            var group = await _context.Groups.FirstAsync(x => x.NameEng.Equals(groupName));
+            var topicsToShow = await _context.Topics.Where(x => x.Group.Equals(group) && x.Type==TopicType.Thesis).ToListAsync();
 
             //Shows only topics with visible = true, based on parameter
             if (!showHidden && !showProposed || !(User.IsInRole("Group") || User.IsInRole("AnyGroup")))
@@ -200,48 +189,38 @@ namespace TOS.Controllers
         // GET: Topic/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Topics == null)
-            {
+            if (id == null)
                 return NotFound();
-            }
-
+            
             var topic = await _context.Topics
                 .Include(t => t.AssignedStudent)
                 .Include(t => t.Creator)
                 .Include(t => t.Group)
                 .Include(t => t.Supervisor)
-                .FirstOrDefaultAsync(m => m.TopicId == id);
-            if (topic == null)
-            {
-                return NotFound();
-            }
+                .FirstAsync(m => m.TopicId == id);
+            
+            //Get current user
+            var user = await _context.Users.FirstOrDefaultAsync(x => User.Identity != null && x.UserName!.Equals(User.Identity.Name));
 
-            //Get cuurent user
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName.Equals(User.Identity.Name));
-            @ViewData["UserInterestHide"] = null;
-
-            if (user is null)
+            if (user != null)
             {
-                //User is not logged in -> don't show interest button
-                @ViewData["UserInterestHide"] = true;
-            }
-            else if (await _context.UserInterestedTopics.AnyAsync(x =>
-                         x.UserId.Equals(user.Id) && x.TopicId.Equals(id)))
-            {
-                @ViewData["UserInterestClass"] = "interested";
-                @ViewData["UserInterestString"] = _sharedLocalizer["Remove interest"];
-            }
-            else
-            {
-                @ViewData["UserInterestClass"] = "not-interested";
-                @ViewData["UserInterestString"] = _sharedLocalizer["Add interest"];
+                if (await _context.UserInterestedTopics.AnyAsync(x => x.UserId.Equals(user.Id) && x.TopicId.Equals(id)))
+                {
+                    @ViewData["UserInterestClass"] = "interested";
+                    @ViewData["UserInterestString"] = _sharedLocalizer["Remove interest"];
+                }
+                else
+                {
+                    @ViewData["UserInterestClass"] = "not-interested";
+                    @ViewData["UserInterestString"] = _sharedLocalizer["Add interest"];
+                }
             }
 
             return View(topic);
         }
 
         [Authorize(Roles = "Topic,AnyTopic")]
-        public async Task<IActionResult> Create(string? groupName = "Unassigned", TopicType type = TopicType.Thesis)
+        public async Task<IActionResult> Create(string groupName = "Unassigned", TopicType type = TopicType.Thesis)
         {
             var groupProvided = _context.Groups.FirstOrDefault(x => x.NameEng.ToLower().Equals(groupName.ToLower()));
 
@@ -315,7 +294,7 @@ namespace TOS.Controllers
                 topic.GroupId = topic.Group.GroupId;
             }
 
-            topic.Creator = await _context.Users.FirstAsync(x => x.UserName.Equals(User.Identity.Name));
+            topic.Creator = await _context.Users.FirstAsync(x => x.UserName!.Equals(User.Identity!.Name));
             topic.Visible = false;
             topic.Proposed = true;
 
@@ -484,25 +463,23 @@ namespace TOS.Controllers
             _context.Topics.Remove(topic);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index), new {groupName = groupName});
+            return RedirectToAction(nameof(Index), new { groupName });
         }
 
         [Authorize(Roles = "InterestTopic")]
-        public async Task<JsonResult> Interest(int? topicId)
+        public async Task<JsonResult> Interest(int topicId)
         {
-            if (topicId == null) throw new Exception("topicId should be provided");
-
             //Current user
             var user = await _context.Users.FirstAsync(x => x.UserName!.Equals(User.Identity!.Name));
 
             //Topic
             var topic = await _context.Topics.FirstAsync(x => x.TopicId.Equals(topicId));
 
-            if (await _context.UserInterestedTopics.AnyAsync(x =>
-                    x.UserId.Equals(user.Id) && x.TopicId.Equals(topic.TopicId)))
+            if (await _context.UserInterestedTopics.AnyAsync(x => x.UserId.Equals(user.Id) && x.TopicId.Equals(topic.TopicId)))
             {
-                _context.UserInterestedTopics.Remove(_context.UserInterestedTopics.First(x =>
-                    x.UserId.Equals(user.Id) && x.TopicId.Equals(topic.TopicId)));
+                _context.UserInterestedTopics
+                    .Remove(_context.UserInterestedTopics
+                        .First(x => x.UserId.Equals(user.Id) && x.TopicId.Equals(topic.TopicId)));
             }
             else
             {

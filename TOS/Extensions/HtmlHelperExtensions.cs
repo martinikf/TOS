@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using TOS.Models;
 
 namespace TOS.Extensions;
@@ -26,7 +25,7 @@ public static class HtmlHelperExtensions
         if (username is null) return false;
         if (anyTopic) return true;
         if (topic && topicObj.Proposed) return true;
-        if (topic && (topicObj.Creator.UserName == username || topicObj.Supervisor.UserName == username)) return true;
+        if (topic && (topicObj.Creator.UserName == username || (topicObj.Supervisor != null && topicObj.Supervisor.UserName == username))) return true;
         if ( proposeTopic && topicObj.Proposed && topicObj.Creator.UserName == username) return true;
         
         return false;

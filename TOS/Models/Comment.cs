@@ -31,6 +31,6 @@ public class Comment
     public bool Anonymous { get; set; }
 
     [NotMapped] 
-    public int Depth { get; set; } = 0;
+    public int Depth { get; set; }
 
 }

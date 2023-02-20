@@ -66,9 +66,9 @@ public class NotificationManager : INotificationManager
 
     public Task TopicAdopted(Topic topic)
     {
-        var user = topic.Creator.Email;
+        var userEmail = topic.Creator.Email!;
         
-        _emailSender.SendEmailAsync(user, "Téma přijato - Topic adopted", "Téma " + topic.Name + " bylo přijato." + "\n---\n" + "Topic " + topic.NameEng + " was adopted.");
+        _emailSender.SendEmailAsync(userEmail, "Téma přijato - Topic adopted", "Téma " + topic.Name + " bylo přijato." + "\n---\n" + "Topic " + topic.NameEng + " was adopted.");
 
         return Task.CompletedTask;
     }

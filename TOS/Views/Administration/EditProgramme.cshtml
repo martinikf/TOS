@@ -1,6 +1,7 @@
 ﻿@using TOS.Resources
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.AspNetCore.Mvc.TagHelpers
+@using TOS.Data
 @model TOS.Models.Programme
 
 @inject IHtmlLocalizer<SharedResource> SharedLocalizer
@@ -38,7 +39,7 @@
             <div>
                 <select name="typeDropdown">
                     <option value="Bachelor">@SharedLocalizer["Bachelor"]</option>
-                    @if ((bool)ViewData["IsMaster"]! == true)
+                    @if (@Model.Type == ProgramType.Master)
                     {
                         <option selected="selected" value="Master">@SharedLocalizer["Master"]</option>
                     }

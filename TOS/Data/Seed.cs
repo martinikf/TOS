@@ -10,47 +10,14 @@ public static class Seed
     {
         using var scope = app.Services.CreateScope();
         var ctx = scope.ServiceProvider.GetService<ApplicationDbContext>();
+        if (ctx is null) return;
         
         //Create Roles: Administrator, Teacher, Student, External
         var adminRole = CreateRole("Administrator", ctx);
         var teacherRole = CreateRole("Teacher", ctx);
         var studentRole = CreateRole("Student", ctx);
         var externalRole = CreateRole("External", ctx);
-        /*
-        //Topics
-        CreateRole("CreateTopic", ctx);
-        CreateRole("ProposeTopic", ctx);
 
-        CreateRole("EditTopic", ctx);
-        CreateRole("EditProposedTopic", ctx);
-        CreateRole("EditAnyTopic", ctx);
-
-        CreateRole("DeleteTopic", ctx);
-        CreateRole("DeleteProposedTopic", ctx);
-        CreateRole("DeleteAnyTopic", ctx);
-        
-        CreateRole("InterestTopic", ctx);
-        CreateRole("AssignedToTopic", ctx);
-        CreateRole("SupervisorToTopic", ctx);
-        
-        //Groups
-        CreateRole("CreateGroup", ctx);
-        
-        CreateRole("EditGroup", ctx);
-        CreateRole("EditAnyGroup", ctx);
-
-        CreateRole("DeleteGroup", ctx);
-        CreateRole("DeleteAnyGroup", ctx);
-        
-        CreateRole("AssignedToGroup", ctx);
-        
-        //Comments
-        CreateRole("CreateComment", ctx);
-        CreateRole("CreateAnonymousComment", ctx);
-        
-        CreateRole("DeleteComment", ctx);
-        CreateRole("DeleteAnyComment", ctx);
-*/
         CreateRole("Topic", ctx);
         CreateRole("ProposeTopic", ctx);
         CreateRole("AnyTopic", ctx);
@@ -72,15 +39,7 @@ public static class Seed
         var teacherUser = CreateUser("Teacher", "User","",  "teacher@tos.tos","teacher@tos.tos", true, "password", ctx);
         var studentUser = CreateUser("Student", "User","",  "student@tos.tos", "student@tos.tos",true, "password", ctx);
         var externalUser = CreateUser("External", "User", "", "external@tos.tos", "external@tos.tos",true, "password", ctx);
-
-        //Add roles
-        /*
-        CreateUserRole(adminUser, adminRole, ctx);
-        CreateUserRole(teacherUser, teacherRole, ctx);
-        CreateUserRole(studentUser, studentRole, ctx);
-        CreateUserRole(externalUser, externalRole, ctx);
-        */
-
+        
         await RoleHelper.AssignRoles(adminUser, Role.Administrator, ctx);
         await RoleHelper.AssignRoles(teacherUser, Role.Teacher, ctx);
         await RoleHelper.AssignRoles(studentUser, Role.Student, ctx);
@@ -255,7 +214,7 @@ public static class Seed
     public static IdentityRole<int> CreateRole(string name, ApplicationDbContext ctx)
     {
         //Create new IdentityRole if not exists
-        var role = ctx.Roles.FirstOrDefault(r => r.Name.Equals(name));
+        var role = ctx.Roles.FirstOrDefault(r => r.Name!.Equals(name));
         if (role == null)
         {
             role = new IdentityRole<int>
@@ -305,6 +264,7 @@ public static class Seed
             attachment = new Attachment
             {
                 Name = name,
+                NameEng = nameEng,
                 Path = path,
                 CreatedAt = createdAt,
                 Creator = creator,

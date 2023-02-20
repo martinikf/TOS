@@ -3,9 +3,7 @@
 #nullable disable
 
 using System.ComponentModel.DataAnnotations;
-//using System.DirectoryServices.Protocols;
 using Novell.Directory.Ldap;
-using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Xml.Linq;
@@ -14,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using TOS.Data;
 using TOS.Models;
 using TOS.Services;
@@ -218,7 +217,6 @@ namespace TOS.Areas.Identity.Pages.Account
 
         private async Task<ApplicationUser> CreateUser(string osCislo, bool student)
         {
-            var roleString = student ? "Student" : "Teacher";
             var req = student
                 ? "https://stagservices.upol.cz/ws/services/rest2/student/getStudentInfo?osCislo=" + osCislo
                 : "https://stagservices.upol.cz/ws/services/rest2/ucitel/getUcitelInfo?ucitIdno=" + osCislo;
@@ -226,8 +224,23 @@ namespace TOS.Areas.Identity.Pages.Account
             var info = GetUserStagInfo(req);
 
             var lastnameLowered = info.Item2[..1] + info.Item2[1..].ToLower();
-            var user = Seed.CreateUser(info.Item1, lastnameLowered, null, info.Item3, Input.Username,true, null, _context);
+
+            var user = new ApplicationUser
+            {
+                FirstName = info.Item1,
+                LastName = lastnameLowered,
+                DisplayName = info.Item1 + " " + lastnameLowered,
+                Email = info.Item3,
+                UserName = Input.Username,
+                EmailConfirmed = true,
+                PasswordHash = null
+            };
+            user.SecurityStamp = Guid.NewGuid().ToString("D");
             
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            
+            user = await _context.Users.FirstAsync(x => x.UserName.Equals(user.UserName));
             await RoleHelper.AssignRoles(user, student ? Role.Student : Role.Teacher, _context);
 
             return user;
