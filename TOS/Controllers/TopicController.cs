@@ -374,7 +374,7 @@ namespace TOS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Topic,AnyTopic,ProposeTopic")]
-        public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name,DescriptionShort,DescriptionLong,Visible,CreatorId,SupervisorId,AssignedId,GroupId,Type,Proposed")] Topic topic, int[] programmes, List<IFormFile> files, int oldAssigned)
+        public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,Visible,CreatorId,SupervisorId,AssignedId,GroupId,Type,Proposed")] Topic topic, int[] programmes, List<IFormFile> files, int oldAssigned)
         {
             var user = await _context.Users.FirstAsync(x => User.Identity != null && x.UserName!.Equals(User.Identity.Name));
             
@@ -410,12 +410,16 @@ namespace TOS.Controllers
                 topic.Creator = user;
                 //Create topic
                 _context.Add(topic);
+                await _context.SaveChangesAsync();
             }
             else
             {
-                //Why is this needed?
-                topic.Creator = await _context.Users.FirstAsync(x => x.Id.Equals(topic.CreatorId));
+                //Update topic
+                _context.Topics.Update(topic);
+                await _context.SaveChangesAsync();
 
+                topic = _context.Topics.Include("UserInterestedTopics").First(x=>x.TopicId.Equals(topic.TopicId));
+                
                 //Notify users
                 if (topic.Proposed && topic.SupervisorId > 0)
                 {
@@ -435,12 +439,7 @@ namespace TOS.Controllers
                 {
                     await _notificationManager.TopicEdit(topic, user);
                 }
-                
-                //Update topic
-                _context.Topics.Update(topic);
             }
-
-            await _context.SaveChangesAsync();
 
             //Delete all recommended programmes
             _context.TopicRecommendedProgrammes.RemoveRange(
