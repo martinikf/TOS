@@ -12,6 +12,10 @@
 <h1>Create</h1>
 
 <h4>Programme</h4>
+@if (ViewData["Error"] != null)
+{
+    <h5>@ViewData["Error"]</h5>
+}
 <hr />
 <div class="row">
     <div class="col-md-4">

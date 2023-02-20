@@ -30,8 +30,9 @@ public class AdministrationController : Controller
         return View(programmes);
     }
 
-    public IActionResult CreateProgramme()
+    public IActionResult CreateProgramme(string? error)
     {
+        ViewData["Error"] = error;
         return View();
     }
     
@@ -40,6 +41,11 @@ public class AdministrationController : Controller
     public async Task<IActionResult> CreateProgramme([Bind("ProgrammeId,Name,NameEng,Active,Type")] Programme programme, string typeDropdown)
     {
         programme.Type = typeDropdown.Equals("Bachelor") ? ProgramType.Bachelor : ProgramType.Master;
+
+        if (_context.Programmes.Any(x => (x.Name.Equals(programme.Name) || x.NameEng.Equals(programme.NameEng)) && x.Type.Equals(programme.Type)))
+        {
+            return RedirectToAction("CreateProgramme", new{error="ALREADY_EXISTS"});
+        }
         
         await _context.Programmes.AddAsync(programme);
         await _context.SaveChangesAsync();
@@ -94,10 +100,8 @@ public class AdministrationController : Controller
                                               || x.LastName!.ToLower().Contains(searchString) ||
                                               x.Email!.ToLower().Contains(searchString)).ToListAsync());
         }
-        else
-        {
-            return View(await users.ToListAsync());
-        }
+       
+        return View(new List<ApplicationUser>());
     }
     
     public async Task<IActionResult> EditRoles(int? id)
