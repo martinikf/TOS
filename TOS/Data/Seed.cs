@@ -177,6 +177,38 @@ public static class Seed
         CreateProgramme("Učitelství informatiky pro střední školy", "Teaching informatics for high schools", true,
             ProgramType.Master, ctx);
 
+
+        if (!ctx.Notifications.Any(x => x.Name.Equals("Změna tématu")))
+        {
+            ctx.Notifications.Add(new Notification()
+            {
+                Name = "Změna tématu", SubjectEng = "Topic change",
+                Text = "Téma bylo změněno [URL]",
+                TextEng = "Topic was changed [URL]"
+            });
+        }
+        
+        if (!ctx.Notifications.Any(x => x.Name.Equals("Přiřazení tématu")))
+        {
+            ctx.Notifications.Add(new Notification()
+            {
+                Name = "Přiřazení tématu", SubjectEng = "Assigned topic",
+                Text = "Téma bylo přiřazeno studentovi [STUDENT_DISPLAYNAME]",
+                TextEng = "Topic assigned to [STUDENT_DISPLAYNAME]"
+            });
+        }
+        
+        if (!ctx.Notifications.Any(x => x.Name.Equals("Nový komentář")))
+        {
+            ctx.Notifications.Add(new Notification()
+            {
+                Name = "Nový komentář", SubjectEng = "New comment",
+                Text = "[COMMENT]",
+                TextEng = "[COMMENT]"
+            });
+        }
+
+        await ctx.SaveChangesAsync();
     }
 
 

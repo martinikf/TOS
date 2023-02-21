@@ -15,6 +15,9 @@ namespace TOS.Data
         public DbSet<Topic> Topics { get; set; }
         public DbSet<TopicRecommendedProgramme> TopicRecommendedProgrammes { get; set; }
         public DbSet<UserInterestedTopic> UserInterestedTopics { get; set; }
+        
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<UserSubscribedNotification> UserSubscribedNotifications { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -101,6 +104,21 @@ namespace TOS.Data
                 .HasOne(tf => tf.Programme)
                 .WithMany(x => x.TopicRecommendedPrograms)
                 .HasForeignKey(tf => tf.ProgramId);
+            
+            //M:N relation for notifications
+            builder.Entity<UserSubscribedNotification>().HasKey(s => new { s.UserId, s.NotificationId });
+
+            builder.Entity<UserSubscribedNotification>()
+                .HasOne(tf => tf.Notification)
+                .WithMany(x => x.UserSubscribedNotifications)
+                .HasForeignKey(tf => tf.NotificationId);
+
+            builder.Entity<UserSubscribedNotification>()
+                .HasOne(tf => tf.User)
+                .WithMany(x => x.UserSubscribedNotifications)
+                .HasForeignKey(tf => tf.UserId);
+            
+            
 
             //Conversion of enum ProgramType for Programme
             builder.Entity<Programme>()

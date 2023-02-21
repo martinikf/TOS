@@ -1,4 +1,5 @@
 ﻿@page
+@using TOS.Extensions
 @model IndexModel
 @{
     ViewData["Title"] = "Profile";
@@ -27,6 +28,20 @@
                 <input asp-for="Input.DisplayName" class="form-control" placeholder="Please choose your display name." />
                 <label asp-for="Input.DisplayName" class="form-label"></label>
             </div>
+            @foreach (var notification in (ICollection<Notification>)ViewData["Notifications"]!)
+            {
+                <div class="form-floating mb-3">
+                    <label>@Html.SelectStringByLanguage(notification.SubjectEng, notification.Name)</label>
+                    @if (notification.Selected)
+                    {
+                        <input type="checkbox" name="selectedNotifications" value="@notification.NotificationId" checked/>
+                    }
+                    else
+                    {
+                        <input type="checkbox" name="selectedNotifications" value="@notification.NotificationId"/>
+                    }
+                </div>
+            }
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </form>
     </div>

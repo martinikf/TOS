@@ -65,6 +65,11 @@ public class AdministrationController : Controller
     {
         programme.Type = typeDropdown.Equals("Bachelor") ? ProgramType.Bachelor : ProgramType.Master;
         
+        if (_context.Programmes.Any(x => x.ProgrammeId != programme.ProgrammeId && (x.Name.Equals(programme.Name) || x.NameEng.Equals(programme.NameEng)) && x.Type.Equals(programme.Type)))
+        {
+            return RedirectToAction("CreateProgramme", new{error="ALREADY_EXISTS"});
+        }
+        
         _context.Update(programme);
         await _context.SaveChangesAsync();
         
@@ -130,5 +135,32 @@ public class AdministrationController : Controller
         await RoleHelper.AssignRoles(user, role, _context);
         
         return RedirectToAction(nameof(Users));
+    }
+
+    public IActionResult Notifications()
+    {
+        return View(_context.Notifications.ToList());
+    }
+
+    public IActionResult EditNotification(int id)
+    {
+        var not = _context.Notifications.First(x => x.NotificationId == id);
+
+        return View(not);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EditNotification([Bind("Name,Subject,SubjectEng,Text,TextEng,NotificationId")]Notification notification)
+    {
+        if (_context.Notifications.Any(x =>
+                x.NotificationId != notification.NotificationId && x.Name == notification.Name))
+        {
+            return RedirectToAction(nameof(EditNotification), new {notification.NotificationId});
+        }
+        
+        _context.Notifications.Update(notification);
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Notifications));
     }
 }

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using TOS.Data;
 using TOS.Models;
 
 namespace TOS.Areas.Identity.Pages.Account.Manage
@@ -17,13 +18,16 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ApplicationDbContext _context;
 
         public IndexModel(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
         }
 
         /// <summary>
@@ -78,6 +82,17 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
 
             Username = userName;
 
+            var notifications = _context.Notifications.ToList();
+            foreach(var n in notifications)
+            {
+                if (_context.UserSubscribedNotifications.Any(x =>
+                        x.UserId == user.Id && x.NotificationId == n.NotificationId))
+                {
+                    n.Selected = true;
+                }
+            }
+            ViewData["Notifications"] = notifications;
+
             Input = new InputModel
             {
                 Firstname = firstname,
@@ -98,7 +113,7 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int[] selectedNotifications)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -111,27 +126,26 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
                 await LoadAsync(user);
                 return Page();
             }
-            /*
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
-            {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
-                }
-            }
-            */
-            //Update user name
-            //TODO Allow it only for none-AD users
+            
             //TODO Add stag api sync option for AD-users
             user.FirstName = Input.Firstname;
             user.LastName = Input.Lastname;
             await _userManager.UpdateAsync(user);
+
+            var toRemove = _context.UserSubscribedNotifications
+                .Where(x => x.UserId == user.Id).ToList();
+            _context.UserSubscribedNotifications.RemoveRange(toRemove);
+
+            foreach (var not in selectedNotifications)
+            {
+                _context.UserSubscribedNotifications.Add(new() { UserId = user.Id, NotificationId = not});
+            }
+
+            await _context.SaveChangesAsync();
             
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
+            
             return RedirectToPage();
         }
     }

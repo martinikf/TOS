@@ -7,7 +7,6 @@ public class ApplicationUser : IdentityUser<int>
 {
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
-
     public string? DisplayName { get; set; }
 
     [InverseProperty("Creator")] 
@@ -29,5 +28,7 @@ public class ApplicationUser : IdentityUser<int>
     public virtual ICollection<Group> CreatedGroups { get; } = new HashSet<Group>();
     
     public virtual ICollection<UserInterestedTopic> UserInterestedTopics { get; } = new HashSet<UserInterestedTopic>();
-    
+
+    public virtual ICollection<UserSubscribedNotification> UserSubscribedNotifications { get; } = new HashSet<UserSubscribedNotification>();
+
 }
