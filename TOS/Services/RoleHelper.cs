@@ -32,6 +32,8 @@ public static class RoleHelper
                 roles.Add("Comment");
                 roles.Add("AnyComment");
                 
+                roles.Add("Attachment");
+                
                 roles.Add("Group");
 
                 roles.Add("SuperviseTopic");
@@ -42,6 +44,7 @@ public static class RoleHelper
                 roles.Add("ProposeTopic");
                 
                 roles.Add("Comment");
+                roles.Add("Attachment");
                 break;
             case Role.Administrator:
                 roles.Add("Administrator");
@@ -52,6 +55,9 @@ public static class RoleHelper
                 roles.Add("Comment");
                 roles.Add("AnyComment");
                 
+                roles.Add("Attachment");
+                roles.Add("AnyAttachment");
+
                 roles.Add("Group");
                 roles.Add("AnyGroup");
                 break;

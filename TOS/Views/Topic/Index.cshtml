@@ -26,63 +26,64 @@
 <form asp-action="Index" method="get">
     <input type="hidden" name="groupName" value="@ViewData["topicsIndexGroupName"]"/>
     <input type="text" name="searchString" placeholder="Search string..." value="@ViewData["searchString"]"/>
-    
-    <label>Show taken topics</label>
-    @if((bool) ViewData["showTakenTopics"]!)
+    @if ((string)ViewData["topicsIndexGroupName"]! != "Unassigned")
     {
-        <input name="showTakenTopics" type="checkbox" value="true" checked/>
-    }
-    else
-    {
-        <input name="showTakenTopics" type="checkbox" value="true"/>
-    }
-    @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
-    {
-        <label>Show hidden topics</label>
-        @if ((bool) ViewData["showHidden"]!)
+        <label>Show taken topics</label>
+        @if ((bool)ViewData["showTakenTopics"]!)
         {
-            <input name="showHidden" type="checkbox" value="true" checked/>
+            <input name="showTakenTopics" type="checkbox" value="true" checked/>
         }
         else
         {
-            <input name="showHidden" type="checkbox" value="true"/>
+            <input name="showTakenTopics" type="checkbox" value="true"/>
         }
-    }
-    
-    <select name="programmeName">
-        <option value="">@SharedLocalizer["All programmes"]</option>
-        @foreach (var programme in (List<Programme>) ViewData["programmes"]!)
+        @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
         {
-            @if ((string) ViewData["selectedProgramme"]! == programme.NameEng)
+            <label>Show hidden topics</label>
+            @if ((bool)ViewData["showHidden"]!)
             {
-                <option value="@programme.NameEng" selected>@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</option>
+                <input name="showHidden" type="checkbox" value="true" checked/>
             }
             else
             {
-                <option value="@programme.NameEng">@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</option>
+                <input name="showHidden" type="checkbox" value="true"/>
             }
         }
-    </select>
-    @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
-    {
-        <label>Show only proposed topics</label>
-        @if ((bool) ViewData["showProposed"]!)
-        {
-            <input name="showProposed" type="checkbox" value="true" checked/>
-        }
-        else
-        {
-            <input name="showProposed" type="checkbox" value="true"/>
-        }
-    }
-    
-    <label>@SharedLocalizer["orderBy"]</label>
-    <select name="orderBy">
-        @Html.SelectOption("Supervisor", @SharedLocalizer["orderBySupervisor"].Value, (string) ViewData["orderBy"]!)
-        @Html.SelectOption("Name", @SharedLocalizer["orderByName"].Value, (string)ViewData["orderBy"]!)
-        @Html.SelectOption("Interest", @SharedLocalizer["orderByInterest"].Value, (string)ViewData["orderBy"]!)
-    </select>
 
+        <select name="programmeName">
+            <option value="">@SharedLocalizer["All programmes"]</option>
+            @foreach (var programme in (List<Programme>)ViewData["programmes"]!)
+            {
+                @if ((string)ViewData["selectedProgramme"]! == programme.NameEng)
+                {
+                    <option value="@programme.NameEng" selected>@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</option>
+                }
+                else
+                {
+                    <option value="@programme.NameEng">@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</option>
+                }
+            }
+        </select>
+        @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
+        {
+            <label>Show only proposed topics</label>
+            @if ((bool)ViewData["showProposed"]!)
+            {
+                <input name="showProposed" type="checkbox" value="true" checked/>
+            }
+            else
+            {
+                <input name="showProposed" type="checkbox" value="true"/>
+            }
+        }
+
+        <label>@SharedLocalizer["orderBy"]</label>
+        <select name="orderBy">
+            @Html.SelectOption("Supervisor", @SharedLocalizer["orderBySupervisor"].Value, (string)ViewData["orderBy"]!)
+            @Html.SelectOption("Name", @SharedLocalizer["orderByName"].Value, (string)ViewData["orderBy"]!)
+            @Html.SelectOption("Interest", @SharedLocalizer["orderByInterest"].Value, (string)ViewData["orderBy"]!)
+        </select>
+    }
     <input type="submit" value="Search"/>
 </form>
 

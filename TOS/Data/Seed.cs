@@ -115,6 +115,9 @@ public static class Seed
         CreateRole("AnonymousComment", ctx);
         CreateRole("AnyComment", ctx);
 
+        CreateRole("Attachment", ctx);
+        CreateRole("AnyAttachment", ctx);
+
         CreateRole("InterestTopic", ctx);
         CreateRole("AssignedTopic", ctx);
         CreateRole("SuperviseTopic", ctx);
