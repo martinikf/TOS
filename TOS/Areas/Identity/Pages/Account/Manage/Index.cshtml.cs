@@ -130,6 +130,7 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
             //TODO Add stag api sync option for AD-users
             user.FirstName = Input.Firstname;
             user.LastName = Input.Lastname;
+            user.DisplayName = Input.DisplayName;
             await _userManager.UpdateAsync(user);
 
             var toRemove = _context.UserSubscribedNotifications

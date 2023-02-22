@@ -177,40 +177,34 @@ public static class Seed
         CreateProgramme("Učitelství informatiky pro střední školy", "Teaching informatics for high schools", true,
             ProgramType.Master, ctx);
 
-
-        if (!ctx.Notifications.Any(x => x.Name.Equals("Změna tématu")))
-        {
-            ctx.Notifications.Add(new Notification()
-            {
-                Name = "Změna tématu", SubjectEng = "Topic change",
-                Text = "Téma bylo změněno [URL]",
-                TextEng = "Topic was changed [URL]"
-            });
-        }
         
-        if (!ctx.Notifications.Any(x => x.Name.Equals("Přiřazení tématu")))
-        {
-            ctx.Notifications.Add(new Notification()
-            {
-                Name = "Přiřazení tématu", SubjectEng = "Assigned topic",
-                Text = "Téma bylo přiřazeno studentovi [STUDENT_DISPLAYNAME]",
-                TextEng = "Topic assigned to [STUDENT_DISPLAYNAME]"
-            });
-        }
-        
-        if (!ctx.Notifications.Any(x => x.Name.Equals("Nový komentář")))
-        {
-            ctx.Notifications.Add(new Notification()
-            {
-                Name = "Nový komentář", SubjectEng = "New comment",
-                Text = "[COMMENT]",
-                TextEng = "[COMMENT]"
-            });
-        }
+        CreateNotification("TopicEdit", "Změna tématu", "Topic Change", "Téma bylo změněno.", "Topic was edited.", ctx);
 
-        await ctx.SaveChangesAsync();
+        CreateNotification("TopicAssigned-Student", "Téma bylo přiřazeno Vám", "Topic was assigned to You", "TODO", "TODO", ctx);
+        CreateNotification("TopicAssigned-Others", "Téma bylo přiřazeno", "Topic was assigned", "TODO", "TODO", ctx);
+
+        CreateNotification("TopicAdopted", "Téma bylo přijato", "Topic was accepted", "TODO", "TODO", ctx);
+
+        CreateNotification("CommentNew", "Nový komentář", "New comment", "[COMMENT]", "[COMMENT]", ctx);
     }
 
+    public static Notification CreateNotification(string name, string subject, string subjectEng, string text, string textEng, ApplicationDbContext ctx)
+    {
+        if (!ctx.Notifications.Any(x => x.Name.Equals(name)))
+        {
+            ctx.Notifications.Add(new Notification()
+            {
+                Name = name, 
+                Subject = subject, 
+                SubjectEng = subjectEng,
+                Text = text,
+                TextEng = textEng
+            });
+        }
+
+        ctx.SaveChanges();
+        return ctx.Notifications.First(x => x.Name.Equals(name));
+    }
 
     public static ApplicationUser CreateUser(string firstname, string lastname, string displayname, string email, string username, bool emailConfirmed, string? password, ApplicationDbContext ctx)
     {

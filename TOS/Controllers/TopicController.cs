@@ -397,7 +397,12 @@ namespace TOS.Controllers
                 _context.Topics.Update(topic);
                 await _context.SaveChangesAsync();
 
-                topic = _context.Topics.Include("UserInterestedTopics").First(x=>x.TopicId.Equals(topic.TopicId));
+                topic = _context.Topics
+                    .Include(x => x.UserInterestedTopics)
+                    .Include(x=>x.Creator)
+                    .Include(x=>x.Supervisor)
+                    .Include(x=>x.AssignedStudent)
+                    .First(x=>x.TopicId.Equals(topic.TopicId));
                 
                 //Notify users
                 if (topic.Proposed && topic.SupervisorId > 0)
@@ -408,15 +413,15 @@ namespace TOS.Controllers
                         return false;
                     }
                     topic.Proposed = true;
-                    await _notificationManager.TopicAdopted(topic);
+                    await _notificationManager.TopicAdopted(topic, CallbackDetailsUrl(topic.TopicId));
                 }
                 else if(topic.AssignedId != null && oldAssigned != topic.AssignedId)
                 {
-                    await _notificationManager.TopicAssigned(topic, _context.Users.First(x=>x.Id.Equals(topic.AssignedId)));
+                    await _notificationManager.TopicAssigned(topic, user, CallbackDetailsUrl(topic.TopicId));
                 }
                 else
                 {
-                    await _notificationManager.TopicEdit(topic, user);
+                    await _notificationManager.TopicEdit(topic, user, CallbackDetailsUrl(topic.TopicId));
                 }
             }
 
@@ -585,7 +590,7 @@ namespace TOS.Controllers
             
             await _context.SaveChangesAsync();
 
-            await _notificationManager.NewComment(c);
+            await _notificationManager.NewComment(c, CallbackDetailsUrl(id));
 
             return RedirectToAction("Details", new { id });
         }
@@ -633,6 +638,17 @@ namespace TOS.Controllers
                     .ToList();
 
             return users;
+        }
+
+        private string CallbackDetailsUrl(int id)
+        {
+            var url = Url.Page(
+                "/Topic/Details",
+                pageHandler: null,
+                values: new { id },
+                protocol: Request.Scheme);
+
+            return url ?? string.Empty;
         }
     }
 }

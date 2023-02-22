@@ -19,8 +19,7 @@ namespace TOS.Data
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<UserSubscribedNotification> UserSubscribedNotifications { get; set; }
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 

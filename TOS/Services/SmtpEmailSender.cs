@@ -22,10 +22,9 @@ public class SmtpEmailSender : IEmailSender
         };
     }
     
-    public Task SendEmailAsync(string email, string subject, string htmlMessage)
+    public async Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
-        return Task.CompletedTask;
-        //return _client.SendMailAsync(new MailMessage(_fromAddress, email, subject, htmlMessage));
+        await _client.SendMailAsync(new MailMessage(_fromAddress, "martinik.filip01@gmail.com", subject, htmlMessage));
     }
 }
 
