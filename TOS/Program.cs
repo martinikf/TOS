@@ -1,3 +1,4 @@
+using System.Configuration;
 using System.Globalization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -30,10 +31,10 @@ builder.Services.AddControllersWithViews()
     .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization();
 
 builder.Services.AddLocalization();
+
 builder.Services.Configure<RequestLocalizationOptions>(
     options =>
     {
-        //TODO set Cultures from files
         var supportedCultures = new[]
         {
             new CultureInfo("cz"),
@@ -45,17 +46,15 @@ builder.Services.Configure<RequestLocalizationOptions>(
         options.SupportedUICultures = supportedCultures;
     });
 
-
-//Register email sender
 builder.Services.AddScoped<SmtpEmailSenderSettings, SmtpEmailSenderSettings>(
     _ => new SmtpEmailSenderSettings()
     {
-        Username = builder.Configuration["SendinBlue:Username"] ?? throw new Exception("Secrets are not set"),
-        Password = builder.Configuration["SendinBlue:Password"] ?? throw new Exception("Secrets are not set"),
-        Port = 587,
-        FromAddress = "noreply@tos.tos",
-        SmtpServer = "smtp-relay.sendinblue.com",
-        EnableSsl = true
+        Username = builder.Configuration.GetSection("EmailSettings").GetValue<string>("Username") ?? throw new ConfigurationErrorsException("SMTP-Username is not set in appsettings.json"),
+        Password = builder.Configuration.GetSection("EmailSettings").GetValue<string>("Password") ?? throw new ConfigurationErrorsException("SMTP-Password is not set in appsettings.json"),
+        Port = builder.Configuration.GetSection("EmailSettings").GetValue<int>("Port"),
+        FromAddress = builder.Configuration.GetSection("EmailSettings").GetValue<string>("FromAddress") ?? throw new ConfigurationErrorsException("SMTP-FromAddress is not set in appsettings.json"),
+        SmtpServer = builder.Configuration.GetSection("EmailSettings").GetValue<string>("SmtpServer") ?? throw new ConfigurationErrorsException("SMTP-SmtpServer is not set in appsettings.json"),
+        EnableSsl = builder.Configuration.GetSection("EmailSettings").GetValue<bool>("EnableSsl")
     });
 builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 
@@ -65,7 +64,7 @@ var app = builder.Build();
 
 app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
-if(true)
+if(false)
     Seed.InfUpolSeed(app);
 
 // Configure the HTTP request pipeline.
