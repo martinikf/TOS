@@ -199,23 +199,6 @@ namespace TOS.Controllers
                 .Include(t => t.Supervisor)
                 .FirstAsync(m => m.TopicId == id);
             
-            //Get current user
-            var user = await _context.Users.FirstOrDefaultAsync(x => User.Identity != null && x.UserName!.Equals(User.Identity.Name));
-
-            if (user != null)
-            {
-                if (await _context.UserInterestedTopics.AnyAsync(x => x.UserId.Equals(user.Id) && x.TopicId.Equals(id)))
-                {
-                    @ViewData["UserInterestClass"] = "interested";
-                    @ViewData["UserInterestString"] = _sharedLocalizer["Remove interest"];
-                }
-                else
-                {
-                    @ViewData["UserInterestClass"] = "not-interested";
-                    @ViewData["UserInterestString"] = _sharedLocalizer["Add interest"];
-                }
-            }
-
             return View(topic);
         }
 
@@ -642,13 +625,8 @@ namespace TOS.Controllers
 
         private string CallbackDetailsUrl(int id)
         {
-            var url = Url.Page(
-                "/Topic/Details",
-                pageHandler: null,
-                values: new { id },
-                protocol: Request.Scheme);
-
-            return url ?? string.Empty;
+            var url =  "https://" + HttpContext.Request.Host + $"/Topic/Details/{id}";
+            return url;
         }
     }
 }

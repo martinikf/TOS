@@ -73,12 +73,18 @@
     </script>
 }
 
-
 <h1>Details</h1>
 
 @if (User.IsInRole("InterestTopic"))
 {
-    <a href="javascript:void(0)" class="btn btn-primary @ViewData["UserInterestClass"]" id="btn-interest">@ViewData["UserInterestString"] </a>
+    @if (Model.UserInterestedTopics.Any(x => x.User.UserName == User.Identity!.Name))
+    {
+        <a href="javascript:void(0)" class="btn btn-primary interested" id="btn-interest">@SharedLocalizer["Remove interest"]</a>
+    }
+    else
+    {
+        <a href="javascript:void(0)" class="btn btn-primary not-interested" id="btn-interest">@SharedLocalizer["Add interest"]</a>
+    }
 }
 
 <div>
