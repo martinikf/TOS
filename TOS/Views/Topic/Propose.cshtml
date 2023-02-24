@@ -27,8 +27,8 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                    <label asp-for="NameEng" class="control-label"></label>
-                    <input asp-for="NameEng" class="form-control" />
+                <label asp-for="NameEng" class="control-label"></label>
+                <input asp-for="NameEng" class="form-control" />
             </div>
             <div class="form-group">
                 <label asp-for="DescriptionShort" class="control-label"></label>
@@ -42,7 +42,6 @@
             <div class="form-group">
                 <label asp-for="DescriptionLong" class="control-label"></label>
                 <input asp-for="DescriptionLong" class="form-control" />
-                <span asp-validation-for="DescriptionLong" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="DescriptionLongEng" class="control-label"></label>
@@ -89,6 +88,7 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
+}

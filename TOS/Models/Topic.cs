@@ -9,14 +9,17 @@ public class Topic
         [Key]
         public int TopicId { get; set; }
 
+        [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicNameRequired")]
         public string Name { get; set; } = string.Empty;
         
         public string NameEng { get; set; } = string.Empty;
 
+        [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicDescriptionShortRequired")]
+        [StringLength(512, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicDescriptionShortLength")]
         public string DescriptionShort { get; set; } = string.Empty;
         
         public string DescriptionShortEng { get; set; } = string.Empty;
-
+        
         public string? DescriptionLong { get; set; }
         
         public string? DescriptionLongEng { get; set; }

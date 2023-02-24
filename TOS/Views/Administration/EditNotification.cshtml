@@ -41,11 +41,11 @@
             <div class="form-group">
                 <label asp-for="SubjectEng" class="control-label"></label>
                 <input asp-for="SubjectEng" class="form-control" />
-                <span asp-validation-for="SubjectEng" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Text" class="control-label"></label>
                 <textarea asp-for="Text" class="form-control"></textarea>
+                <span asp-validation-for="Text" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="TextEng" class="control-label"></label>
@@ -57,3 +57,7 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

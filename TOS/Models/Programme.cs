@@ -9,6 +9,7 @@ public class Programme
     [Key]
     public int ProgrammeId { get; set; }
 
+    [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_ProgrammeNameRequired")]
     public string Name { get; set; } = string.Empty;
     
     public string NameEng { get; set; } = string.Empty;

@@ -37,7 +37,6 @@
             <div class="form-group">
                 <label asp-for="NameEng" class="control-label"></label>
                 <input asp-for="NameEng" class="form-control" />
-                <span asp-validation-for="NameEng" class="text-danger"></span>
             </div>
             
             <div class="form-group">
@@ -49,19 +48,16 @@
             <div class="form-group">
                 <label asp-for="DescriptionShortEng" class="control-label"></label>
                 <input asp-for="DescriptionShortEng" class="form-control" />
-                <span asp-validation-for="DescriptionShortEng" class="text-danger"></span>
             </div>
             
             <div class="form-group">
                 <label asp-for="DescriptionLong" class="control-label"></label>
                 <input asp-for="DescriptionLong" class="form-control" />
-                <span asp-validation-for="DescriptionLong" class="text-danger"></span>
             </div>
             
             <div class="form-group">
                 <label asp-for="DescriptionLongEng" class="control-label"></label>
                 <input asp-for="DescriptionLongEng" class="form-control" />
-                <span asp-validation-for="DescriptionLongEng" class="text-danger"></span>
             </div>
             
             <div class="form-group form-check">
@@ -155,6 +151,8 @@
 
 @section Scripts
 {
+    <partial name="_ValidationScriptsPartial" />
+    
     <script>
         window.onload = function () {
             RefreshProgrammes(true);

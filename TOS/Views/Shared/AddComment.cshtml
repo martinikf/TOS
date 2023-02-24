@@ -1,0 +1,36 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using TOS.Resources
+@model TOS.Models.Comment
+
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
+
+<div class="NewComment">
+    <h3>@SharedLocalizer["New comment"]</h3>
+    <hr/>
+    <div class="row">
+        <div class="col-md-8">
+            <form asp-action="AddComment">
+                <input type="hidden" asp-for="TopicId" value="@Model.TopicId"/>
+                @if (@Model.ParentCommentId != null)
+                {
+                     <input type="hidden" asp-for="ParentCommentId" value="@Model.ParentCommentId"/>
+                }
+                <div class="form-group">
+                    <label class="control-label">Text</label>
+                    <textarea asp-for="Text" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Text" class="text-danger"></span>
+                </div>
+
+                @if (User.IsInRole("AnonymousComment"))
+                {
+                    <label class="control-label">@SharedLocalizer["Anonymous"]</label>
+                    <input type="checkbox" asp-for="Anonymous" value="true"/>
+                }
+
+                <div class="form-group">
+                    <input type="submit" value="Send" class="btn btn-primary"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="ERROR_GroupNameRequired" xml:space="preserve">
+        <value>Name of group is required.</value>
+    </data>
+    <data name="ERROR_CommentTextRequired" xml:space="preserve">
+        <value>Text of comment is empty</value>
+    </data>
+    <data name="ERROR_TopicNameRequired" xml:space="preserve">
+        <value>Topic name is required.</value>
+    </data>
+    <data name="ERROR_TopicDescriptionShortRequired" xml:space="preserve">
+        <value>Short desc is required</value>
+    </data>
+    <data name="ERROR_TopicDescriptionShortLength" xml:space="preserve">
+        <value>Short desc is too long</value>
+    </data>
+    <data name="ERROR_ProgrammeNameRequired" xml:space="preserve">
+        <value>Programme name is required</value>
+    </data>
+    <data name="ERROR_NotificationTextRequired" xml:space="preserve">
+        <value>Text is required</value>
+    </data>
+    <data name="ERROR_NotificationSubjectRequired" xml:space="preserve">
+        <value>Subject is required</value>
+    </data>
+    <data name="ERROR_CommentTextMinLength" xml:space="preserve">
+        <value>Comment is too short</value>
+    </data>
+</root>

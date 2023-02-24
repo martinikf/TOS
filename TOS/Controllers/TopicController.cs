@@ -99,7 +99,7 @@ namespace TOS.Controllers
                     break;
             }
 
-            if (showProposed && User.IsInRole("Group") || User.IsInRole("AnyGroup"))
+            if (showProposed && (User.IsInRole("Group") || User.IsInRole("AnyGroup")))
             {
                 topicsToShow = topicsToShow.Where(x => x.Proposed).ToList();
             }
@@ -474,7 +474,8 @@ namespace TOS.Controllers
                 _context.UserInterestedTopics.Add(new UserInterestedTopic()
                 {
                     User = user,
-                    Topic = topic
+                    Topic = topic,
+                    DateTime = DateTime.Now
                 });
             }
 
@@ -550,34 +551,27 @@ namespace TOS.Controllers
 
             return RedirectToAction("Edit", new {id = topicId});
         }
-
+        
         [Authorize(Roles = "Comment,AnyComment")]
-        public async Task<IActionResult> AddComment(int id, string text, bool anonymous, int? parentId = null)
+        public async Task<IActionResult> AddComment([Bind("CommentId,Text,Anonymous,ParentCommentId,TopicId")] Comment comment)
         {
             //get current user
             var user = await _context.Users.FirstAsync(x => x.UserName!.Equals(User.Identity!.Name));
-
-            var c = new Comment
-            {
-                TopicId = id,
-                Topic = _context.Topics.First(x=>x.TopicId == id),
-                AuthorId = user.Id,
-                Author = user,
-                CreatedAt = DateTime.Now,
-                Text = text,
-                ParentCommentId = parentId,
-                Anonymous = anonymous
-            };
+            comment.AuthorId = user.Id;
+            comment.Author = user;
+            comment.CreatedAt = DateTime.Now;
             
-            _context.Comments.Add(c);
+            _context.Comments.Add(comment);
             
             await _context.SaveChangesAsync();
 
-            await _notificationManager.NewComment(c, CallbackDetailsUrl(id));
+            comment = _context.Comments.Include("Topic").First(x => x.CommentId == comment.CommentId);
 
-            return RedirectToAction("Details", new { id });
+            await _notificationManager.NewComment(comment, CallbackDetailsUrl(comment.TopicId));
+
+            return RedirectToAction("Details", new { id = comment.TopicId });
         }
-
+        
         [Authorize(Roles = "Comment,AnyComment")]
         public async Task<IActionResult> DeleteComment(int commentId, int topicId)
         {

@@ -60,12 +60,6 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Display(Name = "First name")]
-            public string Firstname { get; set; }
-            
-            [Display(Name = "Last name")]
-            public string Lastname { get; set; }
-            
             [Display(Name = "Display name")]
             public string DisplayName { get; set; }
         }
@@ -76,8 +70,7 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
             //Get current user
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser is null) throw new Exception("User should not be null");
-            var firstname = currentUser.FirstName;
-            var lastname = currentUser.LastName;
+
             var displayName = currentUser.DisplayName;
 
             Username = userName;
@@ -95,8 +88,6 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                Firstname = firstname,
-                Lastname = lastname,
                 DisplayName = displayName
             };
         }
@@ -128,8 +119,7 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
             }
             
             //TODO Add stag api sync option for AD-users
-            user.FirstName = Input.Firstname;
-            user.LastName = Input.Lastname;
+
             user.DisplayName = Input.DisplayName;
             await _userManager.UpdateAsync(user);
 

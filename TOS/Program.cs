@@ -64,7 +64,7 @@ var app = builder.Build();
 
 app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
-if(false)
+if(true)
     Seed.InfUpolSeed(app);
 
 // Configure the HTTP request pipeline.

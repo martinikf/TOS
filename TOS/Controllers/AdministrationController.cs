@@ -47,6 +47,9 @@ public class AdministrationController : Controller
             return RedirectToAction("CreateProgramme", new{error="ALREADY_EXISTS"});
         }
         
+        if(string.IsNullOrEmpty(programme.NameEng))
+            programme.NameEng = programme.Name!;
+        
         await _context.Programmes.AddAsync(programme);
         await _context.SaveChangesAsync();
 
@@ -157,6 +160,11 @@ public class AdministrationController : Controller
         {
             return RedirectToAction(nameof(EditNotification), new {notification.NotificationId});
         }
+        
+        if(string.IsNullOrEmpty(notification.SubjectEng))
+            notification.SubjectEng = notification.Subject!;
+        if (string.IsNullOrEmpty(notification.Text))
+            notification.TextEng = notification.Text!;
         
         _context.Notifications.Update(notification);
         await _context.SaveChangesAsync();

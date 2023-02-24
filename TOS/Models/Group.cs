@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.InteropServices;
 
 namespace TOS.Models;
 
@@ -7,10 +8,11 @@ public class Group
 {
     [Key]
     public int GroupId { get; set; }
-
+    
+    [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_GroupNameRequired")]
     public string Name { get; set; } = string.Empty;
     
-    public string NameEng { get; set; } = string.Empty;
+    public string? NameEng { get; set; } = string.Empty;
     
     public int CreatorId { get; set; }
     [ForeignKey("CreatorId")]

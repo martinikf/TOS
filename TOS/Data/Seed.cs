@@ -280,7 +280,7 @@ public static class Seed
     {
         //Create new Attachment if not exists
         var attachment = ctx.Attachments.FirstOrDefault(a =>
-            a.Name.Equals(name) && a.Path.Equals(path) && a.Creator.Id.Equals(creator.Id) && a.Topic.TopicId.Equals(topic.TopicId));
+            a.Name.Equals(name) && a.Creator.Id.Equals(creator.Id) && a.Topic.TopicId.Equals(topic.TopicId));
         
         if (attachment == null)
         {
@@ -293,9 +293,6 @@ public static class Seed
             attachment = new Attachment
             {
                 Name = name,
-                NameEng = nameEng,
-                Path = path,
-                CreatedAt = createdAt,
                 Creator = creator,
                 Topic = topic
             };

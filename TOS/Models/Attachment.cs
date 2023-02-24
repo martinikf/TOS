@@ -7,13 +7,7 @@ public class Attachment
     public int AttachmentId { get; set; }
     
     public string Name { get; set; } = string.Empty;
-    
-    public string NameEng { get; set; } = string.Empty;
-    
-    public string Path { get; set; } = string.Empty;
-    
-    public DateTime CreatedAt { get; set; }
-    
+
     public int CreatorId { get; set; }
     [ForeignKey("CreatorId")]
     [InverseProperty("Attachments")]

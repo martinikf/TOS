@@ -21,12 +21,12 @@ namespace TOS.Data
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
+            
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
             //Ignore some default User columns
             builder.Entity<ApplicationUser>()
                 .Ignore(c => c.PhoneNumber)

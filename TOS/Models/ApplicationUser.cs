@@ -1,12 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Build.Framework;
 
 namespace TOS.Models;
 
 public class ApplicationUser : IdentityUser<int>
 {
+    [Required]
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
+    
+    [Required]
     public string? DisplayName { get; set; }
 
     [InverseProperty("Creator")] 

@@ -10,7 +10,7 @@ namespace TOS.Services;
 
 public class NotificationManager : INotificationManager
 {
-    IEmailSender _emailSender;
+    private readonly IEmailSender _emailSender;
     private readonly ApplicationDbContext _context;
     
     public NotificationManager(IEmailSender emailSender, ApplicationDbContext context)

@@ -14,6 +14,8 @@
 
 @section Scripts
 {
+    <partial name="_ValidationScriptsPartial" />
+    
     <script>
     $(document).ready(function (){
         $("#btn-interest").on("click", function (){
@@ -185,57 +187,15 @@
                                     <a class="DeleteCommentButton" asp-action="DeleteComment" asp-route-commentId="@comment.CommentId" asp-route-topicId="@Model.TopicId">Delete</a>
                                 }
                             
-                                </div>
-                            <div class="Comment__reply row" id="ReplyForm@(comment.CommentId)" style="display: none;">
-                                <div class="col-md-8">
-                                    <form asp-action="AddComment">
-                                        <input type="hidden" asp-for="TopicId" name="id">
-                                        <input type="hidden" name="parentId" value="@comment.CommentId"/>
-                                        <div class="form-group">
-                                            <label class="control-label">Reply</label>
-                                            <textarea name="text" class="form-control" rows="3"></textarea>
-                                        </div>
-                                        @if (User.IsInRole("CreateAnonymousComment"))
-                                        {
-                                            <label class="control-label">@SharedLocalizer["Anonymous"]</label>
-                                            <input type="checkbox" name="anonymous" value="true"/>
-                                        }
-                                        <div class="form-group">
-                                            <input type="submit" value="@SharedLocalizer["CommentSend"]" class="btn btn-primary">
-                                        </div>
-                                    </form>
-                                </div>
                             </div>
-
+                            <div class="Comment__reply row" id="ReplyForm@(comment.CommentId)" style="display: none;">
+                                 @{ Html.RenderPartial("AddComment", new Comment(){ TopicId = Model.TopicId, ParentCommentId = @comment.CommentId}); }
+                            </div>
                         </div>
                     </div>
                 }
             </div>
-            <div class="NewComment">
-                <h3>@SharedLocalizer["New comment"]</h3>
-                <hr/>
-                <div class="row">
-                    <div class="col-md-8">
-                        <form asp-action="AddComment">
-                            <input type="hidden" asp-for="TopicId" name="id"/>
-                            <div class="form-group">
-                                <label class="control-label">Text</label>
-                                <textarea name="text" class="form-control" rows="3"></textarea>
-                            </div>
-
-                            @if (User.IsInRole("AnonymousComment"))
-                            {
-                                <label class="control-label">@SharedLocalizer["Anonymous"]</label>
-                                <input type="checkbox" name="anonymous" value="true"/>
-                            }
-
-                            <div class="form-group">
-                                <input type="submit" value="Send" class="btn btn-primary"/>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            @{ Html.RenderPartial("AddComment", new Comment(){ TopicId = Model.TopicId }); }
         </div>
     }
 </div>
@@ -284,4 +244,3 @@
         return returnComments;
     }
 }
-
