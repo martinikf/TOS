@@ -1,21 +1,13 @@
-﻿@using TOS.Resources
-@using Microsoft.AspNetCore.Mvc.Localization
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using TOS.Data
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model TOS.Models.Notification
 
-@inject IHtmlLocalizer<SharedResource> SharedLocalizer
-
 @{
-    ViewData["Title"] = "Edit notification";
+    ViewData["Title"] =SharedLocalizer["Administration_EditNotification_Heading"];
 }
 
-<h1>Edit</h1>
+<h1>@SharedLocalizer["Administration_EditNotification_Heading"]</h1>
 
-<h4>Notification - @Model.Name</h4>
-<hr />
-
-<p>@SharedLocalizer["EditNotificationAboutParamatrization"]</p>
+<p>@SharedLocalizer["Administration_EditNotification_Tutorial"]</p>
 <p>
     [URL]<br/>
     [TOPIC_NAME],[TOPIC_NAME_ENG],[TOPIC_SHORT_DESCRIPTION]<br/>
@@ -27,36 +19,33 @@
     [COMMENT_AUTHOR],[COMMENT_AUTHOR_EMAIL],[COMMENT_TEXT],[COMMENT_DATE]
 </p>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="EditNotification">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="NotificationId" />
-            <input type="hidden" asp-for="Name"/>
-            <div class="form-group">
-                <label asp-for="Subject" class="control-label"></label>
-                <input asp-for="Subject" class="form-control" />
-                <span asp-validation-for="Subject" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SubjectEng" class="control-label"></label>
-                <input asp-for="SubjectEng" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Text" class="control-label"></label>
-                <textarea asp-for="Text" class="form-control"></textarea>
-                <span asp-validation-for="Text" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TextEng" class="control-label"></label>
-                <textarea asp-for="TextEng" class="form-control"></textarea>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Edit" class="btn btn-primary" />
-            </div>
-        </form>
+<form asp-action="EditNotification">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="NotificationId" />
+    <input type="hidden" asp-for="Name"/>
+    
+    <div class="mb-3">
+        <label asp-for="Subject" class="form-label">@SharedLocalizer["Administration_EditNotification_Subject"]</label>
+        <input asp-for="Subject" class="form-control" />
+        <span asp-validation-for="Subject" class="text-danger"></span>
     </div>
-</div>
+    <div class="mb-3">
+        <label asp-for="SubjectEng" class="form-label">@SharedLocalizer["Administration_EditNotification_SubjectEng"]</label>
+        <input asp-for="SubjectEng" class="form-control" />
+        <span asp-validation-for="SubjectEng" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Text" class="form-label">@SharedLocalizer["Administration_EditNotification_Text"]</label>
+        <textarea asp-for="Text" class="form-control" style="height: 125px"></textarea>
+        <span asp-validation-for="Text" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="TextEng" class="form-label">@SharedLocalizer["Administration_EditNotification_TextEng"]</label>
+        <textarea asp-for="TextEng" class="form-control" style="height: 125px"></textarea>
+         <span asp-validation-for="TextEng" class="text-danger"></span>
+    </div>
+    <input type="submit" class="btn btn-primary" value="@SharedLocalizer["Administration_EditNotification_Submit"]"/>
+</form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

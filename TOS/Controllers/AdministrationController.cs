@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using TOS.Data;
 using TOS.Models;
+using TOS.Resources;
 using TOS.Services;
 
 namespace TOS.Controllers;
@@ -12,20 +14,17 @@ public class AdministrationController : Controller
 {
     
     private readonly ApplicationDbContext _context;
+    private readonly IStringLocalizer<SharedResource> _localizer;
 
-    public AdministrationController(ApplicationDbContext context)
+    public AdministrationController(ApplicationDbContext context, IStringLocalizer<SharedResource> localizer)
     {
         _context = context;
-    }
-    
-    public IActionResult Index()
-    {
-        return View();
+        _localizer = localizer;
     }
 
     public async Task<IActionResult> Programmes()
     {
-        var programmes = await _context.Programmes.ToListAsync();
+        var programmes = await _context.Programmes.OrderBy(x=>!x.Active).ToListAsync();
         
         return View(programmes);
     }
@@ -38,17 +37,15 @@ public class AdministrationController : Controller
     
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateProgramme([Bind("ProgrammeId,Name,NameEng,Active,Type")] Programme programme, string typeDropdown)
+    public async Task<IActionResult> CreateProgramme([Bind("ProgrammeId,Name,NameEng,Active,Type")] Programme programme)
     {
-        programme.Type = typeDropdown.Equals("Bachelor") ? ProgramType.Bachelor : ProgramType.Master;
-
-        if (_context.Programmes.Any(x => (x.Name.Equals(programme.Name) || x.NameEng.Equals(programme.NameEng)) && x.Type.Equals(programme.Type)))
+        if (_context.Programmes.Any(x => (x.Name.Equals(programme.Name) || x.NameEng!.Equals(programme.NameEng)) && x.Type.Equals(programme.Type)))
         {
-            return RedirectToAction("CreateProgramme", new{error="ALREADY_EXISTS"});
+            return RedirectToAction("CreateProgramme", new{error=_localizer["Administration_CreateProgramme_Error_AlreadyExists"]});
         }
         
         if(string.IsNullOrEmpty(programme.NameEng))
-            programme.NameEng = programme.Name!;
+            programme.NameEng = programme.Name;
         
         await _context.Programmes.AddAsync(programme);
         await _context.SaveChangesAsync();
@@ -64,11 +61,9 @@ public class AdministrationController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> EditProgramme([Bind("ProgrammeId,Name,NameEng,Active,Type")]Programme programme, string typeDropdown)
+    public async Task<IActionResult> EditProgramme([Bind("ProgrammeId,Name,NameEng,Active,Type")]Programme programme)
     {
-        programme.Type = typeDropdown.Equals("Bachelor") ? ProgramType.Bachelor : ProgramType.Master;
-        
-        if (_context.Programmes.Any(x => x.ProgrammeId != programme.ProgrammeId && (x.Name.Equals(programme.Name) || x.NameEng.Equals(programme.NameEng)) && x.Type.Equals(programme.Type)))
+        if (_context.Programmes.Any(x => x.ProgrammeId != programme.ProgrammeId && (x.Name.Equals(programme.Name) || x.NameEng!.Equals(programme.NameEng)) && x.Type.Equals(programme.Type)))
         {
             return RedirectToAction("CreateProgramme", new{error="ALREADY_EXISTS"});
         }
@@ -108,7 +103,7 @@ public class AdministrationController : Controller
         return View(new List<ApplicationUser>());
     }
     
-    public async Task<IActionResult> EditRoles(int? id)
+    public async Task<IActionResult> EditRoles(int? id, bool error = false)
     {
         var user = await _context.Users.FirstAsync(x => x.Id.Equals(id));
         ViewData["Roles"] = new List<string> {"Student", "Teacher", "Administrator", "External"};
@@ -118,14 +113,24 @@ public class AdministrationController : Controller
         ViewData["Administrator"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name =="Administrator").Id));
         ViewData["External"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name =="External").Id));
 
-        return View(user);
+        if(error)
+            ViewData["Error"] = _localizer["ERROR:0Administrators"].Value;
+        return View();
     }
     
     [HttpPost]
     public async Task<IActionResult> EditRoles(int id, string roleGroup)
     {
         var user = await _context.Users.FirstAsync(x => x.Id.Equals(id));
-        
+        if (roleGroup != Role.Administrator.ToString())
+        {
+            var administratorRole = _context.Roles.First(x=>x.Name == Role.Administrator.ToString());
+            if (_context.UserRoles.Count(x => x.RoleId == administratorRole.Id) <= 1)
+            {
+                return await EditRoles(id, true);
+            }
+        }
+
         var role = roleGroup switch
         {
             "Student" => Role.Student,
@@ -162,9 +167,9 @@ public class AdministrationController : Controller
         }
         
         if(string.IsNullOrEmpty(notification.SubjectEng))
-            notification.SubjectEng = notification.Subject!;
+            notification.SubjectEng = notification.Subject;
         if (string.IsNullOrEmpty(notification.Text))
-            notification.TextEng = notification.Text!;
+            notification.TextEng = notification.Text;
         
         _context.Notifications.Update(notification);
         await _context.SaveChangesAsync();

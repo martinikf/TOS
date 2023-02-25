@@ -1,21 +1,49 @@
-﻿@model IEnumerable<TOS.Models.Programme>
+﻿@using TOS.Data
+@model IEnumerable<TOS.Models.Programme>
 
 @{
-    ViewData["Title"] = "Administration - Programmes";
+    ViewData["Title"] = SharedLocalizer["Administration_Programmes_Heading"];
 }
 
-<h1>Administration</h1>
-
-<ul>
-    <li><a asp-controller="Administration" asp-action="CreateProgramme">Create</a></li>
-</ul>
+<h1>@SharedLocalizer["Administration_Programmes_Heading"]</h1>
 
 
-@foreach (var programme in Model)
-{
-    <span>
-        @programme.Name - @programme.Active - @programme.NameEng - @programme.Type.ToString() - <a asp-controller="Administration" asp-action="EditProgramme" asp-route-id="@programme.ProgrammeId">Edit</a>
-    </span>
-    <br/>
-  
-}
+ <a class="btn btn-primary" asp-controller="Administration" asp-action="CreateProgramme">@SharedLocalizer["Administration_Programmes_Create"]</a>
+
+
+<table class="table table-striped table-hover">
+    <thead>
+    <tr>
+        <th scope="col">@SharedLocalizer["Administration_Programmes_Name"]</th>
+        <th scope="col">@SharedLocalizer["Administration_Programmes_NameEng"]</th>
+        <th scope="col">@SharedLocalizer["Administration_Programmes_Active"]</th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="table-primary">
+        <td colspan="4">@SharedLocalizer["Administration_Programmes_Bachelor"]</td>
+    </tr>
+    @foreach (var programme in Model.Where(x => x.Type == ProgramType.Bachelor))
+    {
+        <tr>
+            <td>@programme.Name</td>
+            <td>@programme.NameEng</td>
+            <td>@SharedLocalizer[programme.Active.ToString()]</td>
+            <td><a asp-controller="Administration" asp-action="EditProgramme" asp-route-id="@programme.ProgrammeId">@SharedLocalizer["Administration_Programmes_EditProgramme"]</a></td>
+        </tr>
+    }
+     <tr class="table-primary">
+         <td colspan="4">@SharedLocalizer["Administration_Programmes_Master"]</td>
+     </tr>
+    @foreach (var programme in Model.Where(x => x.Type == ProgramType.Master))
+    {
+        <tr>
+            <td>@programme.Name</td>
+            <td>@programme.NameEng</td>
+            <td>@SharedLocalizer[programme.Active.ToString()]</td>
+            <td><a asp-controller="Administration" asp-action="EditProgramme" asp-route-id="@programme.ProgrammeId">@SharedLocalizer["Administration_Programmes_EditProgramme"]</a></td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -18,7 +18,7 @@ public class Topic
         [StringLength(512, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicDescriptionShortLength")]
         public string DescriptionShort { get; set; } = string.Empty;
         
-        public string DescriptionShortEng { get; set; } = string.Empty;
+        public string? DescriptionShortEng { get; set; } = string.Empty;
         
         public string? DescriptionLong { get; set; }
         

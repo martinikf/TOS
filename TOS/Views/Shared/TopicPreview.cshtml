@@ -1,10 +1,5 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
-@using Microsoft.Extensions.Options
-@using TOS.Resources
-@using TOS.Extensions
+﻿@using TOS.Extensions
 @model TOS.Models.Topic
-
-@inject IHtmlLocalizer<SharedResource> SharedLocalizer
 
 <section class="topic__preview">
     <h3><a asp-controller="Topic" asp-action="Details" asp-route-id="@Model.TopicId">@Html.SelectStringByLanguage(Model.NameEng, Model.Name)</a></h3>

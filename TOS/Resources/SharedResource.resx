@@ -116,4 +116,142 @@
     <data name="NavUnassigned" xml:space="preserve">
         <value>Návrhy prací externisty</value>
     </data>
+    <data name="Adminitration_Users_Search_Placeholder" xml:space="preserve">
+        <value>Novák Jan</value>
+    </data>
+    <data name="Administration_Users_Heading" xml:space="preserve">
+        <value>Administrace - uživatelé</value>
+    </data>
+    <data name="Administration_Users_Search_Submit" xml:space="preserve">
+        <value>Hledat</value>
+    </data>
+    <data name="Administration_Users_DisplayName" xml:space="preserve">
+        <value>Jméno</value>
+    </data>
+    <data name="Administration_Users_Email" xml:space="preserve">
+        <value>E-mail</value>
+    </data>
+    <data name="Administration_Users_EditRoles" xml:space="preserve">
+        <value>Editovat role</value>
+    </data>
+    <data name="Administration_Users_Info" xml:space="preserve">
+        <value>Pro vyhledání uživatele zadejte alspoň 3 znaky z jeho jména nebo e-mailu. </value>
+    </data>
+    <data name="Administration_EditRoles_Heading" xml:space="preserve">
+        <value>Administrace - role</value>
+    </data>
+    <data name="Administration_EditRoles_Submit" xml:space="preserve">
+        <value>Uložit</value>
+    </data>
+    <data name="Student" xml:space="preserve">
+        <value>Student</value>
+    </data>
+    <data name="Teacher" xml:space="preserve">
+        <value>Vyučující</value>
+    </data>
+    <data name="External" xml:space="preserve">
+        <value>Externí uživatel</value>
+    </data>
+    <data name="Administrator" xml:space="preserve">
+        <value>Administrátor</value>
+    </data>
+    <data name="ERROR:0Administrators" xml:space="preserve">
+        <value>Chyba: v systému musí existovat alspoň jeden administrátor</value>
+    </data>
+    <data name="Administration_Programmes_Heading" xml:space="preserve">
+        <value>Administrace - programy</value>
+    </data>
+    <data name="Administration_Programmes_Create" xml:space="preserve">
+        <value>Vytvořit</value>
+    </data>
+    <data name="Administration_Programmes_Name" xml:space="preserve">
+        <value>Název programu</value>
+    </data>
+    <data name="Administration_Programmes_NameEng" xml:space="preserve">
+        <value>Název programu - anglicky</value>
+    </data>
+    <data name="Administration_Programmes_Active" xml:space="preserve">
+        <value>Aktivní</value>
+    </data>
+    <data name="Administration_Programmes_EditProgramme" xml:space="preserve">
+        <value>Editovat</value>
+    </data>
+    <data name="Administration_EditProgramme_Submit" xml:space="preserve">
+        <value>Editovat</value>
+    </data>
+    <data name="Administration_EditProgramme_Heading" xml:space="preserve">
+        <value>Administrace - editace programu</value>
+    </data>
+    <data name="Administration_Notifications_Heading" xml:space="preserve">
+        <value>Administrace - notifikace</value>
+    </data>
+    <data name="Administration_EditNotification_Heading" xml:space="preserve">
+        <value>Administrace - editace notifikace</value>
+    </data>
+    <data name="Administration_EditNotification_Tutorial" xml:space="preserve">
+        <value>Při vytváření notifikace můžete využít parametrů v hranatých závorkách: tak že je umístíte to textového pole jako text. Výsledkem bude, že se ve finální notifikaci zobrazí daná hodnota objektu, kterého se daná notifikace týka. Parametry ohledně komentáře lze využít jen u notifikace nového komentáře</value>
+    </data>
+    <data name="Administration_EditNotification_Subject" xml:space="preserve">
+        <value>Předmět</value>
+    </data>
+    <data name="Administration_EditNotification_SubjectEng" xml:space="preserve">
+        <value>Předmět - anglicky</value>
+    </data>
+    <data name="Administration_EditNotification_Text" xml:space="preserve">
+        <value>Text</value>
+    </data>
+    <data name="Administration_EditNotification_TextEng" xml:space="preserve">
+        <value>Text - anglicky</value>
+    </data>
+    <data name="Administration_EditNotification_Submit" xml:space="preserve">
+        <value>Uložit</value>
+    </data>
+    <data name="Administration_Users" xml:space="preserve">
+        <value>Nastavení rolí</value>
+    </data>
+    <data name="Administration_Programmes" xml:space="preserve">
+        <value>Programy</value>
+    </data>
+    <data name="Administration_Notifications" xml:space="preserve">
+        <value>Notifikace</value>
+    </data>
+    <data name="Administration_CreateProgramme_Heading" xml:space="preserve">
+        <value>Administrace - vytvořit program</value>
+    </data>
+    <data name="Administration_CreateProgramme_Submit" xml:space="preserve">
+        <value>Vytvořit</value>
+    </data>
+    <data name="Administration_CreateProgramme_Error_AlreadyExists" xml:space="preserve">
+        <value>Již existuje program se stejným jménem</value>
+    </data>
+    <data name="Administration_Programmes_Bachelor" xml:space="preserve">
+        <value>Bakalářské programy</value>
+    </data>
+    <data name="Administration_Programmes_Master" xml:space="preserve">
+        <value>Magisterské programy</value>
+    </data>
+    <data name="Topics_Bachelor" xml:space="preserve">
+        <value>Bakalářské</value>
+    </data>
+    <data name="Topics_Master" xml:space="preserve">
+        <value>Magisterské</value>
+    </data>
+    <data name="Topics_Unassigned" xml:space="preserve">
+        <value>Navrhnuté externisty</value>
+    </data>
+    <data name="Administration_EditProgramme_DeleteProgramme" xml:space="preserve">
+        <value>Smazat program</value>
+    </data>
+    <data name="Yes" xml:space="preserve">
+        <value>Ano</value>
+    </data>
+    <data name="No" xml:space="preserve">
+        <value>Ne</value>
+    </data>
+    <data name="True" xml:space="preserve">
+        <value>Ano</value>
+    </data>
+    <data name="False" xml:space="preserve">
+        <value>Ne</value>
+    </data>
 </root>

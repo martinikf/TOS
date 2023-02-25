@@ -1,8 +1,5 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using TOS.Resources
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using System.Globalization
-@inject IHtmlLocalizer<SharedResource> SharedLocalizer
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,47 +14,54 @@
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <nav class="navbar navbar-expand-lg navbar-toggleable-lg navbar-light bg-white border-bottom box-shadow mb-3">
         <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TOS</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+            <div class="navbar-collapse collapse">
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@SharedLocalizer["NavHome"]</a>
                     </li>
-                    <li class ="nav-item">
-                        <a class="nav-link text-dark" asp-action="Index" asp-controller="Topic" asp-route-groupName="Bachelor" asp-route-showTakenTopics="false">@SharedLocalizer["NavBachelor"]</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link text-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            @SharedLocalizer["Topics"]
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-controller="Topic" asp-action="Index" asp-route-groupName="Bachelor" asp-route-showTakenTopics="false">@SharedLocalizer["Topics_Bachelor"]</a></li>
+                            <li><a class="dropdown-item" asp-controller="Topic" asp-action="Index" asp-route-groupName="Master" asp-route-showTakenTopics="false">@SharedLocalizer["Topics_Master"]</a></li>
+                            @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
+                            {
+                                <li><a class="dropdown-item" asp-controller="Topic" asp-action="Index" asp-route-groupName="Unassigned" asp-route-showHidden="true" asp-route-showProposed="true">@SharedLocalizer["Topics_Unassigned"]</a></li>
+                            }
+                        </ul>
                     </li>
-                    <li class ="nav-item">
-                        <a class="nav-link text-dark" asp-action="Index" asp-controller="Topic" asp-route-groupName="Master" asp-route-showTakenTopics="false">@SharedLocalizer["NavMaster"]</a>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Group" asp-action="Index">@SharedLocalizer["NavGroups"]</a>
                     </li>
-                    <li class ="nav-item">
-                        <a class="nav-link text-dark" asp-action="Index" asp-controller="Group">@SharedLocalizer["NavGroups"]</a>
-                    </li>
+                    
                     @if (User.IsInRole("External"))
                     {
                         <a class="nav-link text-dark" asp-action="Propose" asp-controller="Topic">@SharedLocalizer["Propose topic"]</a>
                     }
-                    @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
+                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
-                        <li class ="nav-item">
-                            <a class="nav-link text-dark" asp-action="Index" asp-controller="Topic" asp-route-groupName="Unassigned" asp-route-showHidden="true" asp-route-showProposed="true">@SharedLocalizer["NavUnassigned"]</a>
-                        </li>
-                    }
-                    @if(User.Identity != null && User.Identity.IsAuthenticated)
-                    {
-                        <li class ="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-action="MyTopics" asp-controller="Topic">@SharedLocalizer["MyTopics"]</a>
                         </li>
                     }
                     @if (User.IsInRole("Administrator"))
                     {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-action="Index" asp-controller="Administration">@SharedLocalizer["Administration"]</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                @SharedLocalizer["Administration"]
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="Administration" asp-action="Users">@SharedLocalizer["Administration_Users"]</a></li>
+                                <li><a class="dropdown-item" asp-controller="Administration" asp-action="Programmes">@SharedLocalizer["Administration_Programmes"]</a></li>
+                                <li><a class="dropdown-item" asp-controller="Administration" asp-action="Notifications">@SharedLocalizer["Administration_Notifications"]</a></li>
+                            </ul>
                         </li>
                     }
                 </ul>

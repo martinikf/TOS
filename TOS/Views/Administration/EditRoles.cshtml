@@ -1,34 +1,30 @@
-﻿@using TOS.Resources
-@using Microsoft.AspNetCore.Mvc.Localization
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model TOS.Models.ApplicationUser
-@inject IHtmlLocalizer<SharedResource> SharedLocalizer
-
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
-    ViewData["Title"] = "Administration - Edit Roles";
+    ViewData["Title"] = @SharedLocalizer["Administration_EditRoles_Heading"];
 }
 
-<h1>Administration</h1>
+<h1>@SharedLocalizer["Administration_EditRoles_Heading"]</h1>
 
-<h3>Edit Roles</h3>
+@if (ViewData["Error"] != null)
+{
+    <p>@ViewData["Error"]</p>
+}
 
 <form asp-action="EditRoles">
-    <div>
-        @foreach(var r in ViewData["Roles"] as List<string>)
-        {
-            <div>
-                @if ((bool) ViewData[r]!)
-                {
-                    <input type="radio" name="roleGroup" value="@r" checked/>
-                }
-                else
-                {
-                    <input type="radio" name="roleGroup" value="@r"/>
-                }
-                <label>@SharedLocalizer[r]</label>
-            </div>
-        }
-    </div>
-    <input type="submit" value="EditRoles" class="btn btn-primary" />
+    @foreach(var r in ViewData["Roles"] as List<string>)
+    {
+        <div class="form-check">
+            @if ((bool) ViewData[r]!)
+            {
+                <input type="radio" class="form-check-input" id="@r" name="roleGroup" value="@r" checked/>
+            }
+            else
+            {
+                <input type="radio" class="form-check-input" id="@r" name="roleGroup" value="@r"/>
+            }
+            <label for="@r" class="form-label">@SharedLocalizer[r]</label>
+        </div>
+    }
+    <input type="submit" value="@SharedLocalizer["Administration_EditRoles_Submit"]" class="btn btn-primary" />
 </form>

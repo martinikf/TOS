@@ -2,12 +2,10 @@ using System.Globalization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TOS.Data;
 using TOS.Models;
-using TOS.Resources;
 using TOS.Services;
 
 namespace TOS.Controllers
@@ -15,14 +13,12 @@ namespace TOS.Controllers
     public class TopicController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly IHtmlLocalizer<SharedResource> _sharedLocalizer;
         private readonly IWebHostEnvironment _env;
         private readonly INotificationManager _notificationManager;
 
-        public TopicController(ApplicationDbContext context, IHtmlLocalizer<SharedResource> sharedLocalizer, IWebHostEnvironment env, INotificationManager notificationManager)
+        public TopicController(ApplicationDbContext context, IWebHostEnvironment env, INotificationManager notificationManager)
         {
             _context = context;
-            _sharedLocalizer = sharedLocalizer;
             _env = env;
             _notificationManager = notificationManager;
         }
@@ -68,7 +64,7 @@ namespace TOS.Controllers
 
             if (programmeName.Length > 0)
             {
-                var programme = _context.Programmes.First(x => x.NameEng.Equals(programmeName));
+                var programme = _context.Programmes.First(x => x.NameEng!.Equals(programmeName));
                 topicsToShow =
                     topicsToShow.Where(x => x.TopicRecommendedPrograms.Any(y => y.Programme.Equals(programme)))
                         .ToList();
@@ -106,7 +102,6 @@ namespace TOS.Controllers
 
             return View(topicsToShow);
         }
-
         
         public async Task<IActionResult> Group(string groupName, string searchString = "", bool showTakenTopics = false, bool showHidden = false, bool showProposed = false)
         {
@@ -169,17 +164,17 @@ namespace TOS.Controllers
                     x.AssignedId == user.Id ||
                     x.UserInterestedTopics.Any(y => y.UserId == user.Id))
                 .Where(x =>
-                   (x.Name.ToLower().Contains(searchString.ToLower()) ||
+                   x.Name.ToLower().Contains(searchString.ToLower()) ||
                         x.NameEng.ToLower().Contains(searchString.ToLower()) ||
                         (x.Supervisor != null && (x.Supervisor.FirstName!.ToLower().Contains(searchString.ToLower()) ||
                                                   x.Supervisor.LastName!.ToLower().Contains(searchString.ToLower()))) ||
                         x.DescriptionShort.ToLower().Contains(searchString.ToLower()) ||
-                        x.DescriptionShortEng.ToLower().Contains(searchString.ToLower()) ||
+                        x.DescriptionShortEng!.ToLower().Contains(searchString.ToLower()) ||
                         (x.DescriptionLong != null && x.DescriptionLong.ToLower().Contains(searchString.ToLower())) ||
                         (x.DescriptionLongEng != null && x.DescriptionLongEng.ToLower().Contains(searchString.ToLower())) ||
                         x.TopicRecommendedPrograms.Any(y =>
-                            y.Programme.NameEng.ToLower().Contains(searchString.ToLower()) ||
-                            y.Programme.Name.ToLower().Contains(searchString.ToLower()))))
+                            y.Programme.NameEng!.ToLower().Contains(searchString.ToLower()) ||
+                            y.Programme.Name.ToLower().Contains(searchString.ToLower())))
                 .Where(x=> showHidden? x.Visible : x.Visible || !x.Visible)
                 .ToListAsync();
 
@@ -342,7 +337,7 @@ namespace TOS.Controllers
             
             var canEdit = User.IsInRole("AnyTopic");
             //User can edit topics he created or supervise
-            if (User.IsInRole("Topic") && topic.CreatorId == user.Id || topic.SupervisorId == user.Id || topic.Proposed)
+            if (User.IsInRole("Topic") && (topic.CreatorId == user.Id || topic.SupervisorId == user.Id || topic.Proposed))
                 canEdit = true;
             if(User.IsInRole("ProposeTopic") && topic.Proposed && topic.CreatorId == user.Id)
                 canEdit = true;
@@ -619,8 +614,7 @@ namespace TOS.Controllers
 
         private string CallbackDetailsUrl(int id)
         {
-            var url =  "https://" + HttpContext.Request.Host + $"/Topic/Details/{id}";
-            return url;
+            return "https://" + HttpContext.Request.Host + $"/Topic/Details/{id}";
         }
     }
 }

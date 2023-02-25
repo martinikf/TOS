@@ -30,10 +30,10 @@ public class SmtpEmailSender : IEmailSender
 
 public class SmtpEmailSenderSettings
 {
-    public string Username { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-    public string FromAddress { get; set; } = string.Empty;
-    public string SmtpServer { get; set; } = string.Empty;
-    public int Port { get; set; }
-    public bool EnableSsl { get; set; }
+    public string Username { get; init; } = string.Empty;
+    public string Password { get; init; } = string.Empty;
+    public string FromAddress { get; init; } = string.Empty;
+    public string SmtpServer { get; init; } = string.Empty;
+    public int Port { get; init; }
+    public bool EnableSsl { get; init; }
 }

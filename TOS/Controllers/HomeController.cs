@@ -12,11 +12,6 @@ namespace TOS.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
         [HttpPost]
         public IActionResult CultureManagement(string culture, string returnUrl)
         {

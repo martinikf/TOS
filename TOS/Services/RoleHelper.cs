@@ -10,56 +10,19 @@ public static class RoleHelper
     public static async Task<bool> AssignRoles(ApplicationUser user, Role role, ApplicationDbContext ctx)
     {
         var roles = new List<string>();
-        
         switch (role)
         {
             case Role.Student:
-                roles.Add("Student");
-                
-                roles.Add("ProposeTopic");
-                roles.Add("InterestTopic");
-                
-                roles.Add("Comment");
-                roles.Add("AnonymousComment");
-
-                roles.Add("AssignedTopic");
+                roles.AddRange(new[] {"Student", "ProposeTopic", "InterestTopic", "Comment", "AnonymousComment", "AssignedTopic"});
                 break;
             case Role.Teacher:
-                roles.Add("Teacher");
-                
-                roles.Add("Topic");
-
-                roles.Add("Comment");
-                roles.Add("AnyComment");
-                
-                roles.Add("Attachment");
-                
-                roles.Add("Group");
-
-                roles.Add("SuperviseTopic");
+                roles.AddRange(new[] {"Teacher", "Topic", "Comment", "AnyComment", "Attachment", "Group", "SuperviseTopic"});
                 break;
             case Role.External:
-                roles.Add("External");
-                
-                roles.Add("ProposeTopic");
-                
-                roles.Add("Comment");
-                roles.Add("Attachment");
+                roles.AddRange(new [] {"External", "ProposeTopic", "Comment", "Attachment"});
                 break;
             case Role.Administrator:
-                roles.Add("Administrator");
-
-                roles.Add("Topic");
-                roles.Add("AnyTopic");
-
-                roles.Add("Comment");
-                roles.Add("AnyComment");
-                
-                roles.Add("Attachment");
-                roles.Add("AnyAttachment");
-
-                roles.Add("Group");
-                roles.Add("AnyGroup");
+                roles.AddRange(new [] {"Administrator", "Topic", "AnyTopic", "Comment", "AnyComment", "Attachment","AnyAttachment", "Group", "AnyGroup"});
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(role), role, null);
@@ -69,23 +32,22 @@ public static class RoleHelper
         var userRoles = ctx.UserRoles.Where(x => x.UserId == user.Id);
         ctx.UserRoles.RemoveRange(userRoles);
         await ctx.SaveChangesAsync();
+
+        var roleIds = await ctx.Roles
+            .Where(x => roles.Contains(x.Name!))
+            .Select(y=>y.Id).ToListAsync();
         
-        //Add new roles
-        foreach (var r in roles)
+        foreach (var roleId in roleIds)
         {
-            var rId = await ctx.Roles.FirstAsync(x => x.Name!.ToLower().Equals(r.ToLower()));
-            if(ctx.UserRoles.Any(x => x.UserId == user.Id && x.RoleId == rId.Id))
-                continue;
-            
             var ur = new IdentityUserRole<int>
             {
-                RoleId = rId.Id,
+                RoleId = roleId,
                 UserId = user.Id
             };
             ctx.UserRoles.Add(ur);
-            await ctx.SaveChangesAsync();
         }
-        
+        await ctx.SaveChangesAsync();
+
         return true;
     }
 }

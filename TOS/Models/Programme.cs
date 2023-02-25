@@ -12,7 +12,7 @@ public class Programme
     [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_ProgrammeNameRequired")]
     public string Name { get; set; } = string.Empty;
     
-    public string NameEng { get; set; } = string.Empty;
+    public string? NameEng { get; set; } = string.Empty;
         
     public bool Active { get; set; }
         

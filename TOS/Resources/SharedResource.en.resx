@@ -123,4 +123,142 @@
     <data name="NavUnassigned" xml:space="preserve">
         <value>Proposed topics by external users</value>
     </data>
+    <data name="Adminitration_Users_Search_Placeholder" xml:space="preserve">
+        <value>Novák Jan</value>
+    </data>
+    <data name="Administration_Users_Heading" xml:space="preserve">
+        <value>Administration - users</value>
+    </data>
+    <data name="Administration_Users_Search_Submit" xml:space="preserve">
+        <value>Search</value>
+    </data>
+    <data name="Administration_Users_DisplayName" xml:space="preserve">
+        <value>Name</value>
+    </data>
+    <data name="Administration_Users_Email" xml:space="preserve">
+        <value>Email</value>
+    </data>
+    <data name="Administration_Users_EditRoles" xml:space="preserve">
+        <value>Edit roles</value>
+    </data>
+    <data name="Administration_Users_Info" xml:space="preserve">
+        <value>To find a user, enter at least 3 characters from their name or email. </value>
+    </data>
+    <data name="Administration_EditRoles_Heading" xml:space="preserve">
+        <value>Administration - roles</value>
+    </data>
+    <data name="Administration_EditRoles_Submit" xml:space="preserve">
+        <value>Save</value>
+    </data>
+    <data name="Student" xml:space="preserve">
+        <value>Student</value>
+    </data>
+    <data name="Teacher" xml:space="preserve">
+        <value>Teacher</value>
+    </data>
+    <data name="External" xml:space="preserve">
+        <value>External user</value>
+    </data>
+    <data name="Administrator" xml:space="preserve">
+        <value>Administrator</value>
+    </data>
+    <data name="ERROR:0Administrators" xml:space="preserve">
+        <value>Error: there must be at least one administrator in the system</value>
+    </data>
+    <data name="Administration_Programmes_Heading" xml:space="preserve">
+        <value>Administration - programmes</value>
+    </data>
+    <data name="Administration_Programmes_Create" xml:space="preserve">
+        <value>Create</value>
+    </data>
+    <data name="Administration_Programmes_Name" xml:space="preserve">
+        <value>Name</value>
+    </data>
+    <data name="Administration_Programmes_NameEng" xml:space="preserve">
+        <value>Name - english</value>
+    </data>
+    <data name="Administration_Programmes_Active" xml:space="preserve">
+        <value>Active</value>
+    </data>
+    <data name="Administration_Programmes_EditProgramme" xml:space="preserve">
+        <value>Edit</value>
+    </data>
+    <data name="Administration_EditProgramme_Submit" xml:space="preserve">
+        <value>Edit</value>
+    </data>
+    <data name="Administration_EditProgramme_Heading" xml:space="preserve">
+        <value>Administration - programme edit</value>
+    </data>
+    <data name="Administration_Notifications_Heading" xml:space="preserve">
+        <value>Administration - notifications</value>
+    </data>
+    <data name="Administration_EditNotification_Heading" xml:space="preserve">
+        <value>Administration - notification edit</value>
+    </data>
+    <data name="Administration_EditNotification_Tutorial" xml:space="preserve">
+        <value>When creating a notification, you can use the parameters in square brackets: by placing them as text in the text box. As a result, the final notification will display the value of the object to which the notification refers. The parameters regarding the comment can only be used for the notification of a new comment</value>
+    </data>
+    <data name="Administration_EditNotification_Subject" xml:space="preserve">
+        <value>Subject</value>
+    </data>
+    <data name="Administration_EditNotification_SubjectEng" xml:space="preserve">
+        <value>Subject - english</value>
+    </data>
+    <data name="Administration_EditNotification_Text" xml:space="preserve">
+        <value>Text</value>
+    </data>
+    <data name="Administration_EditNotification_TextEng" xml:space="preserve">
+        <value>Text - english</value>
+    </data>
+    <data name="Administration_EditNotification_Submit" xml:space="preserve">
+        <value>Save</value>
+    </data>
+    <data name="Administration_Users" xml:space="preserve">
+        <value>Role settings</value>
+    </data>
+    <data name="Administration_Programmes" xml:space="preserve">
+        <value>Programmes</value>
+    </data>
+    <data name="Administration_Notifications" xml:space="preserve">
+        <value>Notifications</value>
+    </data>
+    <data name="Administration_CreateProgramme_Heading" xml:space="preserve">
+        <value>Administration - create programme</value>
+    </data>
+    <data name="Administration_CreateProgramme_Submit" xml:space="preserve">
+        <value>Create</value>
+    </data>
+    <data name="Administration_CreateProgramme_Error_AlreadyExists" xml:space="preserve">
+        <value>Programme with same name already exists</value>
+    </data>
+    <data name="Administration_Programmes_Bachelor" xml:space="preserve">
+        <value>Bachelor programmes</value>
+    </data>
+    <data name="Administration_Programmes_Master" xml:space="preserve">
+        <value>Master programmes</value>
+    </data>
+    <data name="Topics_Bachelor" xml:space="preserve">
+        <value>Bachelor</value>
+    </data>
+    <data name="Topics_Master" xml:space="preserve">
+        <value>Master</value>
+    </data>
+    <data name="Topics_Unassigned" xml:space="preserve">
+        <value>Proposed by externists</value>
+    </data>
+    <data name="Administration_EditProgramme_DeleteProgramme" xml:space="preserve">
+        <value>Delete programme</value>
+    </data>
+    <data name="Yes" xml:space="preserve">
+        <value>Yes</value>
+    </data>
+    <data name="No" xml:space="preserve">
+        <value>No</value>
+    </data>
+    <data name="False" xml:space="preserve">
+        <value>No</value>
+    </data>
+    <data name="True" xml:space="preserve">
+        <value>Yes</value>
+    </data>
 </root>

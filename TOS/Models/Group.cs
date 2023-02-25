@@ -12,7 +12,7 @@ public class Group
     [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_GroupNameRequired")]
     public string Name { get; set; } = string.Empty;
     
-    public string? NameEng { get; set; } = string.Empty;
+    public string NameEng { get; set; } = string.Empty;
     
     public int CreatorId { get; set; }
     [ForeignKey("CreatorId")]

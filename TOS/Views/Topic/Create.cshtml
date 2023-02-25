@@ -1,12 +1,8 @@
-@using Microsoft.AspNetCore.Mvc.Localization
-@using TOS.Resources
-@using System.Collections
 @using System.Globalization
 @using TOS.Data
 @using TOS.Extensions
 @model TOS.Models.Topic
 
-@inject IHtmlLocalizer<SharedResource> SharedLocalizer
 
 @{
     ViewData["Title"] = "Create";
@@ -170,14 +166,14 @@
                 var masterProgrammes = document.getElementsByClassName("Master");
                 var toShow = [];
                 
-                if (groupName == "Bachelor" || groupName == "Bakalářská"){
+                if (groupName === "Bachelor" || groupName === "Bakalářská"){
                     toShow = bachelorProgrammes;
                 }
-                else if (groupName == "Master" || groupName == "Magisterská"){
+                else if (groupName === "Master" || groupName === "Magisterská"){
                      toShow = masterProgrammes;
                 }
                 
-                for (var i = 0; i < toShow.length; i++) {
+                for (i = 0; i < toShow.length; i++) {
                     toShow[i].style.display = "block";
                 }
            }

@@ -1,54 +1,40 @@
-﻿@using TOS.Resources
-@using Microsoft.AspNetCore.Mvc.Localization
-@using Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using TOS.Data
 @model TOS.Models.Programme
 
-@inject IHtmlLocalizer<SharedResource> SharedLocalizer
-
 @{
-    ViewData["Title"] = "Create new Programme";
+    ViewData["Title"] = SharedLocalizer["Administration_CreateProgramme_Heading"];
 }
 
-<h1>Create</h1>
+<h1>@SharedLocalizer["Administration_CreateProgramme_Heading"]</h1>
 
-<h4>Programme</h4>
-@if (ViewData["Error"] != null)
-{
-    <h5>@ViewData["Error"]</h5>
-}
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="CreateProgramme">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="NameEng" class="control-label"></label>
-                <input asp-for="NameEng" class="form-control" />
-                <span asp-validation-for="NameEng" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Active" checked/> @Html.DisplayNameFor(model => model.Active)
-                </label>
-            </div>
-            <div>
-                <select name="typeDropdown">
-                    <option value="Bachelor">@SharedLocalizer["Bachelor"]</option>
-                    <option value="Master">@SharedLocalizer["Master"]</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<form asp-action="CreateProgramme">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">@SharedLocalizer["Administration_Programmes_Name"]</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
-</div>
+    <div class="mb-3">
+        <label asp-for="NameEng" class="form-label">@SharedLocalizer["Administration_Programmes_NameEng"]</label>
+        <input asp-for="NameEng" class="form-control" />
+        <span asp-validation-for="NameEng" class="text-danger"></span>
+    </div>
+    <div class="mb-3 form-check">
+        <label asp-for="Active" class="form-check-label">@SharedLocalizer["Administration_Programmes_Active"]</label>
+        <input class="form-check-input" asp-for="Active" checked/>
+        <span asp-validation-for="Active" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <select class="form-select" asp-for="Type">
+            <option value="@ProgramType.Bachelor">@SharedLocalizer["Bachelor"]</option>
+            <option value="@ProgramType.Master">@SharedLocalizer["Master"]</option>
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+    
+    <input type="submit" class="btn btn-primary" value="@SharedLocalizer["Administration_CreateProgramme_Submit"]"/>
+</form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
