@@ -3,89 +3,98 @@
 @model IEnumerable<TOS.Models.Topic>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = SharedLocalizer["Topic_Group_Heading"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>@SharedLocalizer[(string)ViewData["topicsIndexGroupName"]!]</h1>
-
-<a asp-controller="Group" asp-action="Edit" asp-route-id="@ViewData["topicsIndexGroupId"]">Edit group</a>
-<br/>
-<a asp-action="Create" asp-route-groupName="@ViewData["topicsIndexGroupName"]" asp-route-type="Homework">Create New Homework</a>
-<br/>
-<a asp-action="Create" asp-route-groupName="@ViewData["topicsIndexGroupName"]" asp-route-type="Project">Create New  Project</a>
-<br/>
-<a asp-action="Propose" asp-route-groupName="@ViewData["topicsIndexGroupName"]" asp-route-type="Project">Propose new Project</a>
-<br/>
+<h1>@SharedLocalizer["Topic_Group_Heading"]</h1>
+<p>
+    @if((User.IsInRole("Group") && User.Identity!.Name == (string)ViewData["creatorUsername"]!) || User.IsInRole("AnyGroup"))
+    {
+        <a class="btn btn-primary" asp-controller="Group" asp-action="Edit" asp-route-id="@ViewData["topicsIndexGroupId"]">@SharedLocalizer["Topic_Group_Edit"]</a>
+    }
+    @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
+    {
+        <a class="btn btn-primary" asp-action="Create" asp-route-groupName="@ViewData["topicsIndexGroupName"]" asp-route-type="Homework">@SharedLocalizer["Topic_Group_CreateHomework"]</a>
+        <a class="btn btn-primary" asp-action="Create" asp-route-groupName="@ViewData["topicsIndexGroupName"]" asp-route-type="Project">@SharedLocalizer["Topic_Group_CreateProject"]</a>
+    }
+    @if (User.IsInRole("ProposeTopic"))
+    {
+        <a class="btn btn-primary" asp-action="Propose" asp-route-groupName="@ViewData["topicsIndexGroupName"]" asp-route-type="Project">@SharedLocalizer["Topic_Group_ProposeProject"]</a>
+    }
+</p>
 
 <form asp-action="Group" method="get">
-    <input type="hidden" name="groupName" value="@ViewData["topicsIndexGroupName"]"/>
-    <input type="text" name="searchString" placeholder="Search string..." value="@ViewData["searchString"]"/>
-    
-    <label>Show taken topics</label>
-    @if((bool) ViewData["showTakenTopics"]!)
-    {
-        <input name="showTakenTopics" type="checkbox" value="true" checked/>
-    }
-    else
-    {
-        <input name="showTakenTopics" type="checkbox" value="true"/>
-    }
+    <input type="hidden" name="groupName" value="@ViewData["topicsIndexGroupId"]"/>
+    <div class="row g-1 align-items-center">
+        <div class="col-auto">
+            <input type="text" class="form-control" name="searchString" placeholder="Search string..." value="@ViewData["searchString"]"/>
+        </div>
+
+        <div class="form-check col-auto">
+            <label for="showTaken">@SharedLocalizer["Topic_Index_ShowTaken"]</label>
+            @if ((bool) ViewData["showTakenTopics"]!)
+            {
+                <input class="form-check-input" name="showTakenTopics" id="showTaken" type="checkbox" value="true" checked/>
+            }
+            else
+            {
+                <input class="form-check-input" name="showTakenTopics" id="showTaken" type="checkbox" value="true"/>
+            }
+        </div>
+
+        <div class="col-auto">
+            <input type="submit" class="btn btn-primary" value="@SharedLocalizer["Topic_Index_Search"]"/>
+        </div>
+
+    </div>
+
     @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
-    {
-        <label>Show hidden topics</label>
-        @if ((bool) ViewData["showHidden"]!)
-        {
-            <input name="showHidden" type="checkbox" value="true" checked/>
-        }
-        else
-        {
-            <input name="showHidden" type="checkbox" value="true"/>
-        }
-    }
-    
-    @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
-    {
-        <label>Show only proposed topics</label>
-        @if ((bool) ViewData["showProposed"]!)
-        {
-            <input name="showProposed" type="checkbox" value="true" checked/>
-        }
-        else
-        {
-            <input name="showProposed" type="checkbox" value="true"/>
-        }
-    }
-    
-    <input type="submit" value="Search"/>
+     {
+         <div class="row g-3 align-items-center mx-auto">
+             <div class="col-auto form-check">
+                 <label for="showHidden">@SharedLocalizer["Topic_Index_ShowHidden"]</label>
+                 @if ((bool) ViewData["showHidden"]!)
+                 {
+                     <input class="form-check-input" name="showHidden" id="showHidden" type="checkbox" value="true" checked/>
+                 }
+                 else
+                 {
+                     <input class="form-check-input" name="showHidden" id="showHidden" type="checkbox" value="true"/>
+                 }
+             </div>
+
+             <div class="col-auto form-check">
+                 <label for="showProposed">@SharedLocalizer["Topic_Index_ShowProposedOnly"]</label>
+                 @if ((bool) ViewData["showProposed"]!)
+                 {
+                     <input class="form-check-input" name="showProposed" id="showProposed" type="checkbox" value="true" checked/>
+                 }
+                 else
+                 {
+                     <input class="form-check-input" name="showProposed" id="showProposed" type="checkbox" value="true"/>
+                 }
+             </div>
+         </div>
+     }
 </form>
 
 <hr/>
 @if (Model.Any(x => x.Type == TopicType.Homework))
 {
-    <h4>Homeworks</h4>
+    <h2 class="h3">Homeworks</h2>
 
     @foreach (var hw in Model.Where(x => x.Type == TopicType.Homework))
     {
-        <div class="homework">
-            <a asp-controller="Topic" asp-action="Details" asp-route-id="@hw.TopicId">@hw.Name</a>
-            <br/>
-            @hw.DescriptionShort
-        </div>
+       <partial name="HomeworkPreview" model="hw"/>
     }
 }
 
-<hr/>
-
 @if (Model.Any(x => x.Type == TopicType.Project))
 {
-    <h4>Projects</h4>
+    <h2 class="h3">Projects</h2>
     @foreach (var project in Model.Where(x => x.Type == TopicType.Project))
     {
-        <div class="project">
-            <a asp-controller="Topic" asp-action="Details" asp-route-id="@project.TopicId">@project.Name</a>
-            <br/>
-            @project.DescriptionShort
-        </div>
+        <partial name="ProjectPreview" model="project"/>
     }
 }

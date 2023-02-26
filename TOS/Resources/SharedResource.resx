@@ -66,7 +66,7 @@
         <value>Moje témata</value>
     </data>
     <data name="Topics" xml:space="preserve">
-        <value>Všechna témata</value>
+        <value>Závěrečné práce</value>
     </data>
     <data name="Unassigned option" xml:space="preserve">
         <value>Nepřiřazeno</value>
@@ -253,5 +253,119 @@
     </data>
     <data name="False" xml:space="preserve">
         <value>Ne</value>
+    </data>
+    <data name="Group_Index_Heading" xml:space="preserve">
+        <value>Skupiny</value>
+    </data>
+    <data name="Group_Index_Search_Placeholder" xml:space="preserve">
+        <value>Název skupiny...</value>
+    </data>
+    <data name="Group_Index_Search_HiddenGroups" xml:space="preserve">
+        <value>Skryté skupiny</value>
+    </data>
+    <data name="Group_Index_Search_Submit" xml:space="preserve">
+        <value>Hledat</value>
+    </data>
+    <data name="Group_Create_Heading" xml:space="preserve">
+        <value>Nová skupina</value>
+    </data>
+    <data name="Group_Create_Name" xml:space="preserve">
+        <value>Název</value>
+    </data>
+    <data name="Group_Create_NameEng" xml:space="preserve">
+        <value>Název - anglicky</value>
+    </data>
+    <data name="Group_Create_Visible" xml:space="preserve">
+        <value>Viditelné</value>
+    </data>
+    <data name="Group_Edit_Heading" xml:space="preserve">
+        <value>Skupina - editace</value>
+    </data>
+    <data name="Group_Edit_Delete" xml:space="preserve">
+        <value>Smazat skupinu</value>
+    </data>
+    <data name="Group_Create_Submit" xml:space="preserve">
+        <value>Vytvořit</value>
+    </data>
+    <data name="Group_Edit_Submit" xml:space="preserve">
+        <value>Uložit</value>
+    </data>
+    <data name="Topic_Index_Heading_Bachelor" xml:space="preserve">
+        <value>Bakalářské závěrečné práce</value>
+    </data>
+    <data name="Topic_Index_Heading_Master" xml:space="preserve">
+        <value>Magisterské zavěrečné práce</value>
+    </data>
+    <data name="Topic_Index_OrderBy" xml:space="preserve">
+        <value>Řazení</value>
+    </data>
+    <data name="Topic_Index_AllProgrammes" xml:space="preserve">
+        <value>Všechny programy</value>
+    </data>
+    <data name="Topic_Index_ShowTaken" xml:space="preserve">
+        <value>Zobrazit zabrané</value>
+    </data>
+    <data name="Topic_Index_ShowProposedOnly" xml:space="preserve">
+        <value>Pouze navrhnuté</value>
+    </data>
+    <data name="Topic_Index_ShowHidden" xml:space="preserve">
+        <value>Zobrazit skryté</value>
+    </data>
+    <data name="Topic_Index_Create" xml:space="preserve">
+        <value>Nové téma</value>
+    </data>
+    <data name="Topic_Index_Propose" xml:space="preserve">
+        <value>Navrhnout téma</value>
+    </data>
+    <data name="Topic_Index_Search" xml:space="preserve">
+        <value>Hledat</value>
+    </data>
+    <data name="Topic_Group_Heading" xml:space="preserve">
+        <value>Skupina</value>
+    </data>
+    <data name="Topic_Group_CreateHomework" xml:space="preserve">
+        <value>Nový úkol</value>
+    </data>
+    <data name="Topic_Group_CreateProject" xml:space="preserve">
+        <value>Nový projekt</value>
+    </data>
+    <data name="Topic_Group_ProposeProject" xml:space="preserve">
+        <value>Navrhnout projekt</value>
+    </data>
+    <data name="Topic_Group_Edit" xml:space="preserve">
+        <value>Editovat skupinu</value>
+    </data>
+    <data name="Thesis" xml:space="preserve">
+        <value>Závěrečná práce</value>
+    </data>
+    <data name="Homework" xml:space="preserve">
+        <value>Úkol</value>
+    </data>
+    <data name="Project" xml:space="preserve">
+        <value>Projekt</value>
+    </data>
+    <data name="Group_Index_Create" xml:space="preserve">
+        <value>Nová skupina</value>
+    </data>
+    <data name="Topic_Details_Attachments" xml:space="preserve">
+        <value>Přílohy</value>
+    </data>
+    <data name="Topic_Details_DownloadFile" xml:space="preserve">
+        <value>Stáhnout přílohu</value>
+    </data>
+    <data name="Topic_Details_Comments" xml:space="preserve">
+        <value>Diskuze</value>
+    </data>
+    <data name="Topic_Index_Heading_Unassigned" xml:space="preserve">
+        <value>Návrhy závěrečných prací od externistů</value>
+    </data>
+    <data name="Topic_Details_InterestedStudents" xml:space="preserve">
+        <value>Zájem:</value>
+    </data>
+    <data name="Topic_Details_NewComment" xml:space="preserve">
+        <value>Nový komentář</value>
+    </data>
+    <data name="Comments_Submit" xml:space="preserve">
+        <value>Odeslat komentář</value>
     </data>
 </root>

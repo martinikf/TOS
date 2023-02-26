@@ -2,154 +2,130 @@
 @using TOS.Extensions
 @model IEnumerable<TOS.Models.Topic>
 
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = @SharedLocalizer["Topic_Index_Heading_" + (string) ViewData["topicsIndexGroupName"]!];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>@SharedLocalizer[(string)ViewData["topicsIndexGroupName"]!]</h1>
+<h1>@SharedLocalizer["Topic_Index_Heading_"+(string)ViewData["topicsIndexGroupName"]!]</h1>
 
 @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
 {
-    <a asp-action="Create" asp-route-groupName="@ViewData["topicsIndexGroupName"]">Create New Topic</a>
+    <p>
+    <a class="btn btn-primary" asp-action="Create" asp-route-groupName="@ViewData["topicsIndexGroupName"]">@SharedLocalizer["Topic_Index_Create"]</a>
+    </p>
 }
 @if (User.IsInRole("ProposeTopic"))
 {
-    <a asp-action="Propose" asp-route-groupName="@ViewData["topicsIndexGroupName"]">Propose New Topic</a>
+    <p>
+        <a class="btn btn-primary" asp-action="Propose" asp-route-groupName="@ViewData["topicsIndexGroupName"]">@SharedLocalizer["Topic_Index_Propose"]</a>
+    </p>
 }
 
 <form asp-action="Index" method="get">
     <input type="hidden" name="groupName" value="@ViewData["topicsIndexGroupName"]"/>
-    <input type="text" name="searchString" placeholder="Search string..." value="@ViewData["searchString"]"/>
-    @if ((string)ViewData["topicsIndexGroupName"]! != "Unassigned")
-    {
-        <label>Show taken topics</label>
-        @if ((bool)ViewData["showTakenTopics"]!)
-        {
-            <input name="showTakenTopics" type="checkbox" value="true" checked/>
-        }
-        else
-        {
-            <input name="showTakenTopics" type="checkbox" value="true"/>
-        }
-        @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
-        {
-            <label>Show hidden topics</label>
-            @if ((bool)ViewData["showHidden"]!)
-            {
-                <input name="showHidden" type="checkbox" value="true" checked/>
-            }
-            else
-            {
-                <input name="showHidden" type="checkbox" value="true"/>
-            }
-        }
-
-        <select name="programmeName">
-            <option value="">@SharedLocalizer["All programmes"]</option>
-            @foreach (var programme in (List<Programme>)ViewData["programmes"]!)
-            {
-                @if ((string)ViewData["selectedProgramme"]! == programme.NameEng)
-                {
-                    <option value="@programme.NameEng" selected>@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</option>
-                }
-                else
-                {
-                    <option value="@programme.NameEng">@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</option>
-                }
-            }
-        </select>
-        @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
-        {
-            <label>Show only proposed topics</label>
-            @if ((bool)ViewData["showProposed"]!)
-            {
-                <input name="showProposed" type="checkbox" value="true" checked/>
-            }
-            else
-            {
-                <input name="showProposed" type="checkbox" value="true"/>
-            }
-        }
-
-        <label>@SharedLocalizer["orderBy"]</label>
-        <select name="orderBy">
-            @Html.SelectOption("Supervisor", @SharedLocalizer["orderBySupervisor"].Value, (string)ViewData["orderBy"]!)
-            @Html.SelectOption("Name", @SharedLocalizer["orderByName"].Value, (string)ViewData["orderBy"]!)
-            @Html.SelectOption("Interest", @SharedLocalizer["orderByInterest"].Value, (string)ViewData["orderBy"]!)
-        </select>
-    }
-    <input type="submit" value="Search"/>
-</form>
-
-<hr/>
-@{ 
-    ApplicationUser lastSupervisor = null;
-    //Used is used to prevent multiple headers with the same name
-    var used = false;
-}
-
-@foreach (var topic in Model) {
-    
-    @if ((string) ViewData["orderBy"]! == "Supervisor")
-    {
-        @if (topic.Supervisor == null && !used)
-        {
-            <h2>@SharedLocalizer["TopicsWithoutSupervisor"]</h2>
-            {
-                used = true;
-            }
-        }
-        else if(topic.Supervisor != null)
-        {
-            @if (lastSupervisor == null || lastSupervisor.Id != topic.Supervisor.Id)
-            {
-                <h2>@topic.Supervisor.DisplayName</h2>
-                {lastSupervisor = topic.Supervisor;}
-            }
-        }
-    }
-    
-    <div class="topic">
-        <div class="topic__name">
-            <a asp-action="Details" asp-route-id="@topic.TopicId">
-                <h3>@Html.SelectStringByLanguage(topic.NameEng, topic.Name)</h3>
-            </a>
+    <div class="row g-1 align-items-center">
+        <div class="col-auto">
+            <input type="text" class="form-control" name="searchString" placeholder="Search string..." value="@ViewData["searchString"]"/>
         </div>
-        <!-- Don't show if orderBy is Supervisor-->
-        @if ((string) ViewData["orderBy"]! != "Supervisor" && topic.Supervisor != null)
-        {
-            <div class="topic__supervisor">
 
-                @Html.DisplayFor(modelItem => topic.Supervisor.FirstName)
-                @Html.DisplayFor(modelItem => topic.Supervisor.LastName)
-
-            </div>
-        }
-        <div class="topic__infoboxes">
-            @if (topic.AssignedStudent == null)
+        <div class="form-check col-auto">
+            <label for="showTaken">@SharedLocalizer["Topic_Index_ShowTaken"]</label>
+            @if ((bool) ViewData["showTakenTopics"]!)
             {
-                <span class="infobox">@SharedLocalizer["Free topic"]</span>
+                <input class="form-check-input" name="showTakenTopics" id="showTaken" type="checkbox" value="true" checked/>
             }
             else
             {
-                <span class="infobox">@SharedLocalizer["Taken topic"]</span>
-            }
-            @if (topic.Proposed)
-            {
-                <span class="infobox">@SharedLocalizer["Proposed"]</span>
-            }
-            <span class="infobox">@topic.Type</span>
-            @foreach (var programme in topic.TopicRecommendedPrograms)
-            {
-                <span class="infobox">@Html.SelectStringByLanguage(programme.Programme.NameEng, programme.Programme.Name)</span>
+                <input class="form-check-input" name="showTakenTopics" id="showTaken" type="checkbox" value="true"/>
             }
         </div>
         
-        <div class="topic__description">
-            @Html.SelectStringByLanguage(topic.DescriptionShortEng, topic.DescriptionShort)
+        <div class="col-auto">
+            <select class="form-select" name="programmeName">
+                <option value="">@SharedLocalizer["Topic_Index_AllProgrammes"]</option>
+                @foreach (var programme in (List<Programme>)ViewData["programmes"]!)
+                {
+                    @if ((string)ViewData["selectedProgramme"]! == programme.NameEng)
+                    {
+                        <option value="@programme.NameEng" selected>@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</option>
+                    }
+                    else
+                    {
+                        <option value="@programme.NameEng">@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</option>
+                    }
+                }
+            </select>
         </div>
-        <hr/>
+        
+        <div class="col-auto">
+            <label for="orderBy">@SharedLocalizer["Topic_Index_OrderBy"]</label>
+        </div>
+        <div class="col-auto">
+            <select class="form-select" id="orderBy" name="orderBy">
+                @Html.SelectOption("Supervisor", @SharedLocalizer["orderBySupervisor"].Value, (string) ViewData["orderBy"]!)
+                @Html.SelectOption("Name", @SharedLocalizer["orderByName"].Value, (string) ViewData["orderBy"]!)
+                @Html.SelectOption("Interest", @SharedLocalizer["orderByInterest"].Value, (string) ViewData["orderBy"]!)
+            </select>
+        </div>
+        
+        <div class="col-auto">
+            <input type="submit" class="btn btn-primary" value="@SharedLocalizer["Topic_Index_Search"]"/>
+        </div>
+
     </div>
+
+    @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
+     {
+         <div class="row g-3 align-items-center mx-auto">
+             <div class="col-auto form-check">
+                 <label for="showHidden">@SharedLocalizer["Topic_Index_ShowHidden"]</label>
+                 @if ((bool) ViewData["showHidden"]!)
+                 {
+                     <input class="form-check-input" name="showHidden" id="showHidden" type="checkbox" value="true" checked/>
+                 }
+                 else
+                 {
+                     <input class="form-check-input" name="showHidden" id="showHidden" type="checkbox" value="true"/>
+                 }
+             </div>
+
+             <div class="col-auto form-check">
+                 <label for="showProposed">@SharedLocalizer["Topic_Index_ShowProposedOnly"]</label>
+                 @if ((bool) ViewData["showProposed"]!)
+                 {
+                     <input class="form-check-input" name="showProposed" id="showProposed" type="checkbox" value="true" checked/>
+                 }
+                 else
+                 {
+                     <input class="form-check-input" name="showProposed" id="showProposed" type="checkbox" value="true"/>
+                 }
+             </div>
+         </div>
+     }
+</form>
+
+<hr/>
+
+@if ((string) ViewData["orderBy"]! == "Supervisor")
+{
+    @foreach (var supervisor in Model.Where(topic => topic.Supervisor != null).Select(x => x.Supervisor).Distinct().OrderBy(y => y!.LastName!))
+    {
+        <h2 class="h3">@supervisor!.DisplayName</h2>
+        @foreach (var topic in supervisor.SupervisedTopics.Where(topic => Model.Contains(topic)))
+        {
+            {
+                topic.SupervisorId = null;
+            }
+            <partial name="TopicPreview" model="topic"/>
+        }
+    }
 }
+else
+{
+    @foreach (var topic in Model.Where(topic => Model.Contains(topic))) {
+        <partial name="TopicPreview" model="topic"/>
+    } 
+}
+
+

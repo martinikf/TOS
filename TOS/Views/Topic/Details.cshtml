@@ -2,8 +2,183 @@
 @model TOS.Models.Topic
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = SharedLocalizer["Topic_Details_Heading"];
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<article>
+    <h1>@Html.SelectStringByLanguage(Model.NameEng, Model.Name)</h1>
+    
+    <p>
+        @if (User.IsInRole("InterestTopic"))
+        {
+            @if (Model.UserInterestedTopics.Any(x => x.User.UserName == User.Identity!.Name))
+            {
+                <a href="javascript:void(0)" class="btn btn-primary interested" id="btn-interest">@SharedLocalizer["Remove interest"]</a>
+            }
+            else
+            {
+                <a href="javascript:void(0)" class="btn btn-primary not-interested" id="btn-interest">@SharedLocalizer["Add interest"]</a>
+            }
+        }
+        
+        @if (Html.CanEditTopic(Model, User.Identity?.Name, User.IsInRole("Topic"), User.IsInRole("AnyTopic"), User.IsInRole("ProposeTopic")))
+        {
+            <a asp-action="Edit" class="btn btn-primary" asp-route-id="@Model.TopicId">Edit</a>
+        }
+
+        @if (Html.CanDeleteTopic(Model, User.Identity?.Name, User.IsInRole("Topic"), User.IsInRole("AnyTopic"), User.IsInRole("ProposeTopic")))
+        {
+            <a asp-action="Delete" class="btn btn-outline-danger" asp-route-id="@Model.TopicId">Delete</a>
+        }
+    </p>
+    
+    <h2 class="h5">@Model.Supervisor?.DisplayName</h2>
+    <p>@Html.SelectStringByLanguage(Model.Group.NameEng, Model.Group.Name) - @SharedLocalizer[Model.Type.ToString()]</p>
+
+
+    <div class="d-flex flex-wrap mb-3 gap-2">
+        @if (Model.Proposed)
+        {
+            <span class="badge bg-success p-2">@SharedLocalizer["Proposed topic"]</span>
+        }
+        else
+        {
+            @if (Model.AssignedId == null)
+            {
+                <span class="badge bg-success p-2">@SharedLocalizer["Free topic"]</span>
+            }
+            else
+            {
+                <span class="badge bg-danger p-2">@SharedLocalizer["Taken topic"]</span>
+            }
+        }
+        @foreach (var programme in Model.TopicRecommendedPrograms.Select(x => x.Programme))
+        {
+            <span class="badge bg-secondary p-2">@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</span>
+        }
+
+        <span class="badge rounded-pill bg-secondary ms-auto p-2">@SharedLocalizer["Topic_Details_InterestedStudents"]: @Model.UserInterestedTopics.Count</span>
+    </div>
+    @if (Model.Proposed && (User.IsInRole("Topic") || User.IsInRole("AnyTopic")))
+    {
+        <p>
+            Created by:
+            @Html.DisplayFor(model => model.Creator.DisplayName)
+            @Html.DisplayFor(model => model.Creator.Email)
+        </p>
+    }
+
+    <hr/>
+
+    <p>@Html.SelectStringByLanguage(Model.DescriptionShortEng!, Model.DescriptionShort)</p>
+
+    <p>@Html.SelectStringByLanguage(Model.DescriptionLongEng, Model.DescriptionLong)</p>
+
+    @if (Model.Attachments.Count > 0)
+    {
+        <hr/>
+        <div>
+            <h3>@SharedLocalizer["Topic_Details_Attachments"]</h3>
+            <div class="d-flex flex-wrap">
+            @foreach (var attachment in Model.Attachments)
+            {
+                <div class="border border-dark rounded p-2 m-2 col-auto">
+                <a href="/files/@attachment.TopicId/@attachment.Name">
+                    @attachment.Name
+                </a>
+                </div>
+            }
+            </div>
+        </div>
+    }
+
+    @if (User.IsInRole("Comment"))
+    {
+        <hr/>
+        <section>
+             <h3>@SharedLocalizer["Topic_Details_Comments"]</h3>
+        @foreach (var comment in PrepareComments(Model.Comments))
+        {
+            <div style="margin-left: @(comment.Depth * 40)px">
+                <div class=" border border-dark rounded p-2 m-2">
+                    <div>
+                        @if (!comment.Anonymous || User.IsInRole("SeeAuthorOfAnonymousComment") || User.Identity!.Name!.Equals(comment.Author.UserName))
+                        {
+                            if (comment.Anonymous)
+                            {
+                                <h5 class="Comment__AuthorName">@comment.Author.FirstName @comment.Author.LastName - @comment.Author.Email - @SharedLocalizer["Anonymous"]</h5>
+                            }
+                            else
+                            {
+                                <h5 class="Comment__AuthorName">@comment.Author.FirstName @comment.Author.LastName - @comment.Author.Email</h5>
+                            }
+                        }
+                        else
+                        {
+                            <h5 class="Comment__AuthorName">@SharedLocalizer["Anonymous"]</h5>
+                        }
+                        <p >@comment.CreatedAt</p>
+                        <p>
+                            @if (comment.Text == "Deleted comment")
+                            {
+                                @SharedLocalizer["Deleted comment"]
+                            }
+                            else
+                            {
+                                @comment.Text
+                            }
+                        </p>
+                        <div class="d-flex">
+                            <a href="#" class="ReplyButton p-2" value="" onclick="ReplyButtonClick('@comment.CommentId')"><i class="fa-solid fa-reply fa-lg"></i></a>
+                            @if (Html.CanDeleteComment(comment, User.Identity?.Name, User.IsInRole("Comment"), User.IsInRole("AnyComment")))
+                            {
+                                <a class="ms-auto p-2" asp-action="DeleteComment" asp-route-commentId="@comment.CommentId" asp-route-topicId="@Model.TopicId"><i class="fa-solid fa-x fa-lg"></i></a>
+                            }
+                        </div>
+
+                    </div>
+                    <div class="Comment__reply row" id="ReplyForm@(comment.CommentId)" style="display: none;">
+                        @{ Html.RenderPartial("AddComment", new Comment() {TopicId = Model.TopicId, ParentCommentId = @comment.CommentId}); }
+                    </div>
+                </div>
+            </div>
+        }
+        <h4>@SharedLocalizer["Topic_Details_NewComment"]</h4>
+        @{ Html.RenderPartial("AddComment", new Comment() {TopicId = Model.TopicId}); }
+        </section>
+    }
+</article>
+
+@functions{
+
+    private static IEnumerable<Comment> PrepareComments(IEnumerable<Comment> comments)
+    {
+        List<Comment> returnComments = new ();
+
+        //Foreach root comment
+        foreach(var comment in comments.Where(x => x.ParentComment == null))
+        {
+            returnComments.Add(comment);
+            returnComments.AddRange(PrepareReplies(comment.Replies, 1));
+        }
+
+        return returnComments;
+    }
+
+    private static IEnumerable<Comment> PrepareReplies(IEnumerable<Comment> comments, int depth)
+    {
+        List<Comment> returnComments = new ();
+
+        foreach (var comment in comments)
+        {
+            comment.Depth = depth;
+            returnComments.Add(comment);
+            returnComments.AddRange(PrepareReplies(comment.Replies, depth + 1));
+        }
+        
+        return returnComments;
+    }
 }
 
 @section Scripts
@@ -13,7 +188,6 @@
     <script>
     $(document).ready(function (){
         $("#btn-interest").on("click", function (){
-            var formData = new FormData();
             var topicId = @Model.TopicId;
             var url = '@Url.Action("Interest", "Topic")' + "?topicId=" + topicId;
             $.ajax({
@@ -67,173 +241,4 @@
             }
         }
     </script>
-}
-
-<h1>Details</h1>
-
-@if (User.IsInRole("InterestTopic"))
-{
-    @if (Model.UserInterestedTopics.Any(x => x.User.UserName == User.Identity!.Name))
-    {
-        <a href="javascript:void(0)" class="btn btn-primary interested" id="btn-interest">@SharedLocalizer["Remove interest"]</a>
-    }
-    else
-    {
-        <a href="javascript:void(0)" class="btn btn-primary not-interested" id="btn-interest">@SharedLocalizer["Add interest"]</a>
-    }
-}
-
-<div>
-    <h4>@Html.DisplayFor(model => model.Name)</h4>
-    <h4>@Model.Type</h4>
-    <hr />
-    @if(Model.AssignedStudent != null)
-    {
-        <span class="infobox">@SharedLocalizer["Taken topic"]</span>
-    }
-    else
-    {
-        <span class="infobox">@SharedLocalizer["Free topic"]</span>
-    }
-    
-    @foreach(var programme in Model.TopicRecommendedPrograms)
-    {
-        <span class="infobox">@Html.SelectStringByLanguage(programme.Programme.NameEng, programme.Programme.Name)</span>
-    }
-
-    <h5>@SharedLocalizer["Short topic description"]</h5>
-    <p>SelectStringByLanguage(Model.DescriptionShort, Model.DescriptionShortEng)</p>
-    <h5>@SharedLocalizer["Long topic description"]</h5>
-    <p>@Html.SelectStringByLanguage(Model.DescriptionLongEng, Model.DescriptionLong)</p>
-    <h5>@SharedLocalizer["Supervisor"]</h5>
-    <p>
-        @Html.DisplayFor(model => model.Supervisor.FirstName) @Html.DisplayFor(model => model.Supervisor.LastName)
-        @Html.DisplayFor(model => model.Supervisor.Email)
-    </p>
-    <p>
-        Created by:
-        @Html.DisplayFor(model => model.Creator.FirstName) @Html.DisplayFor(model => model.Creator.LastName)
-        @Html.DisplayFor(model => model.Creator.Email)
-    </p>
-    <h5>@SharedLocalizer["Topic group"]</h5>
-    <p>@Html.SelectStringByLanguage(Model.Group.NameEng, Model.Group.Name)</p>
-    
-    @if (Model.Attachments.Count > 0)
-    {
-        <div>
-            <h2>@SharedLocalizer["Attachments"]</h2>
-            <hr/>
-            @foreach (var attachment in Model.Attachments)
-            {
-                <div class="Attachment border border-dark rounded p-2 m-2 col-sm-4">
-                    <h4>@attachment.Name</h4>
-                    @attachment.Creator.Email
-                    <!-- FILE -->
-                    <a href="/files/@attachment.TopicId/@attachment.Name">Download File</a>
-                </div>
-            }
-        </div>
-    }
-    
-    @if (User.IsInRole("Comment"))
-    {
-        <div class="CommentSection">
-            <div class="Comments">
-
-                @foreach (var comment in PrepareComments(Model.Comments))
-                {
-                    <div class="Comment" style="margin-left: @(comment.Depth * 40)px">
-                        <div class=" border border-dark rounded p-2 m-2">
-
-                            <div class="Comment__body">
-                                @if (!comment.Anonymous || User.IsInRole("SeeAuthorOfAnonymousComment") || User.Identity.Name.Equals(comment.Author.UserName))
-                                {
-                                    if (comment.Anonymous)
-                                    {
-                                        <h5 class="Comment__AuthorName">@comment.Author.FirstName @comment.Author.LastName - @comment.Author.Email - @SharedLocalizer["Anonymous"]</h5>
-
-                                    }
-                                    else
-                                    {
-                                        <h5 class="Comment__AuthorName">@comment.Author.FirstName @comment.Author.LastName - @comment.Author.Email</h5>
-                                    }
-                                }
-                                else
-                                {
-                                    <h5 class="Comment__AuthorName">@SharedLocalizer["Anonymous"]</h5>
-                                }
-
-                                <p class="Comment__CreatedAt">@comment.CreatedAt</p>
-                                <p class="Comment__Text">
-                                    
-                                    @if (comment.Text == "Deleted comment")
-                                    {
-                                        @SharedLocalizer["Deleted comment"]
-                                    }
-                                    else
-                                    {
-                                        @comment.Text
-                                    }
-                                </p>
-                                <button class="ReplyButton" value="@comment.CommentId" onclick="ReplyButtonClick(this.value)">Reply</button>
-                                @if(@Html.CanDeleteComment(comment, User.Identity?.Name, User.IsInRole("Comment"), User.IsInRole("AnyComment")))
-                                {
-                                    <a class="DeleteCommentButton" asp-action="DeleteComment" asp-route-commentId="@comment.CommentId" asp-route-topicId="@Model.TopicId">Delete</a>
-                                }
-                            
-                            </div>
-                            <div class="Comment__reply row" id="ReplyForm@(comment.CommentId)" style="display: none;">
-                                 @{ Html.RenderPartial("AddComment", new Comment(){ TopicId = Model.TopicId, ParentCommentId = @comment.CommentId}); }
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
-            @{ Html.RenderPartial("AddComment", new Comment(){ TopicId = Model.TopicId }); }
-        </div>
-    }
-</div>
-
-<div>
-    @if (@Html.CanEditTopic(Model, User.Identity?.Name, User.IsInRole("Topic"), User.IsInRole("AnyTopic"), User.IsInRole("ProposeTopic")))
-    {
-        <a asp-action="Edit" asp-route-id="@Model?.TopicId">Edit</a>
-    }
-
-    @if(@Html.CanDeleteTopic(Model, User.Identity?.Name, User.IsInRole("Topic"), User.IsInRole("AnyTopic"), User.IsInRole("ProposeTopic")))
-    {
-        <a asp-action="Delete" asp-route-id="@Model?.TopicId">Delete</a>
-    }
-</div>
-
-
-@functions{
-
-    private static IEnumerable<Comment> PrepareComments(IEnumerable<Comment> comments)
-    {
-        List<Comment> returnComments = new ();
-
-        //Foreach root comment
-        foreach(var comment in comments.Where(x => x.ParentComment == null))
-        {
-            returnComments.Add(comment);
-            returnComments.AddRange(PrepareReplies(comment.Replies, 1));
-        }
-
-        return returnComments;
-    }
-
-    private static IEnumerable<Comment> PrepareReplies(IEnumerable<Comment> comments, int depth)
-    {
-        List<Comment> returnComments = new ();
-
-        foreach (var comment in comments)
-        {
-            comment.Depth = depth;
-            returnComments.Add(comment);
-            returnComments.AddRange(PrepareReplies(comment.Replies, depth + 1));
-        }
-        
-        return returnComments;
-    }
 }

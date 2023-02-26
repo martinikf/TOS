@@ -73,7 +73,7 @@
         <value>My topics</value>
     </data>
     <data name="Topics" xml:space="preserve">
-        <value>All topics</value>
+        <value>Theses</value>
     </data>
     <data name="Unassigned option" xml:space="preserve">
         <value>Unassigned option</value>
@@ -260,5 +260,119 @@
     </data>
     <data name="True" xml:space="preserve">
         <value>Yes</value>
+    </data>
+    <data name="Group_Index_Heading" xml:space="preserve">
+        <value>Groups</value>
+    </data>
+    <data name="Group_Index_Search_Placeholder" xml:space="preserve">
+        <value>Name of group..</value>
+    </data>
+    <data name="Group_Index_Search_HiddenGroups" xml:space="preserve">
+        <value>Hidden groups</value>
+    </data>
+    <data name="Group_Index_Search_Submit" xml:space="preserve">
+        <value>Search</value>
+    </data>
+    <data name="Group_Create_Heading" xml:space="preserve">
+        <value>New group</value>
+    </data>
+    <data name="Group_Create_Name" xml:space="preserve">
+        <value>Name</value>
+    </data>
+    <data name="Group_Create_NameEng" xml:space="preserve">
+        <value>Name - english</value>
+    </data>
+    <data name="Group_Create_Visible" xml:space="preserve">
+        <value>Visible</value>
+    </data>
+    <data name="Group_Edit_Heading" xml:space="preserve">
+        <value>Group - edit</value>
+    </data>
+    <data name="Group_Edit_Delete" xml:space="preserve">
+        <value>Delete group</value>
+    </data>
+    <data name="Group_Create_Submit" xml:space="preserve">
+        <value>Create</value>
+    </data>
+    <data name="Group_Edit_Submit" xml:space="preserve">
+        <value>Save</value>
+    </data>
+    <data name="Topic_Index_Heading_Bachelor" xml:space="preserve">
+        <value>Bachelor theses</value>
+    </data>
+    <data name="Topic_Index_Heading_Master" xml:space="preserve">
+        <value>Master theses</value>
+    </data>
+    <data name="Topic_Index_OrderBy" xml:space="preserve">
+        <value>Sort</value>
+    </data>
+    <data name="Topic_Index_AllProgrammes" xml:space="preserve">
+        <value>All programmes</value>
+    </data>
+    <data name="Topic_Index_ShowTaken" xml:space="preserve">
+        <value>Show taken</value>
+    </data>
+    <data name="Topic_Index_ShowProposedOnly" xml:space="preserve">
+        <value>Proposed only</value>
+    </data>
+    <data name="Topic_Index_ShowHidden" xml:space="preserve">
+        <value>Show hidden</value>
+    </data>
+    <data name="Topic_Index_Create" xml:space="preserve">
+        <value>New thesis</value>
+    </data>
+    <data name="Topic_Index_Propose" xml:space="preserve">
+        <value>Propose thesis</value>
+    </data>
+    <data name="Topic_Index_Search" xml:space="preserve">
+        <value>Search</value>
+    </data>
+    <data name="Topic_Group_Heading" xml:space="preserve">
+        <value>Group</value>
+    </data>
+    <data name="Topic_Group_CreateHomework" xml:space="preserve">
+        <value>New homework</value>
+    </data>
+    <data name="Topic_Group_CreateProject" xml:space="preserve">
+        <value>New project</value>
+    </data>
+    <data name="Topic_Group_ProposeProject" xml:space="preserve">
+        <value>Propose project</value>
+    </data>
+    <data name="Topic_Group_Edit" xml:space="preserve">
+        <value>Group edit</value>
+    </data>
+    <data name="Thesis" xml:space="preserve">
+        <value>Thesis</value>
+    </data>
+    <data name="Homework" xml:space="preserve">
+        <value>Homework</value>
+    </data>
+    <data name="Project" xml:space="preserve">
+        <value>Project</value>
+    </data>
+    <data name="Group_Index_Create" xml:space="preserve">
+        <value>New group</value>
+    </data>
+    <data name="Topic_Details_Attachments" xml:space="preserve">
+        <value>Attachments</value>
+    </data>
+    <data name="Topic_Details_DownloadFile" xml:space="preserve">
+        <value>Download attachment</value>
+    </data>
+    <data name="Topic_Details_Comments" xml:space="preserve">
+        <value>Discussion</value>
+    </data>
+    <data name="Topic_Index_Heading_Unassigned" xml:space="preserve">
+        <value>Proposed thesis by externists</value>
+    </data>
+    <data name="Topic_Details_InterestedStudents" xml:space="preserve">
+        <value>Interested:</value>
+    </data>
+    <data name="Topic_Details_NewComment" xml:space="preserve">
+        <value>New comment</value>
+    </data>
+    <data name="Comments_Submit" xml:space="preserve">
+        <value>Send comment</value>
     </data>
 </root>

@@ -12,7 +12,7 @@ public class Topic
         [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicNameRequired")]
         public string Name { get; set; } = string.Empty;
         
-        public string NameEng { get; set; } = string.Empty;
+        public string? NameEng { get; set; } = string.Empty;
 
         [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicDescriptionShortRequired")]
         [StringLength(512, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicDescriptionShortLength")]

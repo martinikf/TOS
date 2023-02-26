@@ -24,7 +24,7 @@ namespace TOS.Controllers
         }
 
         // GET: Topic
-        public async Task<IActionResult> Index(string groupName = "MyTopics", string programmeName = "",
+        public async Task<IActionResult> Index(string groupName, string programmeName = "",
             string searchString = "", bool showTakenTopics = false, string orderBy = "Supervisor",
             bool showHidden = false, bool showProposed = false)
         {
@@ -51,7 +51,7 @@ namespace TOS.Controllers
             {
                 searchString = searchString.ToLower();
                 topicsToShow = topicsToShow.Where(x =>
-                        x.Name.ToLower().Contains(searchString) || x.NameEng.ToLower().Contains(searchString) ||
+                        x.Name.ToLower().Contains(searchString) || x.NameEng!.ToLower().Contains(searchString) ||
                         (x.Supervisor != null && (x.Supervisor.FirstName!.ToLower().Contains(searchString) ||
                                                   x.Supervisor.LastName!.ToLower().Contains(searchString))))
                     .ToList();
@@ -82,8 +82,7 @@ namespace TOS.Controllers
             switch (orderBy)
             {
                 case "Supervisor":
-                    topicsToShow = topicsToShow.OrderBy(x => x.Supervisor?.LastName)
-                        .ThenBy(x => x.Supervisor?.FirstName).ThenBy(x => x.Name).ToList();
+                    //Solved in view
                     break;
                 case "Name":
                     topicsToShow = CultureInfo.CurrentCulture.Name.Contains("cz")
@@ -103,12 +102,13 @@ namespace TOS.Controllers
             return View(topicsToShow);
         }
         
-        public async Task<IActionResult> Group(string groupName, string searchString = "", bool showTakenTopics = false, bool showHidden = false, bool showProposed = false)
+        public async Task<IActionResult> Group(int groupId, string searchString = "", bool showTakenTopics = false, bool showHidden = false, bool showProposed = false)
         {
-            var group = await _context.Groups.FirstAsync(x => x.NameEng.Equals(groupName));
-            
-            ViewData["topicsIndexGroupName"] = groupName;
+            var group = await _context.Groups.FirstAsync(x => x.GroupId == groupId);
+
+            ViewData["topicsIndexGroupName"] = group.NameEng;
             ViewData["topicsIndexGroupId"] = group.GroupId;
+            ViewData["creatorUsername"] = group.Creator.UserName;
             ViewData["showTakenTopics"] = showTakenTopics;
             ViewData["searchString"] = searchString;
             ViewData["showHidden"] = showHidden;
@@ -125,7 +125,7 @@ namespace TOS.Controllers
             {
                 searchString = searchString.ToLower();
                 topicsToShow = topicsToShow.Where(x =>
-                        x.Name.ToLower().Contains(searchString) || x.NameEng.ToLower().Contains(searchString) ||
+                        x.Name.ToLower().Contains(searchString) || x.NameEng!.ToLower().Contains(searchString) ||
                         (x.Supervisor != null && (x.Supervisor.FirstName!.ToLower().Contains(searchString) ||
                                                   x.Supervisor.LastName!.ToLower().Contains(searchString))))
                     .ToList();
@@ -136,12 +136,19 @@ namespace TOS.Controllers
                 topicsToShow = topicsToShow.Where(x => x.AssignedStudent == null).ToList();
             }
             
-            if (showProposed && User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
+            if (showProposed && (User.IsInRole("Topic") || User.IsInRole("AnyTopic")))
             {
                 topicsToShow = topicsToShow.Where(x => x.Proposed).ToList();
             }
             
             return View(topicsToShow);
+        }
+
+        public async Task<IActionResult> Unassigned()
+        {
+            var topics = await _context.Topics.Where(x => x.Group.NameEng == "Unassigned").ToListAsync();
+            
+            return View(topics);
         }
         
         public async Task<IActionResult> MyTopics(string searchString = "", bool showHidden = false)
@@ -165,7 +172,7 @@ namespace TOS.Controllers
                     x.UserInterestedTopics.Any(y => y.UserId == user.Id))
                 .Where(x =>
                    x.Name.ToLower().Contains(searchString.ToLower()) ||
-                        x.NameEng.ToLower().Contains(searchString.ToLower()) ||
+                        x.NameEng!.ToLower().Contains(searchString.ToLower()) ||
                         (x.Supervisor != null && (x.Supervisor.FirstName!.ToLower().Contains(searchString.ToLower()) ||
                                                   x.Supervisor.LastName!.ToLower().Contains(searchString.ToLower()))) ||
                         x.DescriptionShort.ToLower().Contains(searchString.ToLower()) ||
@@ -201,7 +208,7 @@ namespace TOS.Controllers
         public async Task<IActionResult> Create(string groupName = "Unassigned", TopicType type = TopicType.Thesis)
         {
             var groupProvided = _context.Groups.FirstOrDefault(x => x.NameEng.ToLower().Equals(groupName.ToLower()));
-
+            
             //For custom groups, allow only the group provided
             if (groupProvided != null && !groupProvided.Selectable && groupName != "Unassigned")
                 ViewData["Groups"] = new List<Group> {groupProvided};
@@ -323,8 +330,7 @@ namespace TOS.Controllers
 
             ViewData["Programmes"] = programmes;
             ViewData["OldAssigned"] = topic.AssignedId;
-
-
+            
             return View(topic);
         }
 

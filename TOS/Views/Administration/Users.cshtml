@@ -7,10 +7,10 @@
 <h1>@SharedLocalizer["Administration_Users_Heading"]</h1>
 
 <form class="row g-2" asp-action="Users" method="get">
-    <div class="col-md-4">
-        <input type="text" class="form-control" name="searchString" value="@ViewData["searchString"]" placeholder="@SharedLocalizer["Adminitration_Users_Search_Placeholder"]"/>
+    <div class="col-auto">
+        <input type="text" class="form-control" name="searchString" value="@ViewData["searchString"]" placeholder="@SharedLocalizer["Administration_Users_Search_Placeholder"]"/>
     </div>
-    <div class="col-md-2">
+    <div class="col-auto">
         <input type="submit" class="btn btn-primary mb-1" value="@SharedLocalizer["Administration_Users_Search_Submit"]"/>
     </div>
 </form>

@@ -7,9 +7,11 @@ namespace TOS.Extensions;
 
 public static class HtmlHelperExtensions
 {
-    public static string SelectStringByLanguage(this IHtmlHelper htmlHelper, string en, string cz)
+    public static string SelectStringByLanguage(this IHtmlHelper htmlHelper, string? en, string? cz)
     {
-        return CultureInfo.CurrentCulture.Name.Contains("cz") ? cz : en;
+        if(en is null ) return cz ?? "";
+
+        return (CultureInfo.CurrentCulture.Name.Contains("cz") ? cz : en) ?? string.Empty;
     }
 
     public static HtmlString SelectOption(this IHtmlHelper htmlHelper, string value, string text, string? selectedValue)

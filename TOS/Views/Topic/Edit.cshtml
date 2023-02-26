@@ -1,145 +1,132 @@
-@using System.Globalization
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using TOS.Data
+@using TOS.Extensions
 @model TOS.Models.Topic
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = SharedLocalizer["Topic_Edit_Heading"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<h1>@SharedLocalizer["Topic_Edit_Heading"]</h1>
 
-<h4>Topic</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="TopicId" />
-            <input type="hidden" asp-for="CreatorId" />
-            <input type="hidden" asp-for="Type"/>
-            <input type="hidden" asp-for="Proposed"/>
-            <input type="hidden" name="oldAssigned" value="@ViewData["OldAssigned"]"/>
+<form asp-action="Edit" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="TopicId" />
+    <input type="hidden" asp-for="CreatorId" />
+    <input type="hidden" asp-for="Type"/>
+    <input type="hidden" asp-for="Proposed"/>
+    <input type="hidden" name="oldAssigned" value="@ViewData["OldAssigned"]"/>
             
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            
-            <div class="form-group">
-                <label asp-for="NameEng" class="control-label"></label>
-                <input asp-for="NameEng" class="form-control" />
-            </div>
-            
-            <div class="form-group">
-                <label asp-for="DescriptionShort" class="control-label"></label>
-                <input asp-for="DescriptionShort" class="form-control" />
-                <span asp-validation-for="DescriptionShort" class="text-danger"></span>
-            </div>
-            
-            <div class="form-group">
-                <label asp-for="DescriptionShortEng" class="control-label"></label>
-                <input asp-for="DescriptionShortEng" class="form-control" />
-            </div>
-            
-            <div class="form-group">
-                <label asp-for="DescriptionLong" class="control-label"></label>
-                <input asp-for="DescriptionLong" class="form-control" />
-            </div>
-            
-            <div class="form-group">
-                <label asp-for="DescriptionLongEng" class="control-label"></label>
-                <input asp-for="DescriptionLongEng" class="form-control" />
-            </div>
-            
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Visible" /> @Html.DisplayNameFor(model => model.Visible)
-                </label>
-            </div>
-
-            <div class="form-group">
-                <label>@SharedLocalizer["Supervisor"]</label>
-                <select class="form-control" id="ddlSupervisor" asp-for="SupervisorId" asp-items="ViewBag.UsersToSupervise">
-                    <option value="null">@SharedLocalizer["Unassigned option"]</option>
-                </select>
-            </div>
-            
-             @if ((TopicType) ViewData["TopicType"]! != TopicType.Homework)
-             {
-                 <div class="form-group">
-                     <label>@SharedLocalizer["Assigned student"]</label>
-                     <select class="form-control" id="ddlAssigned" asp-for="AssignedId" asp-items="ViewBag.UsersToAssign">
-                         <option value="null">@SharedLocalizer["Unassigned option"]</option>
-                     </select>
-                 </div>
-             }
-            
-            <div class="form-group">
-                <label asp-for="GroupId" class="control-label"></label>
-                <select asp-for="GroupId" class="form-control" asp-items="ViewBag.Group" onchange="RefreshProgrammes()"></select>
-                <span asp-validation-for="GroupId" class="text-danger"></span>
-            </div>
-            
-        
-            @if ((TopicType) ViewData["TopicType"]! == TopicType.Thesis)
-            {
-                @if (ViewData["Programmes"] != null)
-                {
-                    <div class="form-group">
-                        <ul>
-                            @foreach (var programme in (IEnumerable<Programme>) ViewData["Programmes"]!)
-                            {
-                                <li class="Programme @programme.Type">
-                                    @if(programme.Selected)
-                                    {
-                                        <input type="checkbox" name="Programmes" value="@programme.ProgrammeId" checked="checked" />
-                                    }
-                                    else
-                                    {
-                                        <input type="checkbox" name="Programmes" value="@programme.ProgrammeId" />
-                                    }
-                                    @if (CultureInfo.CurrentCulture.Name.Contains("cz"))
-                                    {
-                                        <label>@programme.Name</label>
-                                    }
-                                    else
-                                    {
-                                        <label>@programme.NameEng</label>
-                                    }
-                                </li>
-                            }   
-                        </ul>
-                    </div>
-                    <hr/>
-                }
-            
-            }
-
-            <div>
-                <h2>@SharedLocalizer["Attachments"]</h2>
-                <hr/>
-                <!-- FILE SELECT-->
-                 <input type="file" name="files" multiple>
-
-                @foreach (var attachment in Model.Attachments)
-                {
-                    <div class="Attachment border border-dark rounded p-2 m-2">
-                        <h4>@attachment.Name</h4>
-                        @attachment.Creator.Email
-                        <a asp-action="DeleteAttachment" asp-route-attachmentId="@attachment.AttachmentId" asp-route-topicId="@Model.TopicId">Delete</a>
-                    </div>
-                }
-            </div>
-            
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">@SharedLocalizer["Topic_Create_Name"]*</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
-</div>
+    <div class="mb-3">
+        <label asp-for="NameEng" class="form-label">@SharedLocalizer["Topic_Create_NameEng"]</label>
+        <input asp-for="NameEng" class="form-control" />
+        <span asp-validation-for="NameEng" class="text-danger"></span>
+    </div>
+    <div cclass="mb-3">
+        <label asp-for="DescriptionShort" class="form-label">@SharedLocalizer["Topic_Create_DescriptionShort"]*</label>
+        <textarea asp-for="DescriptionShort" class="form-control"></textarea>
+        <span asp-validation-for="DescriptionShort" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="DescriptionShortEng" class="form-label">@SharedLocalizer["Topic_Create_DescriptionShortEng"]</label>
+        <textarea asp-for="DescriptionShortEng" class="form-control"></textarea>
+        <span asp-validation-for="DescriptionShortEng" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="DescriptionLong" class="form-label">@SharedLocalizer["Topic_Create_DescriptionLong"]</label>
+        <textarea asp-for="DescriptionLong" class="form-control" style="height: 100px;"></textarea>
+        <span asp-validation-for="DescriptionLong" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="DescriptionLongEng" class="form-label">@SharedLocalizer["Topic_Create_DescriptionLongEng"]</label>
+        <textarea asp-for="DescriptionLongEng" class="form-control" style="height: 100px;"></textarea>
+        <span asp-validation-for="DescriptionLongEng" class="text-danger"></span>
+    </div>
+    <div class="row g-3 align-items-center">
+        <div class="col">
+        <label asp-for="SupervisorId" class="form-label">@SharedLocalizer["Topic_Create_Supervisor"]</label>
+        <select class="form-select" id="ddlSupervisor" asp-for="SupervisorId" asp-items="ViewBag.UsersToSupervise">
+            <option value="null">@SharedLocalizer["Unassigned option"]</option>
+        </select>
+    </div>
+    
+     @if ((TopicType) ViewData["TopicType"]! != TopicType.Homework)
+     {
+         <div class="col">
+            <label asp-for="AssignedId" class="form-label">@SharedLocalizer["Topic_Create_Assigned"]</label>
+            <select class="form-select" id="ddlAssigned" asp-for="AssignedId" asp-items="ViewBag.UsersToAssign">
+                <option value="null">@SharedLocalizer["Unassigned option"]</option>
+            </select>
+        </div>
+    }
+    </div>
+    
+    <div class="mb-3">
+        <label asp-for="GroupId" class="form-label">@SharedLocalizer["Topic_Create_Group"]</label>
+        <select asp-for="GroupId" class="form-select" asp-items="ViewBag.Group" onchange="RefreshProgrammes()"></select>
+        <span asp-validation-for="GroupId" class="text-danger"></span>
+    </div>
+
+    @if ((TopicType) ViewData["TopicType"]! == TopicType.Thesis)
+    {
+        <hr/>
+        @if (ViewData["Programmes"] != null)
+        {
+            <span>@SharedLocalizer["Topic_Create_RecommendedProgrammes"]</span>
+            <div class="form-check">
+                @foreach (var programme in (IEnumerable<Programme>) ViewData["Programmes"]!)
+                {
+                    <div class="Programme @programme.Type">
+                        @if (programme.Selected)
+                        {
+                            <input class="form-check-input" id="@programme.NameEng" type="checkbox" name="programmes" value="@programme.ProgrammeId" checked/>
+                        }
+                        else
+                        {
+                            <input class="form-check-input" id="@programme.NameEng" type="checkbox" name="programmes" value="@programme.ProgrammeId"/>
+                        }
+                        <label for="@programme.NameEng">@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</label>
+                    </div>
+                }
+            </div>
+            <hr/>
+        }
+    }
+    
+    <!--Attachments-->
+    @if (User.IsInRole("Attachment") || User.IsInRole("AnyAttachment"))
+    {
+        <div class="mb-3">
+            <label for="formFileMultiple" class="form-label">@SharedLocalizer["Topic_Create_Attachment"]</label>
+            <input type="file" id="formFileMultiple" class="form-control" name="files" multiple>
+        </div>
+        <div class="d-flex flex-wrap">
+            @foreach (var attachment in Model.Attachments)
+            {
+                <div class="border border-dark rounded p-2 m-2 col-auto">
+                    <h4>@attachment.Name</h4>
+                    @attachment.Creator.Email
+                    <a asp-action="DeleteAttachment" asp-route-attachmentId="@attachment.AttachmentId" asp-route-topicId="@Model.TopicId">Delete</a>
+                </div>
+            }
+        </div>
+    }
+    
+     <div class="form-check">
+        <label class="form-check-label" asp-for="Visible">@SharedLocalizer["Topic_Create_Visible"]</label>
+        <input class="form-check-input" asp-for="Visible" checked/>
+    </div>
+    
+    <div class="mb-3">
+        <input type="submit" value="@SharedLocalizer["Topic_Edit_Submit"]" class="btn btn-primary" />
+    </div>
+</form>
 
 
 @section Scripts
@@ -172,14 +159,14 @@
              var masterProgrammes = document.getElementsByClassName("Master");
              var toShow = [];
              
-             if (groupName == "Bachelor" || groupName == "Bakalářská"){
+             if (groupName === "Bachelor" || groupName === "Bakalářská"){
                  toShow = bachelorProgrammes;
              }
-             else if (groupName == "Master" || groupName == "Magisterská"){
+             else if (groupName === "Master" || groupName === "Magisterská"){
                   toShow = masterProgrammes;
              }
              
-             for (var i = 0; i < toShow.length; i++) {
+             for (i = 0; i < toShow.length; i++) {
                  toShow[i].style.display = "block";
              }
         }

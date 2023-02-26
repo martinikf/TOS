@@ -1,0 +1,30 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<TOS.Models.Topic>
+
+@{
+    ViewData["Title"] = SharedLocalizer["Topic_Index_Heading_Unnasigned"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@SharedLocalizer["Topic_Index_Heading_Unnasigned"]</h1>
+
+
+<form asp-action="Unassigned" method="get">
+    <div class="row g-1 align-items-center">
+        <div class="col-auto">
+            <input type="text" class="form-control" name="searchString" placeholder="@SharedLocalizer["Topic_Index_Search_Placeholder"]" value="@ViewData["searchString"]"/>
+        </div>
+        <div class="col-auto">
+            <input type="submit" class="btn btn-primary" value="@SharedLocalizer["Topic_Index_Search_Submit"]"/>
+        </div>
+    </div>
+</form>
+
+<hr/>
+
+@foreach (var topic in Model) {
+    <partial name="TopicPreview" model="topic"/>
+} 
+
+
+

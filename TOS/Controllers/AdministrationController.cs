@@ -122,7 +122,9 @@ public class AdministrationController : Controller
     public async Task<IActionResult> EditRoles(int id, string roleGroup)
     {
         var user = await _context.Users.FirstAsync(x => x.Id.Equals(id));
-        if (roleGroup != Role.Administrator.ToString())
+        var adminRole = await _context.Roles.FirstAsync(x => x.Name == Role.Administrator.ToString());
+        var userIsAdmin = _context.UserRoles.Any(x => x.UserId == user.Id && x.RoleId == adminRole.Id);
+        if (userIsAdmin && roleGroup != Role.Administrator.ToString())
         {
             var administratorRole = _context.Roles.First(x=>x.Name == Role.Administrator.ToString());
             if (_context.UserRoles.Count(x => x.RoleId == administratorRole.Id) <= 1)

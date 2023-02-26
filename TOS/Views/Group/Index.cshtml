@@ -2,52 +2,75 @@
 @model IEnumerable<TOS.Models.Group>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = SharedLocalizer["Group_Index_Heading"];
 }
 
-<h1>@SharedLocalizer["GroupsHeading"]</h1>
+<h1>@SharedLocalizer["Group_Index_Heading"]</h1>
 
 @if (User.IsInRole("Group") || User.IsInRole("AnyGroup"))
 {
-    <a asp-action="Create">Create New</a>
+    <p>
+        <a class="btn btn-primary" asp-action="Create">@SharedLocalizer["Group_Index_Create"]</a>
+    </p>
 }
 
-<form asp-action="Index" method="get">
-    <input type="text" name="searchString" value="@ViewData["searchString"]"/>
+<form class="row g-2 align-items-center" asp-action="Index" method="get">
+    <div class="col-auto">
+        <input type="text" class="form-control" id="searchInput" name="searchString" placeholder="@SharedLocalizer["Group_Index_Search_Placeholder"]" value="@ViewData["searchString"]"/>
+    </div>
     @if(User.IsInRole("Group") || User.IsInRole("AnyGroup"))
     {
-        <label>Show hidden groups</label>
-        @if ((bool) ViewData["showHidden"]!)
-        {
-            <input name="showHidden" type="checkbox" value="true" checked/>
-        }
-        else
-        {
-            <input name="showHidden" type="checkbox" value="true"/>
-        }
+        <div class="form-check col-auto">
+            <label class="form-check-label" for="showHidden">@SharedLocalizer["Group_Index_Search_HiddenGroups"]</label>
+            @if ((bool) ViewData["showHidden"]!)
+            {
+                <input type="checkbox" class="form-check-input" id="showHidden" name="showHidden" value="true" checked/>
+            }
+            else
+            {
+                <input type="checkbox" class="form-check-input" id="showHidden" name="showHidden" value="true"/>
+            }
+        </div>
     }
-    
-    <input type="submit" value="Search"/>
+    <div class="col-auto">
+        <input type="submit" class="btn btn-primary" value="@SharedLocalizer["Group_Index_Search_Submit"]"/>
+    </div>
 </form>
 
-<h3>@SharedLocalizer["Used groups"]</h3>
-@foreach (var group in Model.Where(x=>x.Highlight is true)) {
-    <div>
-        <a asp-action="Group" asp-controller="Topic" asp-route-groupName="@group.NameEng">
-            @Html.SelectStringByLanguage(group.NameEng, group.Name)
+@if (Model.Any(x => x.Highlight))
+{
+    <h2>@SharedLocalizer["Group_Index_HighlightGroups"]</h2>
+    <div class="list-group">
+    @foreach (var group in Model.Where(x => x.Highlight))
+    {
+        <a class="list-group-item list-group-item-action" asp-controller="Topic" asp-action="Group" asp-route-groupId="@group.GroupId">
+            <div class="ms-2 me-auto">
+                <div class="fw-bold">
+                    @Html.SelectStringByLanguage(group.NameEng, group.Name)
+                </div>
+                @group.Creator.DisplayName
+            </div>
         </a>
-        @group.Topics.Count
+    }
     </div>
 }
 
 <hr/>
-<h3>@SharedLocalizer["Other groups"]</h3>
-@foreach (var group in Model.Where(x=> x.Highlight is false)) {
-    <div>
-        <a asp-action="Group" asp-controller="Topic" asp-route-groupName="@group.NameEng">
-            @Html.SelectStringByLanguage(group.NameEng, group.Name)
-        </a>
-        @group.Topics.Count
+
+@if (Model.Any(x => x.Highlight == false))
+{
+    <h2>@SharedLocalizer["Group_Index_OtherGroups"]</h2>
+    <div class="list-group">
+        @foreach (var group in Model.Where(x => x.Highlight == false))
+        {
+            <a class="list-group-item list-group-item-action" asp-controller="Topic" asp-action="Group" asp-route-groupId="@group.GroupId">
+                <div class="ms-2 me-auto">
+                    <div class="fw-bold">
+                        @Html.SelectStringByLanguage(group.NameEng, group.Name)
+                    </div>
+                    @group.Creator.DisplayName
+                </div>
+            </a>
+        }
     </div>
 }
-
