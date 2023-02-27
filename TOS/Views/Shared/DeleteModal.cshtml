@@ -1,0 +1,26 @@
+﻿@model Tuple<int, string, string, string, string, string, string>
+@{
+    // Id, Action, DeleteBtnText, Modal.Title, Modal.Body,  CancelBtnText, ConfirmBtnText
+}
+
+<button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#DeleteConfirmation@(Model.Item1)">
+    @Model.Item3
+</button>
+    
+<div class="modal" id="DeleteConfirmation@(Model.Item1)" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">@Model.Item4</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>@Model.Item5</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Model.Item6</button>
+                <a asp-action="@Model.Item2" asp-route-id="@Model.Item1" class="btn btn-primary">@Model.Item7</a>
+            </div>
+        </div>
+    </div>
+</div>

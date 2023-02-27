@@ -8,7 +8,14 @@
 
 @if ((User.IsInRole("Group") && User.Identity?.Name == Model.Creator.UserName) || User.IsInRole("AnyGroup"))
 {
-    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.GroupId">@SharedLocalizer["Group_Edit_Delete"]</a>
+    {
+        var data = new Tuple<int, string, string, string, string, string, string>
+            (Model.GroupId, "Delete",
+                SharedLocalizer["Group_Edit_Delete"].Value, SharedLocalizer["Group_Edit_Delete_Title"].Value,
+                SharedLocalizer["Group_Edit_Delete_Body"].Value, SharedLocalizer["Group_Edit_Delete_Cancel"].Value, SharedLocalizer["Group_Edit_Delete_Confirm"].Value);
+        
+        <partial name="DeleteModal" model="@data"/>
+    }
 }
 
 <form asp-action="Edit">

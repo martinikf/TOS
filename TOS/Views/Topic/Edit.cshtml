@@ -10,6 +10,15 @@
 
 <h1>@SharedLocalizer["Topic_Edit_Heading"]</h1>
 
+@{
+    var data = new Tuple<int, string, string, string, string, string, string>
+        (Model.TopicId, "Delete",
+            SharedLocalizer["Topic_Edit_Delete"].Value, SharedLocalizer["Topic_Edit_Delete_Title"].Value,
+            SharedLocalizer["Topic_Edit_Delete_Body"].Value, SharedLocalizer["Topic_Edit_Delete_Cancel"].Value, SharedLocalizer["Topic_Edit_Delete_Confirm"].Value);
+        
+    <partial name="DeleteModal" model="@data"/>
+}
+
 <form asp-action="Edit" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="hidden" asp-for="TopicId" />

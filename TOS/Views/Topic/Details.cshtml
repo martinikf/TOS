@@ -26,11 +26,6 @@
         {
             <a asp-action="Edit" class="btn btn-primary" asp-route-id="@Model.TopicId">Edit</a>
         }
-
-        @if (Html.CanDeleteTopic(Model, User.Identity?.Name, User.IsInRole("Topic"), User.IsInRole("AnyTopic"), User.IsInRole("ProposeTopic")))
-        {
-            <a asp-action="Delete" class="btn btn-outline-danger" asp-route-id="@Model.TopicId">Delete</a>
-        }
     </p>
     
     <h2 class="h5">@SharedLocalizer["Topic_Details_Supervisor"]: @Model.Supervisor?.GetDisplayName()</h2>

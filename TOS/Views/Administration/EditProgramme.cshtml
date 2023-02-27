@@ -8,7 +8,15 @@
 
 <h1>@SharedLocalizer["Administration_EditProgramme_Heading"]</h1>
 
-<a class="btn btn-outline-danger" asp-controller="Administration" asp-action="DeleteProgramme" asp-route-id="@Model.ProgrammeId">@SharedLocalizer["Administration_EditProgramme_DeleteProgramme"]</a>
+@{
+    var data = new Tuple<int, string, string, string, string, string, string>
+        (Model.ProgrammeId, "DeleteProgramme",
+            SharedLocalizer["Administration_EditProgramme_Delete"].Value, SharedLocalizer["Administration_EditProgramme_Delete_Title"].Value,
+            SharedLocalizer["Administration_EditProgramme_Delete_Body"].Value, 
+            SharedLocalizer["Administration_EditProgramme_Delete_Cancel"].Value, SharedLocalizer["Administration_EditProgramme_Delete_Confirm"].Value);
+        
+    <partial name="DeleteModal" model="@data"/>
+}
 
 <form asp-action="EditProgramme">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
