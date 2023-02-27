@@ -38,4 +38,25 @@
     <data name="ERROR_CommentTextMinLength" xml:space="preserve">
         <value>Comment is too short</value>
     </data>
+    <data name="ERROR_FirstNameRequired" xml:space="preserve">
+        <value>First name is required</value>
+    </data>
+    <data name="ERROR_LastNameRequired" xml:space="preserve">
+        <value>Lastname is required</value>
+    </data>
+    <data name="ERROR_PasswordLength" xml:space="preserve">
+        <value>Password is too short</value>
+    </data>
+    <data name="ERROR_PasswordsNotMatch" xml:space="preserve">
+        <value>Passwords don't match</value>
+    </data>
+    <data name="ERROR_EmailRequired" xml:space="preserve">
+        <value>Email is required</value>
+    </data>
+    <data name="ERROR_PasswordRequired" xml:space="preserve">
+        <value>Password is required</value>
+    </data>
+    <data name="ERROR_LoginRequired" xml:space="preserve">
+        <value>Login name is required</value>
+    </data>
 </root>

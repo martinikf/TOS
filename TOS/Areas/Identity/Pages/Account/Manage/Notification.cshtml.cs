@@ -14,32 +14,20 @@ using TOS.Models;
 
 namespace TOS.Areas.Identity.Pages.Account.Manage
 {
-    public class IndexModel : PageModel
+    public class NotificationModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ApplicationDbContext _context;
 
-        public IndexModel(
+        public NotificationModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-        }
-        
-        public string Username { get; set; }
-        
-        [TempData]
-        public string StatusMessage { get; set; }
-
-        [BindProperty]
-        public InputModel Input { get; set; }
-
-        public class InputModel
-        {
-            [Display(Name = "Display name")]
-            public string DisplayName { get; set; }
+            _context = context;
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -49,14 +37,16 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser is null) throw new Exception("User should not be null");
 
-            var displayName = currentUser.DisplayName;
-
-            Username = userName;
-
-            Input = new InputModel
+            var notifications = _context.Notifications.ToList();
+            foreach(var n in notifications)
             {
-                DisplayName = displayName
-            };
+                if (_context.UserSubscribedNotifications.Any(x =>
+                        x.UserId == user.Id && x.NotificationId == n.NotificationId))
+                {
+                    n.Selected = true;
+                }
+            }
+            ViewData["Notifications"] = notifications;
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -71,7 +61,7 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int[] selectedNotifications)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -79,20 +69,17 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            if (!ModelState.IsValid)
+            var toRemove = _context.UserSubscribedNotifications
+                .Where(x => x.UserId == user.Id).ToList();
+            _context.UserSubscribedNotifications.RemoveRange(toRemove);
+
+            foreach (var not in selectedNotifications)
             {
-                await LoadAsync(user);
-                return Page();
+                _context.UserSubscribedNotifications.Add(new() { UserId = user.Id, NotificationId = not});
             }
-            
-            //TODO Add stag api sync option for AD-users
 
-            user.DisplayName = Input.DisplayName;
-            await _userManager.UpdateAsync(user);
+            await _context.SaveChangesAsync();
 
-            await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
-            
             return RedirectToPage();
         }
     }

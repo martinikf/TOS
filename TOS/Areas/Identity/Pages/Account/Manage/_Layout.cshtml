@@ -1,4 +1,8 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using TOS.Resources
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
+
+@{
     if (ViewData.TryGetValue("ParentLayout", out var parentLayout))
     {
         Layout = (string)parentLayout;
@@ -9,10 +13,9 @@
     }
 }
 
-<h1>Manage your account</h1>
+<h1>@SharedLocalizer["Manage_Heading"]</h1>
 
 <div>
-    <h2>Change your account settings</h2>
     <hr />
     <div class="row">
         <div class="col-md-3">

@@ -78,11 +78,47 @@ namespace TOS.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email je povinný.
+        /// </summary>
+        internal static string ERROR_EmailRequired {
+            get {
+                return ResourceManager.GetString("ERROR_EmailRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Křestní méno je povinné.
+        /// </summary>
+        internal static string ERROR_FirstNameRequired {
+            get {
+                return ResourceManager.GetString("ERROR_FirstNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Název skupiny je povinný..
         /// </summary>
         internal static string ERROR_GroupNameRequired {
             get {
                 return ResourceManager.GetString("ERROR_GroupNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Přijmení je povinné.
+        /// </summary>
+        internal static string ERROR_LastNameRequired {
+            get {
+                return ResourceManager.GetString("ERROR_LastNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Přihlašovací jméno není zadáno.
+        /// </summary>
+        internal static string ERROR_LoginRequired {
+            get {
+                return ResourceManager.GetString("ERROR_LoginRequired", resourceCulture);
             }
         }
         
@@ -101,6 +137,33 @@ namespace TOS.Resources {
         internal static string ERROR_NotificationTextRequired {
             get {
                 return ResourceManager.GetString("ERROR_NotificationTextRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Heslo je přílíš kratké.
+        /// </summary>
+        internal static string ERROR_PasswordLength {
+            get {
+                return ResourceManager.GetString("ERROR_PasswordLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Heslo je povinné.
+        /// </summary>
+        internal static string ERROR_PasswordRequired {
+            get {
+                return ResourceManager.GetString("ERROR_PasswordRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hesla se neshodují.
+        /// </summary>
+        internal static string ERROR_PasswordsNotMatch {
+            get {
+                return ResourceManager.GetString("ERROR_PasswordsNotMatch", resourceCulture);
             }
         }
         

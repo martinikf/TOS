@@ -45,4 +45,25 @@
     <data name="ERROR_CommentTextMinLength" xml:space="preserve">
         <value>Komentář je příliš krátký.</value>
     </data>
+    <data name="ERROR_PasswordLength" xml:space="preserve">
+        <value>Heslo je přílíš kratké</value>
+    </data>
+    <data name="ERROR_PasswordsNotMatch" xml:space="preserve">
+        <value>Hesla se neshodují</value>
+    </data>
+    <data name="ERROR_FirstNameRequired" xml:space="preserve">
+        <value>Křestní méno je povinné</value>
+    </data>
+    <data name="ERROR_LastNameRequired" xml:space="preserve">
+        <value>Přijmení je povinné</value>
+    </data>
+    <data name="ERROR_EmailRequired" xml:space="preserve">
+        <value>Email je povinný</value>
+    </data>
+    <data name="ERROR_PasswordRequired" xml:space="preserve">
+        <value>Heslo je povinné</value>
+    </data>
+    <data name="ERROR_LoginRequired" xml:space="preserve">
+        <value>Přihlašovací jméno není zadáno</value>
+    </data>
 </root>

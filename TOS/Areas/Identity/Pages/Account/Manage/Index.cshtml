@@ -1,40 +1,32 @@
 ﻿@page
 @using TOS.Extensions
+@using TOS.Resources
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model IndexModel
+@inject IHtmlLocalizer<SharedResource> SharedLocalizer
+
 @{
-    ViewData["Title"] = "Profile";
+    ViewData["Title"] = SharedLocalizer["Manage_Index_Heading"];
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
-<h3>@ViewData["Title"]</h3>
+<h3>@SharedLocalizer["Manage_Index_Heading"]</h3>
+
 <partial name="_StatusMessage" for="StatusMessage" />
 <div class="row">
     <div class="col-md-6">
         <form id="profile-form" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
             <div class="form-floating mb-3">
-                <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
-                <label asp-for="Username" class="form-label"></label>
+                <input asp-for="Username" class="form-control" placeholder="" disabled />
+                <label asp-for="Username" class="form-label">@SharedLocalizer["Manage_Index_Username"]</label>
             </div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.DisplayName" class="form-control" placeholder="Please choose your display name." />
-                <label asp-for="Input.DisplayName" class="form-label"></label>
+                <input asp-for="Input.DisplayName" class="form-control" placeholder="" />
+                <label asp-for="Input.DisplayName" class="form-label">@SharedLocalizer["Manage_Index_DisplayName"]</label>
             </div>
-            @foreach (var notification in (ICollection<Notification>)ViewData["Notifications"]!)
-            {
-                <div class="form-floating mb-3">
-                    @if (notification.Selected)
-                    {
-                        <input type="checkbox" name="selectedNotifications" value="@notification.NotificationId" checked/>
-                    }
-                    else
-                    {
-                        <input type="checkbox" name="selectedNotifications" value="@notification.NotificationId"/>
-                    }
-                    <label>@Html.SelectStringByLanguage(notification.SubjectEng, notification.Name)</label>
-                </div>
-            }
-            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">@SharedLocalizer["Manage_Index_Submit"]</button>
         </form>
     </div>
 </div>
