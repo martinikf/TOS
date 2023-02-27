@@ -22,19 +22,39 @@
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="hidden" asp-for="GroupId" />
     <input type="hidden" asp-for="CreatorId"/>
+    @if (Model.NameEng != "Bachelor" && Model.NameEng != "Master" && Model.NameEng != "Unassigned")
+    {
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">@SharedLocalizer["Group_Create_Name"]</label>
+            <input asp-for="Name" class="form-control"/>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="NameEng" class="form-label">@SharedLocalizer["Group_Create_NameEng"]</label>
+            <input asp-for="NameEng" class="form-control"/>
+        </div>
+        <div class="mb-3 form-check">
+            <label class="form-check-label" asp-for="Visible">@SharedLocalizer["Group_Create_Visible"]</label>
+            <input class="form-check-input" asp-for="Visible"/>
+        </div>
+    }
+    else
+    {
+        <input type="hidden" asp-for="Name"/>
+        <input type="hidden" asp-for="NameEng"/>
+        <input type="hidden" asp-for="Visible"/>
+    }
+    
     <div class="mb-3">
-        <label asp-for="Name" class="form-label">@SharedLocalizer["Group_Create_Name"]</label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+        <label asp-for="Description" class="form-label">@SharedLocalizer["Group_Create_Description"]</label>
+        <textarea class="form-control" asp-for="Description" style="height: 150px;"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="NameEng" class="form-label">@SharedLocalizer["Group_Create_NameEng"]</label>
-        <input asp-for="NameEng" class="form-control" />
-    </div>
-    <div class="mb-3 form-check">
-        <label class="form-check-label" asp-for="Visible">@SharedLocalizer["Group_Create_Visible"]</label>
-        <input class="form-check-input" asp-for="Visible" />
-    </div>
+         <label asp-for="DescriptionEng" class="form-label">@SharedLocalizer["Group_Create_DescriptionEng"]</label>
+         <textarea class="form-control" asp-for="DescriptionEng" style="height: 150px;"></textarea>
+         <span asp-validation-for="DescriptionEng" class="text-danger"></span>
+     </div>
     <div class="mb-3">
         <input type="submit" value="@SharedLocalizer["Group_Edit_Submit"]" class="btn btn-primary" />
     </div>

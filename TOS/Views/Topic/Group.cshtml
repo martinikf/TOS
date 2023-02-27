@@ -1,6 +1,7 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using TOS.Data
-@model IEnumerable<TOS.Models.Topic>
+@using TOS.Extensions
+@model TOS.ViewModels.GroupViewModel
 
 @{
     ViewData["Title"] = SharedLocalizer["Topic_Group_Heading"];
@@ -9,23 +10,26 @@
 
 <h1>@SharedLocalizer["Topic_Group_Heading"]</h1>
 <p>
-    @if((User.IsInRole("Group") && User.Identity!.Name == (string)ViewData["creatorUsername"]!) || User.IsInRole("AnyGroup"))
+    @if((User.IsInRole("Group") && User.Identity!.Name == Model.Group.Creator.UserName) || User.IsInRole("AnyGroup"))
     {
-        <a class="btn btn-primary" asp-controller="Group" asp-action="Edit" asp-route-id="@ViewData["topicsIndexGroupId"]">@SharedLocalizer["Topic_Group_Edit"]</a>
+        <a class="btn btn-primary" asp-controller="Group" asp-action="Edit" asp-route-id="@Model.Group.GroupId">@SharedLocalizer["Topic_Group_Edit"]</a>
     }
     @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
     {
-        <a class="btn btn-primary" asp-action="Create" asp-route-groupName="@ViewData["topicsIndexGroupName"]" asp-route-type="Homework">@SharedLocalizer["Topic_Group_CreateHomework"]</a>
-        <a class="btn btn-primary" asp-action="Create" asp-route-groupName="@ViewData["topicsIndexGroupName"]" asp-route-type="Project">@SharedLocalizer["Topic_Group_CreateProject"]</a>
+        <a class="btn btn-primary" asp-action="Create" asp-route-groupName="@Model.Group.NameEng" asp-route-type="Homework">@SharedLocalizer["Topic_Group_CreateHomework"]</a>
+        <a class="btn btn-primary" asp-action="Create" asp-route-groupName="@Model.Group.NameEng" asp-route-type="Project">@SharedLocalizer["Topic_Group_CreateProject"]</a>
     }
     @if (User.IsInRole("ProposeTopic"))
     {
-        <a class="btn btn-primary" asp-action="Propose" asp-route-groupName="@ViewData["topicsIndexGroupName"]" asp-route-type="Project">@SharedLocalizer["Topic_Group_ProposeProject"]</a>
+        <a class="btn btn-primary" asp-action="Propose" asp-route-groupName="@Model.Group.NameEng" asp-route-type="Project">@SharedLocalizer["Topic_Group_ProposeProject"]</a>
     }
 </p>
 
+<partial name="Text" model="@Html.SelectStringByLanguage(Model.Group.DescriptionEng, Model.Group.Description)"/>
+
+<hr/>
 <form asp-action="Group" method="get">
-    <input type="hidden" name="groupName" value="@ViewData["topicsIndexGroupId"]"/>
+    <input type="hidden" name="groupName" value="@Model.Group.GroupId"/>
     <div class="row g-1 align-items-center">
         <div class="col-auto">
             <input type="text" class="form-control" name="searchString" placeholder="Search string..." value="@ViewData["searchString"]"/>
@@ -80,20 +84,20 @@
 </form>
 
 <hr/>
-@if (Model.Any(x => x.Type == TopicType.Homework))
+@if (Model.Topics.Any(x => x.Type == TopicType.Homework))
 {
     <h2 class="h3">Homeworks</h2>
 
-    @foreach (var hw in Model.Where(x => x.Type == TopicType.Homework))
+    @foreach (var hw in Model.Topics.Where(x => x.Type == TopicType.Homework))
     {
        <partial name="HomeworkPreview" model="hw"/>
     }
 }
 
-@if (Model.Any(x => x.Type == TopicType.Project))
+@if (Model.Topics.Any(x => x.Type == TopicType.Project))
 {
     <h2 class="h3">Projects</h2>
-    @foreach (var project in Model.Where(x => x.Type == TopicType.Project))
+    @foreach (var project in Model.Topics.Where(x => x.Type == TopicType.Project))
     {
         <partial name="ProjectPreview" model="project"/>
     }

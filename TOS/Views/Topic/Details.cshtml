@@ -71,10 +71,8 @@
     }
 
     <hr/>
-
-    <p>@Html.SelectStringByLanguage(Model.DescriptionShortEng!, Model.DescriptionShort)</p>
-
-    <p>@Html.SelectStringByLanguage(Model.DescriptionLongEng, Model.DescriptionLong)</p>
+    
+    <partial name="Text" model="@Html.SelectStringByLanguage(Model.DescriptionLongEng, Model.DescriptionLong)"/>
 
     @if (Model.Attachments.Count > 0)
     {

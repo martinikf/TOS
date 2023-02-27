@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using TOS.Data;
 using TOS.Models;
 using TOS.Services;
+using TOS.ViewModels;
 
 namespace TOS.Controllers
 {
@@ -99,7 +100,11 @@ namespace TOS.Controllers
                 topicsToShow = topicsToShow.Where(x => x.Proposed).ToList();
             }
 
-            return View(topicsToShow);
+            var vm = new GroupViewModel();
+            vm.Topics = topicsToShow;
+            vm.Group = group;
+
+            return View(vm);
         }
         
         public async Task<IActionResult> Group(int groupId, string searchString = "", bool showTakenTopics = false, bool showHidden = false, bool showProposed = false)
@@ -140,8 +145,12 @@ namespace TOS.Controllers
             {
                 topicsToShow = topicsToShow.Where(x => x.Proposed).ToList();
             }
+
+            var vm = new GroupViewModel();
+            vm.Topics = topicsToShow;
+            vm.Group = group;
             
-            return View(topicsToShow);
+            return View(vm);
         }
 
         public async Task<IActionResult> Unassigned()

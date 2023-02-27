@@ -1,6 +1,6 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using TOS.Extensions
-@model IEnumerable<TOS.Models.Topic>
+@model TOS.ViewModels.GroupViewModel
 
 @{
     ViewData["Title"] = @SharedLocalizer["Topic_Index_Heading_" + (string) ViewData["topicsIndexGroupName"]!];
@@ -9,18 +9,29 @@
 
 <h1>@SharedLocalizer["Topic_Index_Heading_"+(string)ViewData["topicsIndexGroupName"]!]</h1>
 
-@if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
-{
-    <p>
-    <a class="btn btn-primary" asp-action="Create" asp-route-groupName="@ViewData["topicsIndexGroupName"]">@SharedLocalizer["Topic_Index_Create"]</a>
-    </p>
-}
+<p >
+    @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
+    {
+        
+        <a class="btn btn-primary" asp-action="Create" asp-route-groupName="@ViewData["topicsIndexGroupName"]">@SharedLocalizer["Topic_Index_Create"]</a>
+       
+    }
+    @if (User.IsInRole("Administrator"))
+    {
+        <a class="btn btn-primary" asp-controller="Group" asp-action="Edit" asp-route-id="@Model.Group.GroupId">@SharedLocalizer["Topic_Group_Edit"]</a>
+
+    }
+</p>
+
 @if (User.IsInRole("ProposeTopic"))
 {
     <p>
         <a class="btn btn-primary" asp-action="Propose" asp-route-groupName="@ViewData["topicsIndexGroupName"]">@SharedLocalizer["Topic_Index_Propose"]</a>
     </p>
 }
+
+<partial name="Text" model="@Html.SelectStringByLanguage(Model.Group.DescriptionEng, Model.Group.Description)"/>
+
 
 <form asp-action="Index" method="get">
     <input type="hidden" name="groupName" value="@ViewData["topicsIndexGroupName"]"/>
@@ -63,9 +74,9 @@
         </div>
         <div class="col-auto">
             <select class="form-select" id="orderBy" name="orderBy">
-                @Html.SelectOption("Supervisor", @SharedLocalizer["orderBySupervisor"].Value, (string) ViewData["orderBy"]!)
-                @Html.SelectOption("Name", @SharedLocalizer["orderByName"].Value, (string) ViewData["orderBy"]!)
-                @Html.SelectOption("Interest", @SharedLocalizer["orderByInterest"].Value, (string) ViewData["orderBy"]!)
+                @Html.SelectOption("Supervisor", SharedLocalizer["orderBySupervisor"].Value, (string) ViewData["orderBy"]!)
+                @Html.SelectOption("Name", SharedLocalizer["orderByName"].Value, (string) ViewData["orderBy"]!)
+                @Html.SelectOption("Interest", SharedLocalizer["orderByInterest"].Value, (string) ViewData["orderBy"]!)
             </select>
         </div>
         
@@ -109,10 +120,10 @@
 
 @if ((string) ViewData["orderBy"]! == "Supervisor")
 {
-    @foreach (var supervisor in Model.Where(topic => topic.Supervisor != null).Select(x => x.Supervisor).Distinct().OrderBy(y => y!.LastName!))
+    @foreach (var supervisor in Model.Topics.Where(topic => topic.Supervisor != null).Select(x => x.Supervisor).Distinct().OrderBy(y => y!.LastName!))
     {
         <h2 class="h3">@supervisor!.GetDisplayName()</h2>
-        @foreach (var topic in supervisor.SupervisedTopics.Where(topic => Model.Contains(topic)))
+        @foreach (var topic in supervisor.SupervisedTopics.Where(topic => Model.Topics.Contains(topic)))
         {
             {
                 topic.SupervisorId = null;
@@ -123,7 +134,7 @@
 }
 else
 {
-    @foreach (var topic in Model.Where(topic => Model.Contains(topic))) {
+    @foreach (var topic in Model.Topics.Where(topic => Model.Topics.Contains(topic))) {
         <partial name="TopicPreview" model="topic"/>
     } 
 }

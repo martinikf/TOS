@@ -13,6 +13,10 @@ public class Group
     public string Name { get; set; } = string.Empty;
     
     public string NameEng { get; set; } = string.Empty;
+
+    public string? Description { get; set; } = string.Empty;
+    
+    public string? DescriptionEng { get; set; } = string.Empty;
     
     public int CreatorId { get; set; }
     [ForeignKey("CreatorId")]

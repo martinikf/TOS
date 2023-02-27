@@ -67,7 +67,7 @@ namespace TOS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Group,AnyGroup")]
-        public async Task<IActionResult> Create([Bind("GroupId,Name,NameEng,CreatorId,Selectable,Visible")] Group group)
+        public async Task<IActionResult> Create([Bind("GroupId,Name,NameEng,Description,DescriptionEng,CreatorId,Selectable,Visible")] Group group)
         {
             if(string.IsNullOrEmpty(group.NameEng)) group.NameEng = group.Name;
             
@@ -93,7 +93,7 @@ namespace TOS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Group,AnyGroup")]
-        public async Task<IActionResult> Edit(int id, [Bind("GroupId,Name,CreatorId,Visible")] Group group)
+        public async Task<IActionResult> Edit(int id, [Bind("GroupId,Name,NameEng,Description,DescriptionEng,CreatorId,Visible")] Group group)
         {
             //If user has only Role EditGroup, check if he is the owner of the group
             if (User.IsInRole("Group") && !User.IsInRole("AnyGroup"))

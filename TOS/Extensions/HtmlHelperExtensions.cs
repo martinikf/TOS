@@ -10,8 +10,9 @@ public static class HtmlHelperExtensions
     public static string SelectStringByLanguage(this IHtmlHelper htmlHelper, string? en, string? cz)
     {
         if(en is null ) return cz ?? "";
+        if (cz is null) return en;
 
-        return (CultureInfo.CurrentCulture.Name.Contains("cz") ? cz : en) ?? string.Empty;
+        return CultureInfo.CurrentCulture.Name.Contains("cz") ? cz : en;
     }
 
     public static HtmlString SelectOption(this IHtmlHelper htmlHelper, string value, string text, string? selectedValue)
