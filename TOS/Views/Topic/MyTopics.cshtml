@@ -5,59 +5,117 @@
 
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = SharedLocalizer["Topic_MyTopics_Heading"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>@SharedLocalizer["MyTopics"]</h1>
+<h1>@SharedLocalizer["Topic_MyTopics_Heading"]</h1>
 
-<div>
-    <form asp-action="MyTopics" method="get">
-        <input type="hidden" name="groupName" value="@ViewData["topicsIndexGroupName"]"/>
-        <input type="text" name="searchString" placeholder="Search string..." value="@ViewData["searchString"]"/>
-        <label>Show hidden topics</label>
-        @if ((bool) ViewData["showHidden"]!)
-        {
-            <input name="showHidden" type="checkbox" value="true" checked/>
-        }
-        else
-        {
-            <input name="showHidden" type="checkbox" value="true"/>
-        }
-        <input type="submit" value="Search"/>
-    </form>
+
+<form asp-action="MyTopics" method="get">
+    <input type="hidden" name="groupName" value="@ViewData["topicsIndexGroupName"]"/>
+    <div class="row g-1 align-items-center">
+        <div class="col-auto">
+            <input type="text" class="form-control" name="searchString" placeholder="Search string..." value="@ViewData["searchString"]"/>
+        </div>
+
+        <div class="col-auto form-check">
+             <label for="showProposed">@SharedLocalizer["Topic_MyTopics_ShowProposed"]</label>
+             @if ((bool) ViewData["showProposed"]!)
+             {
+                 <input class="form-check-input" name="showProposed" id="showProposed" type="checkbox" value="true" checked/>
+             }
+             else
+             {
+                 <input class="form-check-input" name="showProposed" id="showProposed" type="checkbox" value="true"/>
+             }
+        </div>
+    
+        @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
+         {
+             <div class="col-auto form-check">
+                 <label for="showHidden">@SharedLocalizer["Topic_MyTopics_ShowHidden"]</label>
+                 @if ((bool) ViewData["showHidden"]!)
+                 {
+                     <input class="form-check-input" name="showHidden" id="showHidden" type="checkbox" value="true" checked/>
+                 }
+                 else
+                 {
+                     <input class="form-check-input" name="showHidden" id="showHidden" type="checkbox" value="true"/>
+                 }
+             </div>
+         }
+    
+        <div class="col-auto">
+            <input type="submit" class="btn btn-primary" value="@SharedLocalizer["Topic_Index_Search"]"/>
+        </div>
+    </div>
+</form>
+
+<div class="accordion" id="accordionPanelsStayOpenExample">
+    @if (Model.Any(x => x.Type == TopicType.Thesis && x.Group.NameEng == "Bachelor"))
+    {
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#Bachelor" aria-expanded="true" aria-controls="Bachelor">
+                    @SharedLocalizer["Bachelor theses"]
+                </button>
+            </h2>
+            <div id="Bachelor" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    @foreach (var topic in Model.Where(x => x.Type == TopicType.Thesis && x.Group.NameEng == "Bachelor"))
+                    {
+                        <partial name="TopicPreview" model="topic"/>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    @if(Model.Any(x => x.Type == TopicType.Thesis && x.Group.NameEng == "Master")){
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingTwo">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#Master" aria-expanded="false" aria-controls="Master">
+                @SharedLocalizer["Master theses"]
+            </button>
+        </h2>
+        <div id="Master" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                @foreach (var topic in Model.Where(x => x.Type == TopicType.Thesis && x.Group.NameEng == "Master"))
+                {
+                    <partial name="TopicPreview" model="topic"/>
+                }
+            </div>
+        </div>
+    </div>
+    }
+    @foreach (var group in Model.Where(x => x.Type != TopicType.Thesis).Select(g => g.Group).Distinct())
+    {
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading@(group.NameEng)">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collpase@(group.NameEng)" aria-expanded="false" aria-controls="collpase@(group.NameEng)">
+                    @Html.SelectStringByLanguage(group.NameEng, group.Name)
+                </button>
+            </h2>
+            <div id="collpase@(group.NameEng)" class="accordion-collapse collapse" aria-labelledby="heading@(group.NameEng)" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    @if (group.Topics.Any(x => x.Type == TopicType.Homework))
+                    {
+                        <h3>@SharedLocalizer["Homeworks"]</h3>
+                        @foreach (var topic in Model.Where(x => x.Group == group && x.Type == TopicType.Homework))
+                        {
+                            <partial name="HomeworkPreview" model="topic"/>
+                        }
+                    }
+                    @if (group.Topics.Any(x => x.Type == TopicType.Project))
+                    {
+                        <h3>@SharedLocalizer["Projects"]</h3>
+                        @foreach (var topic in Model.Where(x => x.Group == group && x.Type == TopicType.Project))
+                        {
+                            <partial name="ProjectPreview" model="topic"/>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    }
 </div>
-
-<h4>@SharedLocalizer["Bachelor theses"]</h4>
-@foreach (var topic in Model.Where(x=>x.Type == TopicType.Thesis && x.Group.NameEng == "Bachelor"))
-{
-    <partial name="TopicPreview" model="topic"/>
-}
-
-<h4>@SharedLocalizer["Master theses"]</h4>
-@foreach (var topic in Model.Where(x=>x.Type == TopicType.Thesis && x.Group.NameEng == "Master"))
-{
-    <partial name="TopicPreview" model="topic"/>
-}
-
-@foreach (var group in Model.Where(x => x.Type != TopicType.Thesis).Select(g => g.Group).Distinct())
-{
-    @if (group.Topics.Any(x => x.Type == TopicType.Homework))
-    {
-        <h4>@Html.SelectStringByLanguage(group.NameEng, group.Name)</h4>
-        <h5>@SharedLocalizer["Homeworks"]</h5>
-        @foreach (var topic in Model.Where(x => x.Group == group && x.Type == TopicType.Homework))
-        {
-            <partial name="TopicPreview" model="topic"/>
-        }
-    }
-    @if (group.Topics.Any(x => x.Type == TopicType.Project))
-    {
-        <h5>@SharedLocalizer["Projects"]</h5>
-        @foreach (var topic in Model.Where(x => x.Group == group && x.Type == TopicType.Project))
-        {
-            <partial name="TopicPreview" model="topic"/>
-        }
-    }
-    <hr/>
-}

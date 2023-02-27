@@ -30,14 +30,7 @@
     @foreach (var user in Model)
     {
         <tr>
-            @if (string.IsNullOrEmpty(user.DisplayName))
-            {
-                <td>@user.FirstName @user.LastName</td>
-            }
-            else
-            {
-                <td>@user.DisplayName</td>
-            }
+            <td>@user.GetDisplayName()</td>
             <td>@user.Email</td>
             <td><a asp-controller="Administration" asp-action="EditRoles" asp-route-id="@user.Id">@SharedLocalizer["Administration_Users_EditRoles"]</a></td>
         </tr>

@@ -360,12 +360,33 @@
         <value>Návrhy závěrečných prací od externistů</value>
     </data>
     <data name="Topic_Details_InterestedStudents" xml:space="preserve">
-        <value>Zájem:</value>
+        <value>Zájem</value>
     </data>
     <data name="Topic_Details_NewComment" xml:space="preserve">
         <value>Nový komentář</value>
     </data>
     <data name="Comments_Submit" xml:space="preserve">
         <value>Odeslat komentář</value>
+    </data>
+    <data name="Topic_MyTopics_Heading" xml:space="preserve">
+        <value>Moje témata</value>
+    </data>
+    <data name="Topic_MyTopics_ShowProposed" xml:space="preserve">
+        <value>Zobrazit navrhnuté</value>
+    </data>
+    <data name="Topic_MyTopics_ShowHidden" xml:space="preserve">
+        <value>Zobrazit skryté</value>
+    </data>
+    <data name="Hidden topic" xml:space="preserve">
+        <value>Skryté</value>
+    </data>
+    <data name="Topic_Details_AssignedStudent" xml:space="preserve">
+        <value>Přiřazený student:</value>
+    </data>
+    <data name="Topic_Details_Supervisor" xml:space="preserve">
+        <value>Vedoucí</value>
+    </data>
+    <data name="Topic_Details_ProposedBy" xml:space="preserve">
+        <value>Navrhnuto</value>
     </data>
 </root>

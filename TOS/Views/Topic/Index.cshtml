@@ -111,7 +111,7 @@
 {
     @foreach (var supervisor in Model.Where(topic => topic.Supervisor != null).Select(x => x.Supervisor).Distinct().OrderBy(y => y!.LastName!))
     {
-        <h2 class="h3">@supervisor!.DisplayName</h2>
+        <h2 class="h3">@supervisor!.GetDisplayName()</h2>
         @foreach (var topic in supervisor.SupervisedTopics.Where(topic => Model.Contains(topic)))
         {
             {

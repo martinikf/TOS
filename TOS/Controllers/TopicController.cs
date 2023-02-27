@@ -151,13 +151,16 @@ namespace TOS.Controllers
             return View(topics);
         }
         
-        public async Task<IActionResult> MyTopics(string searchString = "", bool showHidden = false)
+        public async Task<IActionResult> MyTopics(string searchString = "", bool showHidden = false, bool showProposed = false)
         {
             searchString = searchString.Trim();
             if(searchString.Length < 3)
                 searchString = "";
+            else
+                searchString = searchString.ToLower();
             ViewData["searchString"] = searchString;
-               ViewData["showHidden"] = showHidden;
+            ViewData["showHidden"] = showHidden;
+            ViewData["showProposed"] = showProposed;
             
             if(User.Identity == null)
                 return RedirectToAction("Index", "Home");
@@ -171,19 +174,31 @@ namespace TOS.Controllers
                     x.AssignedId == user.Id ||
                     x.UserInterestedTopics.Any(y => y.UserId == user.Id))
                 .Where(x =>
-                   x.Name.ToLower().Contains(searchString.ToLower()) ||
-                        x.NameEng!.ToLower().Contains(searchString.ToLower()) ||
-                        (x.Supervisor != null && (x.Supervisor.FirstName!.ToLower().Contains(searchString.ToLower()) ||
-                                                  x.Supervisor.LastName!.ToLower().Contains(searchString.ToLower()))) ||
-                        x.DescriptionShort.ToLower().Contains(searchString.ToLower()) ||
-                        x.DescriptionShortEng!.ToLower().Contains(searchString.ToLower()) ||
-                        (x.DescriptionLong != null && x.DescriptionLong.ToLower().Contains(searchString.ToLower())) ||
-                        (x.DescriptionLongEng != null && x.DescriptionLongEng.ToLower().Contains(searchString.ToLower())) ||
+                   x.Name.ToLower().Contains(searchString) ||
+                        x.NameEng!.ToLower().Contains(searchString) ||
+                        (x.Supervisor != null && (x.Supervisor.FirstName!.ToLower().Contains(searchString) ||
+                                                  x.Supervisor.LastName!.ToLower().Contains(searchString))) ||
+                        x.DescriptionShort.ToLower().Contains(searchString) ||
+                        x.DescriptionShortEng!.ToLower().Contains(searchString) ||
+                        (x.DescriptionLong != null && x.DescriptionLong.ToLower().Contains(searchString)) ||
+                        (x.DescriptionLongEng != null && x.DescriptionLongEng.ToLower().Contains(searchString)) ||
                         x.TopicRecommendedPrograms.Any(y =>
-                            y.Programme.NameEng!.ToLower().Contains(searchString.ToLower()) ||
-                            y.Programme.Name.ToLower().Contains(searchString.ToLower())))
-                .Where(x=> showHidden? x.Visible : x.Visible || !x.Visible)
+                            y.Programme.NameEng!.ToLower().Contains(searchString) ||
+                            y.Programme.Name.ToLower().Contains(searchString)))
                 .ToListAsync();
+            
+            topics = topics.Where(x => showHidden ? x.Visible || !x.Visible : x.Visible || x.Proposed).ToList();
+            topics = topics.Where(x => showProposed ? x.Proposed || !x.Proposed : !x.Proposed).ToList();
+
+            //If search string is provided, select all topics from groups that match the searchstring
+            if (searchString.Length > 2)
+            {
+                topics.AddRange(_context.Groups.Where(x=>
+                        x.NameEng.ToLower().Contains(searchString) || 
+                        x.Name.ToLower().Contains(searchString))
+                    .Select(y=>y.Topics)
+                    .SelectMany(z=>z));
+            }
 
             return View(topics);
         }

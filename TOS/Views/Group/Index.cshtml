@@ -48,7 +48,7 @@
                 <div class="fw-bold">
                     @Html.SelectStringByLanguage(group.NameEng, group.Name)
                 </div>
-                @group.Creator.DisplayName
+                @group.Creator.GetDisplayName()
             </div>
         </a>
     }
@@ -68,7 +68,7 @@
                     <div class="fw-bold">
                         @Html.SelectStringByLanguage(group.NameEng, group.Name)
                     </div>
-                    @group.Creator.DisplayName
+                    @group.Creator.GetDisplayName()
                 </div>
             </a>
         }

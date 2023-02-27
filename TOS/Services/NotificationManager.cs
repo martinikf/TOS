@@ -153,11 +153,11 @@ public class NotificationManager : INotificationManager
                 .Replace("[TOPIC_SHORT_DESCRIPTION_ENG]", topic.DescriptionShortEng)
                 .Replace("[TOPIC_LONG_DESCRIPTION]", topic.DescriptionLong)
                 .Replace("[TOPIC_LONG_DESCRIPTION_ENG]", topic.DescriptionLongEng)
-                .Replace("[TOPIC_CREATOR]", topic.Creator.DisplayName)
+                .Replace("[TOPIC_CREATOR]", topic.Creator.GetDisplayName())
                 .Replace("[TOPIC_CREATOR_EMAIL]", topic.Creator.Email)
-                .Replace("[TOPIC_SUPERVISOR]", topic.Supervisor?.DisplayName ?? "-")
+                .Replace("[TOPIC_SUPERVISOR]", topic.Supervisor?.GetDisplayName() ?? "-")
                 .Replace("[TOPIC_SUPERVISOR_EMAIL]", topic.Supervisor?.Email ?? "-")
-                .Replace("[TOPIC_ASSIGNED]", topic.AssignedStudent?.DisplayName ?? "-")
+                .Replace("[TOPIC_ASSIGNED]", topic.AssignedStudent?.GetDisplayName() ?? "-")
                 .Replace("[TOPIC_ASSIGNED_EMAIL]", topic.AssignedStudent?.Email ?? "-")
                 .Replace("[TOPIC_TYPE]", topicTypeCz)
                 .Replace("[TOPIC_TYPE_ENG]", topic.Type.ToString());
@@ -165,7 +165,7 @@ public class NotificationManager : INotificationManager
         if (comment != null)
         {
             returnString = returnString
-                .Replace("[COMMENT_AUTHOR]", comment.Author.DisplayName)
+                .Replace("[COMMENT_AUTHOR]", comment.Author.GetDisplayName())
                 .Replace("[COMMENT_AUTHOR_EMAIL]", comment.Author.Email)
                 .Replace("[COMMENT_TEXT]", comment.Text)
                 .Replace("[COMMENT_DATE]", comment.CreatedAt.ToString(CultureInfo.GetCultureInfo("cs-CZ")));

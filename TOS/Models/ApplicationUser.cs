@@ -6,14 +6,12 @@ namespace TOS.Models;
 
 public class ApplicationUser : IdentityUser<int>
 {
-    [Required]
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     
-    [Required]
     public string? DisplayName { get; set; }
 
-    [InverseProperty("Creator")] 
+        [InverseProperty("Creator")] 
     public virtual ICollection<Topic> CreatedTopics { get; } = new HashSet<Topic>();
     
     [InverseProperty("Supervisor")]
@@ -34,5 +32,11 @@ public class ApplicationUser : IdentityUser<int>
     public virtual ICollection<UserInterestedTopic> UserInterestedTopics { get; } = new HashSet<UserInterestedTopic>();
 
     public virtual ICollection<UserSubscribedNotification> UserSubscribedNotifications { get; } = new HashSet<UserSubscribedNotification>();
-
+    
+    public string GetDisplayName()
+    {
+        if (DisplayName == null)
+            return FirstName + " " + LastName;
+        return DisplayName;
+    }
 }

@@ -367,12 +367,33 @@
         <value>Proposed thesis by externists</value>
     </data>
     <data name="Topic_Details_InterestedStudents" xml:space="preserve">
-        <value>Interested:</value>
+        <value>Interested</value>
     </data>
     <data name="Topic_Details_NewComment" xml:space="preserve">
         <value>New comment</value>
     </data>
     <data name="Comments_Submit" xml:space="preserve">
         <value>Send comment</value>
+    </data>
+    <data name="Topic_MyTopics_Heading" xml:space="preserve">
+        <value>My topics</value>
+    </data>
+    <data name="Topic_MyTopics_ShowProposed" xml:space="preserve">
+        <value>Show proposed</value>
+    </data>
+    <data name="Topic_MyTopics_ShowHidden" xml:space="preserve">
+        <value>Show hidden</value>
+    </data>
+    <data name="Hidden topic" xml:space="preserve">
+        <value>Hidden</value>
+    </data>
+    <data name="Topic_Details_AssignedStudent" xml:space="preserve">
+        <value>Assigned student:</value>
+    </data>
+    <data name="Topic_Details_Supervisor" xml:space="preserve">
+        <value>Supervisor</value>
+    </data>
+    <data name="Topic_Details_ProposedBy" xml:space="preserve">
+        <value>Proposed by</value>
     </data>
 </root>
