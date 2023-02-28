@@ -1,8 +1,4 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
-@using TOS.Resources
-@inject IHtmlLocalizer<SharedResource> SharedLocalizer
-
-@{
+﻿@{
     if (ViewData.TryGetValue("ParentLayout", out var parentLayout))
     {
         Layout = (string)parentLayout;

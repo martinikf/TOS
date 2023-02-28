@@ -50,23 +50,23 @@ namespace TOS.Areas.Identity.Pages.Account
         
         public class InputModel
         {
-            [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_EmailRequired")]
+            [Required(ErrorMessageResourceType = typeof(ValidationErrorResource), ErrorMessageResourceName = "ERROR_EmailRequired")]
             [EmailAddress]
             public string Email { get; set; }
             
-            [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_PasswordRequired")]
-            [StringLength(100, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_PasswordLength", MinimumLength = 6)]
+            [Required(ErrorMessageResourceType = typeof(ValidationErrorResource), ErrorMessageResourceName = "ERROR_PasswordRequired")]
+            [StringLength(100, ErrorMessageResourceType = typeof(ValidationErrorResource), ErrorMessageResourceName = "ERROR_PasswordLength", MinimumLength = 6)]
             [DataType("Password")]
             public string Password { get; set; }
             
-            [Compare("Password", ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_PasswordsNotMatch")]
+            [Compare("Password", ErrorMessageResourceType = typeof(ValidationErrorResource), ErrorMessageResourceName = "ERROR_PasswordsNotMatch")]
             [DataType("Password")]
             public string ConfirmPassword { get; set; }
             
-            [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_FirstNameRequired")]
+            [Required(ErrorMessageResourceType = typeof(ValidationErrorResource), ErrorMessageResourceName = "ERROR_FirstNameRequired")]
             public string Firstname { get; set; }
             
-            [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_LastNameRequired")]
+            [Required(ErrorMessageResourceType = typeof(ValidationErrorResource), ErrorMessageResourceName = "ERROR_LastNameRequired")]
             public string Lastname { get; set; }
             public string DisplayName { get; set; }
         }
@@ -79,6 +79,12 @@ namespace TOS.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
+
+            if (Input.Email.EndsWith("@upol.cz"))
+            {
+                //TODO - add error message
+                return RedirectToPage("./Login", new {ReturnUrl = returnUrl});
+            }
             
             var user = CreateUser();
             

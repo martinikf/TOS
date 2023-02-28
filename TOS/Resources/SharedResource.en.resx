@@ -642,4 +642,13 @@
     <data name="CommentNew" xml:space="preserve">
         <value>Notification: New comment</value>
     </data>
+    <data name="Group_Index_HighlightGroups" xml:space="preserve">
+        <value>Groups</value>
+    </data>
+    <data name="Topic_Propose_Heading" xml:space="preserve">
+        <value>Propose topic</value>
+    </data>
+    <data name="Administration_EditProgramme_Delete" xml:space="preserve">
+        <value>Delete programme</value>
+    </data>
 </root>

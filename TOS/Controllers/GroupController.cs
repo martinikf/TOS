@@ -18,7 +18,7 @@ namespace TOS.Controllers
         // GET: Group
         public async Task<IActionResult> Index(string searchString = "", bool showHidden = false)
         {
-            var groups = await _context.Groups.Where(x=>!x.Selectable).Include(x => x.Creator).ToListAsync();
+            var groups = await _context.Groups.Where(x=>!x.Selectable && x.NameEng != "Unassigned").Include(x => x.Creator).ToListAsync();
 
             //Show hidden
             ViewData["showHidden"] = showHidden;

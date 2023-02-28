@@ -638,4 +638,13 @@
     <data name="CommentNew" xml:space="preserve">
         <value>Notifikace: Nový komentář</value>
     </data>
+    <data name="Group_Index_HighlightGroups" xml:space="preserve">
+        <value>Použivané skupiny</value>
+    </data>
+    <data name="Topic_Propose_Heading" xml:space="preserve">
+        <value>Navrhnout téma</value>
+    </data>
+    <data name="Administration_EditProgramme_Delete" xml:space="preserve">
+        <value>Smazat program</value>
+    </data>
 </root>

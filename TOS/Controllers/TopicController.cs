@@ -23,21 +23,20 @@ namespace TOS.Controllers
             _env = env;
             _notificationManager = notificationManager;
         }
-
-        // GET: Topic
+        
         public async Task<IActionResult> Index(string groupName, string programmeName = "",
             string searchString = "", bool showTakenTopics = false, string orderBy = "Supervisor",
             bool showHidden = false, bool showProposed = false)
         {
-            ViewData["topicsIndexGroupName"] = groupName;
-            ViewData["showTakenTopics"] = showTakenTopics;
-            ViewData["selectedProgramme"] = programmeName;
-            ViewData["searchString"] = searchString;
-            ViewData["showProposed"] = showProposed;
+            var vm = new GroupViewModel();
+            vm.ShowTakenTopics = showTakenTopics;
+            vm.ShowProposedTopics = showProposed;
+            vm.ShowHiddenTopics = showHidden;
+            vm.SelectedProgramme = programmeName;
+            vm.SearchString = searchString;
             if (showProposed)
                 orderBy = "Name";
-            ViewData["orderBy"] = orderBy;
-            ViewData["showHidden"] = showHidden;
+            vm.OrderBy = orderBy;
 
             var group = await _context.Groups.FirstAsync(x => x.NameEng.Equals(groupName));
             var topicsToShow = await _context.Topics.Where(x => x.Group.Equals(group) && x.Type==TopicType.Thesis).ToListAsync();
@@ -48,7 +47,7 @@ namespace TOS.Controllers
                 topicsToShow = topicsToShow.Where(x => x.Visible).ToList();
             }
 
-            if (searchString.Length > 3)
+            if (searchString.Length > 2)
             {
                 searchString = searchString.ToLower();
                 topicsToShow = topicsToShow.Where(x =>
@@ -69,11 +68,9 @@ namespace TOS.Controllers
                 topicsToShow =
                     topicsToShow.Where(x => x.TopicRecommendedPrograms.Any(y => y.Programme.Equals(programme)))
                         .ToList();
-
-                ViewData["SelectedProgramme"] = programmeName;
             }
 
-            ViewData["programmes"] = groupName switch
+            vm.Programmes = groupName switch
             {
                 "Bachelor" => _context.Programmes.Where(x => x.Type == ProgramType.Bachelor).ToList(),
                 "Master" => _context.Programmes.Where(x => x.Type == ProgramType.Master).ToList(),
@@ -99,25 +96,24 @@ namespace TOS.Controllers
             {
                 topicsToShow = topicsToShow.Where(x => x.Proposed).ToList();
             }
-
-            var vm = new GroupViewModel();
+            
             vm.Topics = topicsToShow;
             vm.Group = group;
-
+            
             return View(vm);
         }
         
         public async Task<IActionResult> Group(int groupId, string searchString = "", bool showTakenTopics = false, bool showHidden = false, bool showProposed = false)
         {
+            var vm = new GroupViewModel();
+            
             var group = await _context.Groups.FirstAsync(x => x.GroupId == groupId);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName!.Equals(User.Identity!.Name));
 
-            ViewData["topicsIndexGroupName"] = group.NameEng;
-            ViewData["topicsIndexGroupId"] = group.GroupId;
-            ViewData["creatorUsername"] = group.Creator.UserName;
-            ViewData["showTakenTopics"] = showTakenTopics;
-            ViewData["searchString"] = searchString;
-            ViewData["showHidden"] = showHidden;
-            ViewData["showProposed"] = showProposed;
+            vm.ShowTakenTopics = showTakenTopics;
+            vm.SearchString = searchString;
+            vm.ShowHiddenTopics = showHidden;
+            vm.ShowProposedTopics = showProposed;
             
             var topicsToShow = await _context.Topics.Where(x => x.Group.Equals(group)).ToListAsync();
             
@@ -146,13 +142,19 @@ namespace TOS.Controllers
                 topicsToShow = topicsToShow.Where(x => x.Proposed).ToList();
             }
 
-            var vm = new GroupViewModel();
             vm.Topics = topicsToShow;
             vm.Group = group;
-            
-            return View(vm);
+
+            if (group.Visible || User.IsInRole("Group") || User.IsInRole("AnyGroup"))
+                return View(vm);
+
+            if (user != null && group.CreatorId == user.Id)
+                return View(vm);
+
+            return Forbid();
         }
 
+        [Authorize(Roles = "Topic,AnyTopic")]
         public async Task<IActionResult> Unassigned()
         {
             var topics = await _context.Topics.Where(x => x.Group.NameEng == "Unassigned").ToListAsync();
@@ -199,7 +201,7 @@ namespace TOS.Controllers
             topics = topics.Where(x => showHidden ? x.Visible || !x.Visible : x.Visible || x.Proposed).ToList();
             topics = topics.Where(x => showProposed ? x.Proposed || !x.Proposed : !x.Proposed).ToList();
 
-            //If search string is provided, select all topics from groups that match the searchstring
+            //If search string is provided, select all topics from groups that match the search string
             if (searchString.Length > 2)
             {
                 topics.AddRange(_context.Groups.Where(x=>
@@ -211,8 +213,7 @@ namespace TOS.Controllers
 
             return View(topics);
         }
-
-        // GET: Topic/Details/5
+        
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -225,7 +226,15 @@ namespace TOS.Controllers
                 .Include(t => t.Supervisor)
                 .FirstAsync(m => m.TopicId == id);
             
-            return View(topic);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName!.Equals(User.Identity!.Name));
+            
+            if (User.IsInRole("AnyTopic") || User.IsInRole("Topic") || topic.Visible)
+                return View(topic);
+
+            if (user != null && (topic.SupervisorId == user.Id || topic.CreatorId == user.Id || topic.AssignedId == user.Id))
+                return View(topic);
+            
+            return Forbid();
         }
 
         [Authorize(Roles = "Topic,AnyTopic")]
@@ -255,8 +264,7 @@ namespace TOS.Controllers
 
             return View();
         }
-
-        // POST: Topic/Create
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Topic,AnyTopic")]
