@@ -24,11 +24,13 @@
         
         @if (Html.CanEditTopic(Model, User.Identity?.Name, User.IsInRole("Topic"), User.IsInRole("AnyTopic"), User.IsInRole("ProposeTopic")))
         {
-            <a asp-action="Edit" class="btn btn-primary" asp-route-id="@Model.TopicId">Edit</a>
+            <a asp-action="Edit" class="btn btn-primary" asp-route-id="@Model.TopicId">@SharedLocalizer["Topic_Details_Edit"]</a>
         }
     </p>
-    
-    <h2 class="h5">@SharedLocalizer["Topic_Details_Supervisor"]: @Model.Supervisor?.GetDisplayName()</h2>
+    @if (@Model.Supervisor != null)
+    {
+        <h2 class="h5">@SharedLocalizer["Topic_Details_Supervisor"]: @Model.Supervisor.GetDisplayName()</h2>
+    }
     @if (Model.AssignedId != null && (User.IsInRole("Topic") || User.IsInRole("AnyTopic")))
     {
         <p>@SharedLocalizer["Topic_Details_AssignedStudent"]: @Model.AssignedStudent!.GetDisplayName() - @Model.AssignedStudent.Email</p>

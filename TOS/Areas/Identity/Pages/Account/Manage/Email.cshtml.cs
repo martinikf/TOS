@@ -140,12 +140,19 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
                 pageHandler: null,
                 values: new { area = "Identity", userId = userId, code = code },
                 protocol: Request.Scheme);
-            await _emailSender.SendEmailAsync(Input.NewEmail, _localizer["Confirmation_Email_Subject"].Value,
-                _localizer["Confirmation_Email_Body"].Value +
-                $"<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>" +
-                _localizer["Confirmation_Email_Link"] + "</a>.");
+            try
+            {
+                await _emailSender.SendEmailAsync(Input.NewEmail, _localizer["Confirmation_Email_Subject"].Value,
+                    _localizer["Confirmation_Email_Body"].Value +
+                    $"<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>" +
+                    _localizer["Confirmation_Email_Link"] + "</a>.");
+            }
+            catch
+            {
+                Console.WriteLine("Error sending email");
+            }
 
-            StatusMessage = "Verification email sent. Please check your email.";
+            StatusMessage = _localizer["Confirmation_Email_Sent"];
             return RedirectToPage();
         }
     }

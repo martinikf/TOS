@@ -121,6 +121,7 @@ namespace TOS.Areas.Identity.Pages.Account
             }
 
             // If we got this far, something failed, redisplay form
+            ViewData["Error"] = _sharedLocalizer["Register_Duplicate_Username"];
             return Page();
         }
 

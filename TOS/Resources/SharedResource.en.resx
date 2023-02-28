@@ -396,4 +396,250 @@
     <data name="Topic_Details_ProposedBy" xml:space="preserve">
         <value>Proposed by</value>
     </data>
+    <data name="Manage_Heading" xml:space="preserve">
+        <value>Manage account</value>
+    </data>
+    <data name="Manage_Index_Heading" xml:space="preserve">
+        <value>Display name</value>
+    </data>
+    <data name="Manage_Index_Username" xml:space="preserve">
+        <value>Login username</value>
+    </data>
+    <data name="Manage_Index_DisplayName" xml:space="preserve">
+        <value>Display name</value>
+    </data>
+    <data name="Manage_Index_Submit" xml:space="preserve">
+        <value>Save</value>
+    </data>
+    <data name="Manage_Nav_Profile" xml:space="preserve">
+        <value>Profile</value>
+    </data>
+    <data name="Manage_Nav_Email" xml:space="preserve">
+        <value>Email</value>
+    </data>
+    <data name="Manage_Nav_Password" xml:space="preserve">
+        <value>Password</value>
+    </data>
+    <data name="Manage_Nav_Notification" xml:space="preserve">
+        <value>Notifications</value>
+    </data>
+    <data name="ChangeEmail_Heading" xml:space="preserve">
+        <value>Email change</value>
+    </data>
+    <data name="Administration_Users_Search_Placeholder" xml:space="preserve">
+        <value>Name/Email</value>
+    </data>
+    <data name="ChangeEmail_Email" xml:space="preserve">
+        <value>Current email</value>
+    </data>
+    <data name="ChangeEmail_NewEmail" xml:space="preserve">
+        <value>New email</value>
+    </data>
+    <data name="ChangeEmail_ChangeEmail" xml:space="preserve">
+        <value>Change email</value>
+    </data>
+    <data name="ChangePassword_Heading" xml:space="preserve">
+        <value>Password change</value>
+    </data>
+    <data name="ChangePassword_OldPassword" xml:space="preserve">
+        <value>Current password</value>
+    </data>
+    <data name="ChangePassword_Password" xml:space="preserve">
+        <value>New password</value>
+    </data>
+    <data name="ChangePassword_ConfirmPassword" xml:space="preserve">
+        <value>Confirm new password</value>
+    </data>
+    <data name="ChangePassword_Submit" xml:space="preserve">
+        <value>Change password</value>
+    </data>
+    <data name="Manage_Notification_Heading" xml:space="preserve">
+        <value>Subscribe to notifications</value>
+    </data>
+    <data name="Manage_Notification_TopicEdit" xml:space="preserve">
+        <value>Topic change</value>
+    </data>
+    <data name="Manage_Notification_TopicAssigned-Student" xml:space="preserve">
+        <value>Topic assigned to You</value>
+    </data>
+    <data name="Manage_Notification_TopicAssigned-Others" xml:space="preserve">
+        <value>Topic assigned to other Student</value>
+    </data>
+    <data name="Manage_Notification_TopicAdopted" xml:space="preserve">
+        <value>Proposed topic accepted</value>
+    </data>
+    <data name="Manage_Notification_CommentNew" xml:space="preserve">
+        <value>New comment</value>
+    </data>
+    <data name="Manage_Notification_Submit" xml:space="preserve">
+        <value>Save</value>
+    </data>
+    <data name="Login_Heading" xml:space="preserve">
+        <value>Login</value>
+    </data>
+    <data name="Login_Username" xml:space="preserve">
+        <value>Email/Stag login</value>
+    </data>
+    <data name="Login_Password" xml:space="preserve">
+        <value>Password/Stag password</value>
+    </data>
+    <data name="Login_RememberMe" xml:space="preserve">
+        <value>Remember me</value>
+    </data>
+    <data name="Login_ForgotPassword" xml:space="preserve">
+        <value>Forgot password</value>
+    </data>
+    <data name="Login_Submit" xml:space="preserve">
+        <value>Log in</value>
+    </data>
+    <data name="Register_Heading" xml:space="preserve">
+        <value>Register for external users</value>
+    </data>
+    <data name="Register_Info" xml:space="preserve">
+        <value>This registration is only for external users outside Palacký University! Teachers/Students log in directly using the same credentials as for the university stag/AD.</value>
+    </data>
+    <data name="Email" xml:space="preserve">
+        <value>Email</value>
+    </data>
+    <data name="Firstname" xml:space="preserve">
+        <value>Firstname</value>
+    </data>
+    <data name="Lastname" xml:space="preserve">
+        <value>Lastname</value>
+    </data>
+    <data name="DisplayName" xml:space="preserve">
+        <value>Display name</value>
+    </data>
+    <data name="Password" xml:space="preserve">
+        <value>Password</value>
+    </data>
+    <data name="ConfirmPassword" xml:space="preserve">
+        <value>Confirm password</value>
+    </data>
+    <data name="ForgotPassword_Heading" xml:space="preserve">
+        <value>Forgot password</value>
+    </data>
+    <data name="ForgotPassword_Confirmation" xml:space="preserve">
+        <value>An email has been sent to your email address to reset your password.</value>
+    </data>
+    <data name="Confirmation_Email_Subject" xml:space="preserve">
+        <value>Forgot password</value>
+    </data>
+    <data name="Confirmation_Email_Body" xml:space="preserve">
+        <value>You can reset your password</value>
+    </data>
+    <data name="Confirmation_Email_Link" xml:space="preserve">
+        <value>here</value>
+    </data>
+    <data name="ResendConfirmationEmail_Heading" xml:space="preserve">
+        <value>Resend confirmation email</value>
+    </data>
+    <data name="ResendConfirmationEmail_Submit" xml:space="preserve">
+        <value>Send</value>
+    </data>
+    <data name="ForgotPassword_Submit" xml:space="preserve">
+        <value>Send</value>
+    </data>
+    <data name="EmailChange_SendVerificationEmail" xml:space="preserve">
+        <value>Send verfication email</value>
+    </data>
+    <data name="Register_Duplicate_Username" xml:space="preserve">
+        <value>Email is already used</value>
+    </data>
+    <data name="Confirmation_Email_Sent" xml:space="preserve">
+        <value>Confirmation email was sent</value>
+    </data>
+    <data name="Topic_Index_Search_Placeholder" xml:space="preserve">
+        <value>Search string..</value>
+    </data>
+    <data name="Group_Index_OtherGroups" xml:space="preserve">
+        <value>Other groups</value>
+    </data>
+    <data name="Group_Homeworks" xml:space="preserve">
+        <value>Homeworks</value>
+    </data>
+    <data name="Group_Projects" xml:space="preserve">
+        <value>Projects</value>
+    </data>
+    <data name="Topic_Edit_Heading" xml:space="preserve">
+        <value>Edit topic</value>
+    </data>
+    <data name="Topic_Create_Name" xml:space="preserve">
+        <value>Name</value>
+    </data>
+    <data name="Topic_Edit_Delete" xml:space="preserve">
+        <value>Delete topic</value>
+    </data>
+    <data name="Topic_Create_NameEng" xml:space="preserve">
+        <value>Name - english</value>
+    </data>
+    <data name="Topic_Create_DescriptionShort" xml:space="preserve">
+        <value>Short description - preview</value>
+    </data>
+    <data name="Topic_Create_DescriptionShortEng" xml:space="preserve">
+        <value>Short description - english</value>
+    </data>
+    <data name="Topic_Create_DescriptionLong" xml:space="preserve">
+        <value>Long description</value>
+    </data>
+    <data name="Topic_Create_DescriptionLongEng" xml:space="preserve">
+        <value>Long description - english</value>
+    </data>
+    <data name="Topic_Create_Supervisor" xml:space="preserve">
+        <value>Supervisor</value>
+    </data>
+    <data name="Topic_Create_Assigned" xml:space="preserve">
+        <value>Assigned student</value>
+    </data>
+    <data name="Topic_Create_Group" xml:space="preserve">
+        <value>Group</value>
+    </data>
+    <data name="Topic_Create_RecommendedProgrammes" xml:space="preserve">
+        <value>Recommended programmes</value>
+    </data>
+    <data name="Topic_Create_Attachment" xml:space="preserve">
+        <value>File attachments</value>
+    </data>
+    <data name="Topic_Create_Visible" xml:space="preserve">
+        <value>Visible</value>
+    </data>
+    <data name="Topic_Edit_Submit" xml:space="preserve">
+        <value>Edit</value>
+    </data>
+    <data name="Topic_Create_Heading" xml:space="preserve">
+        <value>Topic create</value>
+    </data>
+    <data name="Topic_Create_Submit" xml:space="preserve">
+        <value>Create</value>
+    </data>
+    <data name="Group_Create_Description" xml:space="preserve">
+        <value>Grup description</value>
+    </data>
+    <data name="Group_Create_DescriptionEng" xml:space="preserve">
+        <value>Group description - english</value>
+    </data>
+    <data name="Topic_Details_Edit" xml:space="preserve">
+        <value>Edit topic</value>
+    </data>
+    <data name="Bachelor_Programme" xml:space="preserve">
+        <value>Bachelor programme</value>
+    </data>
+    <data name="Master_Programme" xml:space="preserve">
+        <value>Master programme</value>
+    </data>
+    <data name="TopicEdit" xml:space="preserve">
+        <value>Notification: Topic change</value>
+    </data>
+    <data name="TopicAssigned-Student" xml:space="preserve">
+        <value>Notification: Topics assigned to the student</value>
+    </data>
+    <data name="TopicAssigned-Others" xml:space="preserve">
+        <value>Notificaiton: Topic assigned - other users</value>
+    </data>
+    <data name="TopicAdopted" xml:space="preserve">
+        <value>Notification: Proposed topic accepted</value>
+    </data>
+    <data name="CommentNew" xml:space="preserve">
+        <value>Notification: New comment</value>
+    </data>
 </root>

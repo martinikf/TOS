@@ -389,4 +389,253 @@
     <data name="Topic_Details_ProposedBy" xml:space="preserve">
         <value>Navrhnuto</value>
     </data>
+    <data name="Administration_Users_Search_Placeholder" xml:space="preserve">
+        <value>Jméno/Email</value>
+    </data>
+    <data name="Manage_Heading" xml:space="preserve">
+        <value>Správa profilu</value>
+    </data>
+    <data name="Manage_Index_Heading" xml:space="preserve">
+        <value>Zobrazované jméno</value>
+    </data>
+    <data name="Manage_Index_Username" xml:space="preserve">
+        <value>Přihlašovací jméno</value>
+    </data>
+    <data name="Manage_Index_DisplayName" xml:space="preserve">
+        <value>Zobrazované jméno</value>
+    </data>
+    <data name="Manage_Index_Submit" xml:space="preserve">
+        <value>Uložit</value>
+    </data>
+    <data name="Manage_Nav_Profile" xml:space="preserve">
+        <value>Profil</value>
+    </data>
+    <data name="Manage_Nav_Password" xml:space="preserve">
+        <value>Heslo</value>
+    </data>
+    <data name="Manage_Nav_Notification" xml:space="preserve">
+        <value>Notifikace</value>
+    </data>
+    <data name="ChangeEmail_Heading" xml:space="preserve">
+        <value>Změna e-mailu</value>
+    </data>
+    <data name="ChangeEmail_Email" xml:space="preserve">
+        <value>Aktuální email</value>
+    </data>
+    <data name="ChangeEmail_NewEmail" xml:space="preserve">
+        <value>Nový e-mail</value>
+    </data>
+    <data name="ChangeEmail_ChangeEmail" xml:space="preserve">
+        <value>Změnit email</value>
+    </data>
+    <data name="ChangePassword_Heading" xml:space="preserve">
+        <value>Změna hesla</value>
+    </data>
+    <data name="ChangePassword_OldPassword" xml:space="preserve">
+        <value>Aktuální heslo</value>
+    </data>
+    <data name="ChangePassword_Password" xml:space="preserve">
+        <value>Nové heslo</value>
+    </data>
+    <data name="ChangePassword_ConfirmPassword" xml:space="preserve">
+        <value>Nové heslo znovu</value>
+    </data>
+    <data name="ChangePassword_Submit" xml:space="preserve">
+        <value>Změnit heslo</value>
+    </data>
+    <data name="Manage_Notification_Heading" xml:space="preserve">
+        <value>Odebírání notifikací</value>
+    </data>
+    <data name="Manage_Notification_TopicEdit" xml:space="preserve">
+        <value>Při změně tématu</value>
+    </data>
+    <data name="Manage_Notification_TopicAssigned-Student" xml:space="preserve">
+        <value>Při přiřazení tématu Vám</value>
+    </data>
+    <data name="Manage_Notification_TopicAssigned-Others" xml:space="preserve">
+        <value>Téma přiřazeno jinému studentovi</value>
+    </data>
+    <data name="Manage_Notification_TopicAdopted" xml:space="preserve">
+        <value>Navrhnuté téma přijato</value>
+    </data>
+    <data name="Manage_Notification_CommentNew" xml:space="preserve">
+        <value>Nový komentář</value>
+    </data>
+    <data name="Manage_Notification_Submit" xml:space="preserve">
+        <value>Uložit</value>
+    </data>
+    <data name="Login_Heading" xml:space="preserve">
+        <value>Přihlášení</value>
+    </data>
+    <data name="Login_Username" xml:space="preserve">
+        <value>Email/Stag přihlášení</value>
+    </data>
+    <data name="Login_Password" xml:space="preserve">
+        <value>Heslo/Stag heslo</value>
+    </data>
+    <data name="Login_RememberMe" xml:space="preserve">
+        <value>Zůstat přihlášen</value>
+    </data>
+    <data name="Login_ForgotPassword" xml:space="preserve">
+        <value>Zapomenuté heslo</value>
+    </data>
+    <data name="Login_Submit" xml:space="preserve">
+        <value>Přihlásit se</value>
+    </data>
+    <data name="Register_Heading" xml:space="preserve">
+        <value>Registrace pro externí uživatele</value>
+    </data>
+    <data name="Register_Info" xml:space="preserve">
+        <value>Tato registrace slouží pouze pro externí uživatele mimo Univerzitu Palackého! Vyučující/Studenti se rovnou přihlašují pomocí stejných údajů jako do stagu/AD univerzity.</value>
+    </data>
+    <data name="Email" xml:space="preserve">
+        <value>E-mail</value>
+    </data>
+    <data name="Firstname" xml:space="preserve">
+        <value>Křestní jméno</value>
+    </data>
+    <data name="Lastname" xml:space="preserve">
+        <value>Přijmení</value>
+    </data>
+    <data name="DisplayName" xml:space="preserve">
+        <value>Zobrazované jméno</value>
+    </data>
+    <data name="Password" xml:space="preserve">
+        <value>Heslo</value>
+    </data>
+    <data name="ConfirmPassword" xml:space="preserve">
+        <value>Potvrzení hesla</value>
+    </data>
+    <data name="ForgotPassword_Heading" xml:space="preserve">
+        <value>Zapomenuté heslo</value>
+    </data>
+    <data name="ForgotPassword_Submit" xml:space="preserve">
+        <value>Odeslat</value>
+    </data>
+    <data name="ForgotPassword_Confirmation" xml:space="preserve">
+        <value>Na Vaši emailovou adresu byl zaslán email pro restratování hesla.</value>
+    </data>
+    <data name="Confirmation_Email_Subject" xml:space="preserve">
+        <value>Obnovení hesla</value>
+    </data>
+    <data name="Confirmation_Email_Body" xml:space="preserve">
+        <value>Zapomenuté heslo můžete obnovit</value>
+    </data>
+    <data name="Confirmation_Email_Link" xml:space="preserve">
+        <value>zde</value>
+    </data>
+    <data name="ResendConfirmationEmail_Heading" xml:space="preserve">
+        <value>Znovuposlání potvrzovacího emailu</value>
+    </data>
+    <data name="ResendConfirmationEmail_Submit" xml:space="preserve">
+        <value>Odeslat</value>
+    </data>
+    <data name="ForgotPassword_Submit" xml:space="preserve">
+        <value />
+    </data>
+    <data name="EmailChange_SendVerificationEmail" xml:space="preserve">
+        <value>Poslat potvrzovací email</value>
+    </data>
+    <data name="Register_Duplicate_Username" xml:space="preserve">
+        <value>Zadaný email je již použitý</value>
+    </data>
+    <data name="Manage_Nav_Email" xml:space="preserve">
+        <value>E-mail</value>
+    </data>
+    <data name="Confirmation_Email_Sent" xml:space="preserve">
+        <value>Potvrzovací email byl zaslán</value>
+    </data>
+    <data name="Topic_Index_Search_Placeholder" xml:space="preserve">
+        <value>Hledaný výraz..</value>
+    </data>
+    <data name="Group_Index_OtherGroups" xml:space="preserve">
+        <value>Ostatní skupiny</value>
+    </data>
+    <data name="Group_Homeworks" xml:space="preserve">
+        <value>Úkoly</value>
+    </data>
+    <data name="Group_Projects" xml:space="preserve">
+        <value>Projekty</value>
+    </data>
+    <data name="Topic_Edit_Heading" xml:space="preserve">
+        <value>Editace tématu</value>
+    </data>
+    <data name="Topic_Create_Name" xml:space="preserve">
+        <value>Název</value>
+    </data>
+    <data name="Topic_Edit_Delete" xml:space="preserve">
+        <value>Smazat téma</value>
+    </data>
+    <data name="Topic_Create_NameEng" xml:space="preserve">
+        <value>Název - anglicky</value>
+    </data>
+    <data name="Topic_Create_DescriptionShort" xml:space="preserve">
+        <value>Krátky popis - náhled</value>
+    </data>
+    <data name="Topic_Create_DescriptionShortEng" xml:space="preserve">
+        <value>Krátky popis - anglicky</value>
+    </data>
+    <data name="Topic_Create_DescriptionLong" xml:space="preserve">
+        <value>Dlouhý popis</value>
+    </data>
+    <data name="Topic_Create_DescriptionLongEng" xml:space="preserve">
+        <value>Dlouhý popis - anglicky</value>
+    </data>
+    <data name="Topic_Create_Supervisor" xml:space="preserve">
+        <value>Vedoucí práce</value>
+    </data>
+    <data name="Topic_Create_Assigned" xml:space="preserve">
+        <value>Přiřazený student</value>
+    </data>
+    <data name="Topic_Create_Group" xml:space="preserve">
+        <value>Skupina</value>
+    </data>
+    <data name="Topic_Create_RecommendedProgrammes" xml:space="preserve">
+        <value>Doporučené studijní programy</value>
+    </data>
+    <data name="Topic_Create_Attachment" xml:space="preserve">
+        <value>Souborové přilohy</value>
+    </data>
+    <data name="Topic_Create_Visible" xml:space="preserve">
+        <value>Viditelné</value>
+    </data>
+    <data name="Topic_Edit_Submit" xml:space="preserve">
+        <value>Editovat</value>
+    </data>
+    <data name="Topic_Create_Heading" xml:space="preserve">
+        <value>Vytvoření tématu</value>
+    </data>
+    <data name="Topic_Create_Submit" xml:space="preserve">
+        <value>Vytvořit</value>
+    </data>
+    <data name="Group_Create_Description" xml:space="preserve">
+        <value>Popis skupiny</value>
+    </data>
+    <data name="Group_Create_DescriptionEng" xml:space="preserve">
+        <value>Popis skupiny - anglicky</value>
+    </data>
+    <data name="Topic_Details_Edit" xml:space="preserve">
+        <value>Editovat téma</value>
+    </data>
+    <data name="Bachelor_Programme" xml:space="preserve">
+        <value>Bakalářský program</value>
+    </data>
+    <data name="Master_Programme" xml:space="preserve">
+        <value>Magisterský program</value>
+    </data>
+    <data name="TopicEdit" xml:space="preserve">
+        <value>Notifikace: Téma změněno</value>
+    </data>
+    <data name="TopicAssigned-Student" xml:space="preserve">
+        <value>Notifikace: Téma přiřazeno danému studentovi</value>
+    </data>
+    <data name="TopicAssigned-Others" xml:space="preserve">
+        <value>Notifikace: Téma přiřazeno - ostatním uživatelům</value>
+    </data>
+    <data name="TopicAdopted" xml:space="preserve">
+        <value>Notifikace: Navrhnuté téma přijato</value>
+    </data>
+    <data name="CommentNew" xml:space="preserve">
+        <value>Notifikace: Nový komentář</value>
+    </data>
 </root>

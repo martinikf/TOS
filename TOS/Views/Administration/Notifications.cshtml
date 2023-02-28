@@ -10,6 +10,6 @@
 <div class="list-group">
     @foreach (var notification in Model)
     {
-        <a class="list-group-item list-group-item-action" asp-controller="Administration" asp-action="EditNotification" asp-route-id="@notification.NotificationId">@notification.Name</a>
+        <a class="list-group-item list-group-item-action" asp-controller="Administration" asp-action="EditNotification" asp-route-id="@notification.NotificationId">@SharedLocalizer[notification.Name]</a>
     }
 </div>

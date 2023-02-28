@@ -32,7 +32,7 @@
     <input type="hidden" name="groupName" value="@Model.Group.GroupId"/>
     <div class="row g-1 align-items-center">
         <div class="col-auto">
-            <input type="text" class="form-control" name="searchString" placeholder="Search string..." value="@ViewData["searchString"]"/>
+            <input type="text" class="form-control" name="searchString" placeholder="@SharedLocalizer["Topic_Index_Search_Placeholder"]" value="@ViewData["searchString"]"/>
         </div>
 
         <div class="form-check col-auto">
@@ -86,7 +86,7 @@
 <hr/>
 @if (Model.Topics.Any(x => x.Type == TopicType.Homework))
 {
-    <h2 class="h3">Homeworks</h2>
+    <h2 class="h3">@SharedLocalizer["Group_Homeworks"]</h2>
 
     @foreach (var hw in Model.Topics.Where(x => x.Type == TopicType.Homework))
     {
@@ -96,7 +96,7 @@
 
 @if (Model.Topics.Any(x => x.Type == TopicType.Project))
 {
-    <h2 class="h3">Projects</h2>
+    <h2 class="h3">@SharedLocalizer["Group_Projects"]</h2>
     @foreach (var project in Model.Topics.Where(x => x.Type == TopicType.Project))
     {
         <partial name="ProjectPreview" model="project"/>
