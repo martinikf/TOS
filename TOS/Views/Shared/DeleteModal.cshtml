@@ -1,10 +1,13 @@
-﻿@model Tuple<int, string, string, string, string, string, string>
+﻿@using Microsoft.AspNetCore.Html
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using System.Web
+@model Tuple<int, string, string, string, string, string, string>
 @{
-    // Id, Action, DeleteBtnText, Modal.Title, Modal.Body,  CancelBtnText, ConfirmBtnText
+    // Id, Action, DeleteBtnText, Modal.Title, Modal.Body,  CancelBtnText, ConfirmBtnText, Button vs A
 }
 
 <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#DeleteConfirmation@(Model.Item1)">
-    @Model.Item3
+    @Html.Raw(Model.Item3)
 </button>
     
 <div class="modal" id="DeleteConfirmation@(Model.Item1)" tabindex="-1">

@@ -108,20 +108,13 @@
                             <div>
                                 @if (!comment.Anonymous || User.IsInRole("SeeAuthorOfAnonymousComment") || User.Identity!.Name!.Equals(comment.Author.UserName))
                                 {
-                                    if (comment.Anonymous)
-                                    {
-                                        <h5 class="Comment__AuthorName">@comment.Author.FirstName @comment.Author.LastName - @comment.Author.Email - @SharedLocalizer["Anonymous"]</h5>
-                                    }
-                                    else
-                                    {
-                                        <h5 class="Comment__AuthorName">@comment.Author.FirstName @comment.Author.LastName - @comment.Author.Email</h5>
-                                    }
+                                    <h5 class="Comment__AuthorName">@comment.Author.FirstName @comment.Author.LastName - @comment.Author.Email @Html.Raw(comment.Anonymous ? " - " + SharedLocalizer["Anonymous"] : "")</h5>
                                 }
                                 else
                                 {
                                     <h5 class="Comment__AuthorName">@SharedLocalizer["Anonymous"]</h5>
                                 }
-                                <p >@comment.CreatedAt</p>
+                                <p>@comment.CreatedAt</p>
                                 <p>
                                     @if (comment.Text == "Deleted comment")
                                     {
@@ -133,23 +126,44 @@
                                     }
                                 </p>
                                 <div class="d-flex">
-                                    <a href="#" class="ReplyButton p-2" value="" onclick="ReplyButtonClick('@comment.CommentId')"><i class="fa-solid fa-reply fa-lg"></i></a>
+                                    <a href="#" class="ReplyButton" value="" onclick="ReplyButtonClick('@comment.CommentId')"><i class="fa-solid fa-reply fa-lg"></i></a>
                                     @if (Html.CanDeleteComment(comment, User.Identity?.Name, User.IsInRole("Comment"), User.IsInRole("AnyComment")))
                                     {
-                                        <a class="ms-auto p-2" asp-action="DeleteComment" asp-route-commentId="@comment.CommentId" asp-route-topicId="@Model.TopicId"><i class="fa-solid fa-x fa-lg"></i></a>
-                                    }
+                                        <div class="ms-auto">
+                                            <a href="#" data-bs-toggle="modal" data-bs-target="#DeleteConfirmation@(comment.CommentId)">
+                                               <i class="fa-solid fa-trash fa-lg"></i>
+                                            </a>
+                                                
+                                            <div class="modal" id="DeleteConfirmation@(comment.CommentId)" tabindex="-1">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <span class="modal-title">@SharedLocalizer["Delete_Comment_Title"]</span>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>@SharedLocalizer["Delete_Comment_Text"]</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@SharedLocalizer["Delete_Comment_Cancel"]</button>
+                                                            <a asp-action="DeleteComment" asp-route-commentId="@comment.CommentId" class="btn btn-primary">@SharedLocalizer["Delete_Comment_Confirm"]</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        }
                                 </div>
-
                             </div>
                             <div class="Comment__reply row" id="ReplyForm@(comment.CommentId)" style="display: none;">
-                                @{ Html.RenderPartial("AddComment", new Comment() {TopicId = Model.TopicId, ParentCommentId = @comment.CommentId}); }
+                                @{ await Html.RenderPartialAsync("AddComment", new Comment() {TopicId = Model.TopicId, ParentCommentId = comment.CommentId}); }
                             </div>
                         </div>
                     </div>
                 }
             }
             <h4>@SharedLocalizer["Topic_Details_NewComment"]</h4>
-            @{ Html.RenderPartial("AddComment", new Comment() {TopicId = Model.TopicId}); }
+            @{  await Html.RenderPartialAsync("AddComment", new Comment() {TopicId = Model.TopicId}); }
         </section>
     }
 </article>

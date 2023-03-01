@@ -22,14 +22,7 @@
     {
         <div class="form-check col-auto">
             <label class="form-check-label" for="showHidden">@SharedLocalizer["Group_Index_Search_HiddenGroups"]</label>
-            @if ((bool) ViewData["showHidden"]!)
-            {
-                <input type="checkbox" class="form-check-input" id="showHidden" name="showHidden" value="true" checked/>
-            }
-            else
-            {
-                <input type="checkbox" class="form-check-input" id="showHidden" name="showHidden" value="true"/>
-            }
+            <input type="checkbox" class="form-check-input" id="showHidden" name="showHidden" value="true" @Html.Raw((bool) ViewData["showHidden"]! ? "checked" : "")/>
         </div>
     }
     <div class="col-auto">

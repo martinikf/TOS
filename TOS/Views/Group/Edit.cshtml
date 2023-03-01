@@ -1,10 +1,11 @@
+@using TOS.Extensions
 @model TOS.Models.Group
 
 @{
     ViewData["Title"] = SharedLocalizer["Group_Edit_Heading"];
 }
 
-<h1>@SharedLocalizer["Group_Edit_Heading"]</h1>
+<h1>@SharedLocalizer["Group_Edit_Heading"] - @Html.SelectStringByLanguage(Model.NameEng, Model.Name)</h1>
 
 @if ((User.IsInRole("Group") && User.Identity?.Name == Model.Creator.UserName) || User.IsInRole("AnyGroup"))
 {

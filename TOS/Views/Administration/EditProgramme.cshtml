@@ -1,12 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using TOS.Data
+@using TOS.Extensions
 @model TOS.Models.Programme
 
 @{
     ViewData["Title"] = SharedLocalizer["Administration_EditProgramme_Heading"];
 }
 
-<h1>@SharedLocalizer["Administration_EditProgramme_Heading"]</h1>
+<h1>@SharedLocalizer["Administration_EditProgramme_Heading"] - @Html.SelectStringByLanguage(Model.NameEng, Model.Name)</h1>
 
 @{
     var data = new Tuple<int, string, string, string, string, string, string>

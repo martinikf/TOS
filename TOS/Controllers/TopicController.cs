@@ -24,11 +24,11 @@ namespace TOS.Controllers
             _notificationManager = notificationManager;
         }
         
-        public async Task<IActionResult> Index(string groupName, string programmeName = "",
+        public async Task<IActionResult> Index(string groupName ="Bachelor", string programmeName = "",
             string searchString = "", bool showTakenTopics = false, string orderBy = "Supervisor",
             bool showHidden = false, bool showProposed = false)
         {
-            var vm = new GroupViewModel();
+            var vm = new IndexViewModel();
             vm.ShowTakenTopics = showTakenTopics;
             vm.ShowProposedTopics = showProposed;
             vm.ShowHiddenTopics = showHidden;
@@ -164,18 +164,21 @@ namespace TOS.Controllers
         
         public async Task<IActionResult> MyTopics(string searchString = "", bool showHidden = false, bool showProposed = false)
         {
+            if(User.Identity == null)
+                return RedirectToAction("Index", "Home");
+            
+            var vm = new MyTopicsViewModel();
+            
             searchString = searchString.Trim();
             if(searchString.Length < 3)
                 searchString = "";
             else
                 searchString = searchString.ToLower();
-            ViewData["searchString"] = searchString;
-            ViewData["showHidden"] = showHidden;
-            ViewData["showProposed"] = showProposed;
             
-            if(User.Identity == null)
-                return RedirectToAction("Index", "Home");
-            
+            vm.SearchString = searchString;
+            vm.ShowHiddenTopics = showHidden;
+            vm.ShowProposedTopics = showProposed;
+
             var user = await _context.Users.FirstAsync(x => x.UserName!.Equals(User.Identity.Name));
 
             var topics = await _context.Topics
@@ -211,7 +214,8 @@ namespace TOS.Controllers
                     .SelectMany(z=>z));
             }
 
-            return View(topics);
+            vm.Topics = topics;
+            return View(vm);
         }
         
         public async Task<IActionResult> Details(int? id)
@@ -606,34 +610,40 @@ namespace TOS.Controllers
         }
         
         [Authorize(Roles = "Comment,AnyComment")]
-        public async Task<IActionResult> DeleteComment(int commentId, int topicId)
+        public async Task<IActionResult> DeleteComment(int commentId)
         {
             var comment = await _context.Comments.FirstOrDefaultAsync(x => x.CommentId.Equals(commentId));
-
-            if (comment != null)
+            if (comment is null) return RedirectToAction(nameof(Index));
+            var topicId = comment.TopicId;
+            
+            if (User.IsInRole("DeleteComment") && !User.IsInRole("DeleteAnyComment"))
             {
-                if (User.IsInRole("DeleteComment") && !User.IsInRole("DeleteAnyComment"))
-                {
-                    var user = await _context.Users.FirstAsync(x =>
-                        User.Identity != null && x.UserName!.Equals(User.Identity.Name));
-                    if (comment.AuthorId != user.Id)
-                        return Forbid();
-                }
-
-                if (comment.Replies.Count > 0)
-                {
-                    comment.Text = "Deleted comment";
-                    comment.Anonymous = true;
-                    _context.Comments.Update(comment);
-                }
-                else
-                {
-                    _context.Comments.Remove(comment);
-                }
-
-                await _context.SaveChangesAsync();
+                var user = await _context.Users.FirstAsync(x =>
+                    User.Identity != null && x.UserName!.Equals(User.Identity.Name));
+                if (comment.AuthorId != user.Id)
+                    return Forbid();
             }
-
+            
+            var parent = comment.ParentComment;
+            
+            if (comment.Replies.Count > 0)
+            {
+                comment.Text = "Deleted comment";
+                comment.Anonymous = true;
+                _context.Comments.Update(comment);
+            }
+            else
+            {
+                _context.Comments.Remove(comment);
+            }
+            
+            await _context.SaveChangesAsync();
+            
+            if (parent != null && parent.Text == "Deleted comment")
+            {
+                return await DeleteComment(parent.CommentId);
+            }
+            
             return RedirectToAction("Details", new {id = topicId});
         }
 

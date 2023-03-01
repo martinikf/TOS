@@ -651,4 +651,55 @@
     <data name="Administration_EditProgramme_Delete" xml:space="preserve">
         <value>Delete programme</value>
     </data>
+    <data name="Topic_Edit_Delete_Title" xml:space="preserve">
+        <value>Warning</value>
+    </data>
+    <data name="Topic_Edit_Delete_Body" xml:space="preserve">
+        <value>Do you really want to delete this topic?</value>
+    </data>
+    <data name="Topic_Edit_Delete_Cancel" xml:space="preserve">
+        <value>Cancel</value>
+    </data>
+    <data name="Topic_Edit_Delete_Confirm" xml:space="preserve">
+        <value>Yes, delete</value>
+    </data>
+    <data name="Group_Edit_Delete_Title" xml:space="preserve">
+        <value>Warning</value>
+    </data>
+    <data name="Group_Edit_Delete_Body" xml:space="preserve">
+        <value>You really want to delete this group? You will delete all the topics it covers.</value>
+    </data>
+    <data name="Group_Edit_Delete_Cancel" xml:space="preserve">
+        <value>Cancel</value>
+    </data>
+    <data name="Group_Edit_Delete_Confirm" xml:space="preserve">
+        <value>Yes, delete</value>
+    </data>
+    <data name="Administration_EditProgramme_Delete_Title" xml:space="preserve">
+        <value>Warning</value>
+    </data>
+    <data name="Administration_EditProgramme_Delete_Cancel" xml:space="preserve">
+        <value>Cancel</value>
+    </data>
+    <data name="Administration_EditProgramme_Delete_Confirm" xml:space="preserve">
+        <value>Yes, delete</value>
+    </data>
+    <data name="Administration_EditProgramme_Delete_Body" xml:space="preserve">
+        <value>Do you really want to delete this programme?</value>
+    </data>
+    <data name="Delete_Comment_Title" xml:space="preserve">
+        <value>Warning</value>
+    </data>
+    <data name="Delete_Comment_Text" xml:space="preserve">
+        <value>Do you really want to delete this comment?</value>
+    </data>
+    <data name="Delete_Comment_Cancel" xml:space="preserve">
+        <value>Cancel</value>
+    </data>
+    <data name="Delete_Comment_Confirm" xml:space="preserve">
+        <value>Yes, delete</value>
+    </data>
+    <data name="Administration_EditNotification_Guide" xml:space="preserve">
+        <value>Instructions for editing a notification</value>
+    </data>
 </root>

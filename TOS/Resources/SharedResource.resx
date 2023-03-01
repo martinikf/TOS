@@ -647,4 +647,55 @@
     <data name="Administration_EditProgramme_Delete" xml:space="preserve">
         <value>Smazat program</value>
     </data>
+    <data name="Topic_Edit_Delete_Title" xml:space="preserve">
+        <value>Pozor</value>
+    </data>
+    <data name="Topic_Edit_Delete_Body" xml:space="preserve">
+        <value>Opravdu chcete smazat tohle téma?</value>
+    </data>
+    <data name="Topic_Edit_Delete_Cancel" xml:space="preserve">
+        <value>Zrušit</value>
+    </data>
+    <data name="Topic_Edit_Delete_Confirm" xml:space="preserve">
+        <value>Ano, smazat</value>
+    </data>
+    <data name="Group_Edit_Delete_Title" xml:space="preserve">
+        <value>Upozornění</value>
+    </data>
+    <data name="Group_Edit_Delete_Body" xml:space="preserve">
+        <value>Opravdu chcete smazat tuto skupinu? Smažete tím i všechny témata, které obashuje.</value>
+    </data>
+    <data name="Group_Edit_Delete_Cancel" xml:space="preserve">
+        <value>Zrušit</value>
+    </data>
+    <data name="Group_Edit_Delete_Confirm" xml:space="preserve">
+        <value>Ano, smazat </value>
+    </data>
+    <data name="Administration_EditProgramme_Delete_Title" xml:space="preserve">
+        <value>Upozornění</value>
+    </data>
+    <data name="Administration_EditProgramme_Delete_Body" xml:space="preserve">
+        <value>Opravdu chcete smazat tento studijní obor?</value>
+    </data>
+    <data name="Administration_EditProgramme_Delete_Cancel" xml:space="preserve">
+        <value>Zrušit</value>
+    </data>
+    <data name="Administration_EditProgramme_Delete_Confirm" xml:space="preserve">
+        <value>Ano, smazat</value>
+    </data>
+    <data name="Delete_Comment_Title" xml:space="preserve">
+        <value>Upozornění</value>
+    </data>
+    <data name="Delete_Comment_Text" xml:space="preserve">
+        <value>Opravdu chcete smazat tento komentář?</value>
+    </data>
+    <data name="Delete_Comment_Cancel" xml:space="preserve">
+        <value>Zrušit</value>
+    </data>
+    <data name="Delete_Comment_Confirm" xml:space="preserve">
+        <value>Ano, smazat</value>
+    </data>
+    <data name="Administration_EditNotification_Guide" xml:space="preserve">
+        <value>Návod na editaci notifikace</value>
+    </data>
 </root>

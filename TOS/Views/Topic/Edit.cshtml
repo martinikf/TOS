@@ -8,7 +8,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>@SharedLocalizer["Topic_Edit_Heading"]</h1>
+<h1>@SharedLocalizer["Topic_Edit_Heading"] - @Html.SelectStringByLanguage(Model.NameEng, Model.Name)</h1>
 
 @{
     var data = new Tuple<int, string, string, string, string, string, string>

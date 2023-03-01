@@ -8,7 +8,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>@SharedLocalizer["Topic_Group_Heading"]</h1>
+<h1>@Html.SelectStringByLanguage(Model.Group.NameEng, Model.Group.Name)</h1>
 <p>
     @if((User.IsInRole("Group") && User.Identity!.Name == Model.Group.Creator.UserName) || User.IsInRole("AnyGroup"))
     {
@@ -30,21 +30,14 @@
 <hr/>
 <form asp-action="Group" method="get">
     <input type="hidden" name="groupId" value="@Model.Group.GroupId"/>
-    <div class="row g-1 align-items-center">
+    <div class="row g-2 align-items-center">
         <div class="col-auto">
             <input type="text" class="form-control" name="searchString" placeholder="@SharedLocalizer["Topic_Index_Search_Placeholder"]" value="@Model.SearchString"/>
         </div>
 
         <div class="form-check col-auto">
             <label for="showTaken">@SharedLocalizer["Topic_Index_ShowTaken"]</label>
-            @if (Model.ShowTakenTopics)
-            {
-                <input class="form-check-input" name="showTakenTopics" id="showTaken" type="checkbox" value="true" checked/>
-            }
-            else
-            {
-                <input class="form-check-input" name="showTakenTopics" id="showTaken" type="checkbox" value="true"/>
-            }
+            <input class="form-check-input" name="showTakenTopics" id="showTaken" type="checkbox" value="true" @Html.Raw(Model.ShowTakenTopics ? "checked" : "")/>
         </div>
 
         <div class="col-auto">
@@ -58,26 +51,12 @@
          <div class="row g-3 align-items-center mx-auto">
              <div class="col-auto form-check">
                  <label for="showHidden">@SharedLocalizer["Topic_Index_ShowHidden"]</label>
-                 @if (Model.ShowHiddenTopics)
-                 {
-                     <input class="form-check-input" name="showHidden" id="showHidden" type="checkbox" value="true" checked/>
-                 }
-                 else
-                 {
-                     <input class="form-check-input" name="showHidden" id="showHidden" type="checkbox" value="true"/>
-                 }
+                 <input class="form-check-input" name="showHidden" id="showHidden" type="checkbox" value="true" @Html.Raw(Model.ShowHiddenTopics ? "checked" : "")/>
              </div>
 
              <div class="col-auto form-check">
                  <label for="showProposed">@SharedLocalizer["Topic_Index_ShowProposedOnly"]</label>
-                 @if (Model.ShowProposedTopics)
-                 {
-                     <input class="form-check-input" name="showProposed" id="showProposed" type="checkbox" value="true" checked/>
-                 }
-                 else
-                 {
-                     <input class="form-check-input" name="showProposed" id="showProposed" type="checkbox" value="true"/>
-                 }
+                 <input class="form-check-input" name="showProposed" id="showProposed" type="checkbox" value="true" @Html.Raw(Model.ShowProposedTopics ? "checked" : "")/>
              </div>
          </div>
      }

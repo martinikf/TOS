@@ -115,7 +115,7 @@ public class AdministrationController : Controller
 
         if(error)
             ViewData["Error"] = _localizer["ERROR:0Administrators"].Value;
-        return View();
+        return View(user);
     }
     
     [HttpPost]
