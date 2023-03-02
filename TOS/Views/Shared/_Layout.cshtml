@@ -15,7 +15,7 @@
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-expand-lg navbar-toggleable-lg navbar-light bg-white border-bottom box-shadow mb-3">
+    <nav class="navbar navbar-expand-lg navbar-toggleable-lg border-bottom box-shadow mb-3">
         <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -23,10 +23,10 @@
             <div class="navbar-collapse collapse">
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@SharedLocalizer["NavHome"]</a>
+                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">@SharedLocalizer["NavHome"]</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link text-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             @SharedLocalizer["Topics"]
                         </a>
                         <ul class="dropdown-menu">
@@ -39,23 +39,23 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Group" asp-action="Index">@SharedLocalizer["NavGroups"]</a>
+                        <a class="nav-link" asp-area="" asp-controller="Group" asp-action="Index">@SharedLocalizer["NavGroups"]</a>
                     </li>
                     
                     @if (User.IsInRole("External"))
                     {
-                        <a class="nav-link text-dark" asp-action="Propose" asp-controller="Topic">@SharedLocalizer["Propose topic"]</a>
+                        <a class="nav-link" asp-action="Propose" asp-controller="Topic">@SharedLocalizer["Propose topic"]</a>
                     }
-                     @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-action="MyTopics" asp-controller="Topic">@SharedLocalizer["MyTopics"]</a>
+                            <a class="nav-link" asp-action="MyTopics" asp-controller="Topic">@SharedLocalizer["MyTopics"]</a>
                         </li>
                     }
                     @if (User.IsInRole("Administrator"))
                     {
                         <li class="nav-item dropdown">
-                            <a class="nav-link text-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 @SharedLocalizer["Administration"]
                             </a>
                             <ul class="dropdown-menu">
@@ -66,6 +66,7 @@
                         </li>
                     }
                 </ul>
+                <partial name="_Darkmode"/>
                 <partial name="_Culture"/>
                 <partial name="_LoginPartial" />
             </div>
