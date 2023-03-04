@@ -698,4 +698,13 @@
     <data name="Administration_EditNotification_Guide" xml:space="preserve">
         <value>Návod na editaci notifikace</value>
     </data>
+    <data name="Topic_Index_Heading_Unnasigned" xml:space="preserve">
+        <value>Návrhy prací od externistů</value>
+    </data>
+    <data name="Topic_Index_Search_Submit" xml:space="preserve">
+        <value>Hledat</value>
+    </data>
+    <data name="Topic_Create_Placeholder" xml:space="preserve">
+        <value>Hledat</value>
+    </data>
 </root>

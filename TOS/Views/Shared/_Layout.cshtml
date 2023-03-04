@@ -10,8 +10,9 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TOS.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"/>
+    <link rel="stylesheet" href="~/lib/dselect/css/dselect.scss">
     <script src="https://kit.fontawesome.com/4afee75a5b.js" crossorigin="anonymous"></script>
+    
 </head>
 <body>
 <header>
@@ -34,7 +35,7 @@
                             <li><a class="dropdown-item" asp-controller="Topic" asp-action="Index" asp-route-groupName="Master" asp-route-showTakenTopics="false">@SharedLocalizer["Topics_Master"]</a></li>
                             @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
                             {
-                                <li><a class="dropdown-item" asp-controller="Topic" asp-action="Index" asp-route-groupName="Unassigned" asp-route-showHidden="true" asp-route-showProposed="true">@SharedLocalizer["Topics_Unassigned"]</a></li>
+                                <li><a class="dropdown-item" asp-controller="Topic" asp-action="Unassigned" asp-route-groupName="Unassigned" asp-route-showHidden="true" asp-route-showProposed="true">@SharedLocalizer["Topics_Unassigned"]</a></li>
                             }
                         </ul>
                     </li>
@@ -84,7 +85,6 @@
 
 <footer class="border-top footer text-muted">
 </footer>
-
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>

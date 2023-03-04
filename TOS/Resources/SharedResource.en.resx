@@ -702,4 +702,13 @@
     <data name="Administration_EditNotification_Guide" xml:space="preserve">
         <value>Instructions for editing a notification</value>
     </data>
+    <data name="Topic_Index_Heading_Unnasigned" xml:space="preserve">
+        <value>Proposed theses by externists</value>
+    </data>
+    <data name="Topic_Index_Search_Submit" xml:space="preserve">
+        <value>Search</value>
+    </data>
+    <data name="Topic_Create_Placeholder" xml:space="preserve">
+        <value>Search</value>
+    </data>
 </root>
