@@ -47,21 +47,21 @@
     </div>
     <div class="row g-3 align-items-center">
         <div class="col">
-        <label asp-for="SupervisorId" class="form-label">@SharedLocalizer["Topic_Create_Supervisor"]</label>
-        <select class="form-select" id="ddlSupervisor" asp-for="SupervisorId" asp-items="ViewBag.UsersToSupervise">
-            <option value="null">@SharedLocalizer["Unassigned option"]</option>
-        </select>
-    </div>
-    
-     @if ((TopicType) ViewData["TopicType"]! != TopicType.Homework)
-     {
-         <div class="col">
-            <label asp-for="AssignedId" class="form-label">@SharedLocalizer["Topic_Create_Assigned"]</label>
-            <select class="form-select" id="ddlAssigned" asp-for="AssignedId" asp-items="ViewBag.UsersToAssign">
+            <label asp-for="SupervisorId" class="form-label">@SharedLocalizer["Topic_Create_Supervisor"]</label>
+            <select class="form-select" id="ddlSupervisor" asp-for="SupervisorId" asp-items="ViewBag.UsersToSupervise">
                 <option value="null">@SharedLocalizer["Unassigned option"]</option>
             </select>
         </div>
-    }
+    
+         @if ((TopicType) ViewData["TopicType"]! != TopicType.Homework)
+         {
+             <div class="col">
+                <label asp-for="AssignedId" class="form-label">@SharedLocalizer["Topic_Create_Assigned"]</label>
+                <select class="form-select" id="ddlAssigned" asp-for="AssignedId" asp-items="ViewBag.UsersToAssign">
+                    <option value="null">@SharedLocalizer["Unassigned option"]</option>
+                </select>
+            </div>
+        }
     </div>
     
     <div class="mb-3">
@@ -122,8 +122,8 @@
 
 @section Scripts
 {
-    <partial name="_ValidationScriptsPartial" />
-    
+    <partial name="_ValidationScriptsPartial"/>
+
     <script>
            window.onload = function () {
                RefreshProgrammes(true);
@@ -162,13 +162,31 @@
                 }
            }
        </script>
-    
+
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script type="text/javascript">
          $(function () {
-            $("#ddlSupervisor").select2();
-            $("#ddlAssigned").select2();
+            $("#ddlSupervisor").select2({
+             "language": {
+                   "noResults": function(){
+                       return "@SharedLocalizer["Topic_Create_Supervisor_NotFound"]";
+                   }
+               },
+                escapeMarkup: function (markup) {
+                    return markup;
+                }
+            });
+            $("#ddlAssigned").select2({
+            "language": {
+                 "noResults": function(){
+                     return "@SharedLocalizer["Topic_Create_Assigned_NotFound"]";
+                 }
+              },
+              escapeMarkup: function (markup) {
+                  return markup;
+              }
+          });
          });
     </script>
 }

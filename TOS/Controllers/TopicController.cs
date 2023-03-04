@@ -470,7 +470,7 @@ namespace TOS.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             var topic = await _context.Topics.FirstAsync(x => x.TopicId.Equals(id));
-            var groupName = topic.Group.NameEng;
+            var group = topic.Group;
 
             var user = await _context.Users.FirstAsync(x => User.Identity != null && x.UserName!.Equals(User.Identity.Name));
             var canEdit = User.IsInRole("AnyTopic");
@@ -488,7 +488,16 @@ namespace TOS.Controllers
             _context.Topics.Remove(topic);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index), new { groupName });
+            switch (group.NameEng)
+            {
+                case "Bachelor":
+                case "Master":
+                    return RedirectToAction("Index", "Topic", new{ groupName = group.NameEng});
+                case "Unassigned":
+                    return RedirectToAction("Unassigned", "Topic");
+                default:
+                    return RedirectToAction("Group", "Topic", new {groupId = group.GroupId});
+            }
         }
 
         [Authorize(Roles = "InterestTopic")]

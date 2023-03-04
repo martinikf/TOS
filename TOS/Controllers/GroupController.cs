@@ -93,7 +93,7 @@ namespace TOS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Group,AnyGroup")]
-        public async Task<IActionResult> Edit(int id, [Bind("GroupId,Name,NameEng,Description,DescriptionEng,CreatorId,Visible")] Group group)
+        public async Task<IActionResult> Edit(int id, [Bind("GroupId,Name,Selectable,NameEng,Description,DescriptionEng,CreatorId,Visible")] Group group)
         {
             //If user has only Role EditGroup, check if he is the owner of the group
             if (User.IsInRole("Group") && !User.IsInRole("AnyGroup"))
@@ -111,8 +111,17 @@ namespace TOS.Controllers
             
             _context.Update(group);
             await _context.SaveChangesAsync();
-            
-            return RedirectToAction(nameof(Index));
+
+            switch (group.NameEng)
+            {
+                case "Bachelor":
+                    case "Master":
+                    return RedirectToAction("Index", "Topic", new{ groupName = group.NameEng});
+                case "Unassigned":
+                    return RedirectToAction("Unassigned", "Topic");
+                default:
+                    return RedirectToAction("Group", "Topic", new {groupId = group.GroupId});
+            }
         }
 
         // GET: Group/Delete/5

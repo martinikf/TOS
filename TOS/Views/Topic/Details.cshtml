@@ -104,7 +104,7 @@
                 @foreach (var comment in PrepareComments(Model.Comments))
                 {
                     <div style="margin-left: @(comment.Depth * 40)px">
-                        <div class=" border border-dark rounded p-2 m-2">
+                        <div class="border rounded p-2 m-2">
                             <div>
                                 @if (!comment.Anonymous || User.IsInRole("SeeAuthorOfAnonymousComment") || User.Identity!.Name!.Equals(comment.Author.UserName))
                                 {
@@ -126,7 +126,7 @@
                                     }
                                 </p>
                                 <div class="d-flex">
-                                    <a href="#" class="ReplyButton" value="" onclick="ReplyButtonClick('@comment.CommentId')"><i class="fa-solid fa-reply fa-lg"></i></a>
+                                    <a href="javascript:;" class="ReplyButton" value="" onclick="ReplyButtonClick('@comment.CommentId')"><i class="fa-solid fa-reply fa-lg"></i></a>
                                     @if (Html.CanDeleteComment(comment, User.Identity?.Name, User.IsInRole("Comment"), User.IsInRole("AnyComment")))
                                     {
                                         <div class="ms-auto">

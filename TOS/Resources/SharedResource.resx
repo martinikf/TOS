@@ -551,7 +551,7 @@
     <data name="Group_Index_OtherGroups" xml:space="preserve">
         <value>Ostatní skupiny</value>
     </data>
-    <data name="Group_Homeworks" xml:space="preserve">
+    <data name="Group_Homework" xml:space="preserve">
         <value>Úkoly</value>
     </data>
     <data name="Group_Projects" xml:space="preserve">

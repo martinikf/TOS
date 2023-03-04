@@ -555,8 +555,8 @@
     <data name="Group_Index_OtherGroups" xml:space="preserve">
         <value>Other groups</value>
     </data>
-    <data name="Group_Homeworks" xml:space="preserve">
-        <value>Homeworks</value>
+    <data name="Group_Homework" xml:space="preserve">
+        <value>Homework</value>
     </data>
     <data name="Group_Projects" xml:space="preserve">
         <value>Projects</value>
