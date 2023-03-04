@@ -37,12 +37,12 @@
     
     <div class="mb-3">
         <label asp-for="Subject" class="form-label">@SharedLocalizer["Administration_EditNotification_Subject"]</label>
-        <input asp-for="Subject" class="form-control" />
+        <input asp-for="Subject" class="form-control" autocomplete="off"/>
         <span asp-validation-for="Subject" class="text-danger"></span>
     </div>
     <div class="mb-3">
         <label asp-for="SubjectEng" class="form-label">@SharedLocalizer["Administration_EditNotification_SubjectEng"]</label>
-        <input asp-for="SubjectEng" class="form-control" />
+        <input asp-for="SubjectEng" class="form-control" autocomplete="off"/>
         <span asp-validation-for="SubjectEng" class="text-danger"></span>
     </div>
     <div class="mb-3">

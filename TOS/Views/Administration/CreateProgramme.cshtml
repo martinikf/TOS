@@ -12,12 +12,12 @@
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="mb-3">
         <label asp-for="Name" class="form-label">@SharedLocalizer["Administration_Programmes_Name"]</label>
-        <input asp-for="Name" class="form-control" />
+        <input asp-for="Name" class="form-control" autocomplete="off"/>
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="mb-3">
         <label asp-for="NameEng" class="form-label">@SharedLocalizer["Administration_Programmes_NameEng"]</label>
-        <input asp-for="NameEng" class="form-control" />
+        <input asp-for="NameEng" class="form-control" autocomplete="off"/>
         <span asp-validation-for="NameEng" class="text-danger"></span>
     </div>
     <div class="mb-3 form-check">

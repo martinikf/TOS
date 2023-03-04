@@ -8,7 +8,7 @@
 
 <form class="row g-2" asp-action="Users" method="get">
     <div class="col-auto">
-        <input type="text" class="form-control" name="searchString" value="@ViewData["searchString"]" placeholder="@SharedLocalizer["Administration_Users_Search_Placeholder"]"/>
+        <input type="text" class="form-control" name="searchString" value="@ViewData["searchString"]" placeholder="@SharedLocalizer["Administration_Users_Search_Placeholder"]" autocomplete="off"/>
     </div>
     <div class="col-auto">
         <input type="submit" class="btn btn-primary mb-1" value="@SharedLocalizer["Administration_Users_Search_Submit"]"/>

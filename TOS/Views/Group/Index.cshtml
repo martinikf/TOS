@@ -16,7 +16,7 @@
 
 <form class="row g-2 align-items-center" asp-action="Index" method="get">
     <div class="col-auto">
-        <input type="text" class="form-control" id="searchInput" name="searchString" placeholder="@SharedLocalizer["Group_Index_Search_Placeholder"]" value="@ViewData["searchString"]"/>
+        <input type="text" class="form-control" id="searchInput" name="searchString" placeholder="@SharedLocalizer["Group_Index_Search_Placeholder"]" value="@ViewData["searchString"]" autocomplete="off"/>
     </div>
     @if(User.IsInRole("Group") || User.IsInRole("AnyGroup"))
     {
