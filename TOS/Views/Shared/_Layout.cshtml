@@ -1,6 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using System.Globalization
 
+@{ 
+    string path = Context.Request.Path;
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,10 +28,11 @@
             <div class="navbar-collapse collapse">
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">@SharedLocalizer["NavHome"]</a>
+                        <a class="nav-link @(path.Contains("Home") || path == "/" ? "active" : "")" asp-controller="Home" asp-action="Index">@SharedLocalizer["NavHome"]</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" asp-area="">
+                        <a class="nav-link dropdown-toggle @(path.Contains("Topic") && !path.Contains("MyTopics") ? "active" : "")" 
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false" asp-area="">
                             @SharedLocalizer["Topics"]
                         </a>
                         <ul class="dropdown-menu">
@@ -41,25 +46,25 @@
                     </li>
                     
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Group" asp-action="Index">@SharedLocalizer["NavGroups"]</a>
+                        <a class="nav-link @(path.Contains("Group") ? "active" : "")" asp-area="" asp-controller="Group" asp-action="Index">@SharedLocalizer["NavGroups"]</a>
                     </li>
                     
                     @if (User.IsInRole("External"))
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-action="Propose" asp-controller="Topic">@SharedLocalizer["Propose topic"]</a>
+                            <a class="nav-link @(path.Contains("Propose")? "active" : "")" asp-action="Propose" asp-controller="Topic">@SharedLocalizer["Propose topic"]</a>
                         </li>
                     }
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-action="MyTopics" asp-controller="Topic">@SharedLocalizer["MyTopics"]</a>
+                            <a class="nav-link @(path.Contains("MyTopics")? "active" : "")" asp-action="MyTopics" asp-controller="Topic">@SharedLocalizer["MyTopics"]</a>
                         </li>
                     }
                     @if (User.IsInRole("Administrator"))
                     {
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" asp-area="">
+                            <a class="nav-link dropdown-toggle @(path.Contains("Administration")? "active" : "")" role="button" data-bs-toggle="dropdown" aria-expanded="false" asp-area="">
                                 @SharedLocalizer["Administration"]
                             </a>
                             <ul class="dropdown-menu">
