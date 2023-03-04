@@ -2,7 +2,6 @@
 @using TOS.Extensions
 @model TOS.Models.Topic
 
-
 @{
     ViewData["Title"] = SharedLocalizer["Topic_Create_Heading"];
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -138,12 +137,9 @@
                }
                
                //Get selected group selected option name
-               //ChatGPT
                const selectElement = document.querySelector('#GroupId');
                const selectedOption = selectElement.options[selectElement.selectedIndex];
                const groupName = selectedOption.text;
-               
-               console.log(groupName);
                
                 var bachelorProgrammes = document.getElementsByClassName("Bachelor");
                 var masterProgrammes = document.getElementsByClassName("Master");

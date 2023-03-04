@@ -711,4 +711,7 @@
     <data name="Topic_Create_Placeholder" xml:space="preserve">
         <value>Search</value>
     </data>
+    <data name="Propose topic" xml:space="preserve">
+        <value>Propose topic</value>
+    </data>
 </root>

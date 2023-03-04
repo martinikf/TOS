@@ -707,4 +707,7 @@
     <data name="Topic_Create_Placeholder" xml:space="preserve">
         <value>Hledat</value>
     </data>
+    <data name="Propose topic" xml:space="preserve">
+        <value>Navrhnout téma</value>
+    </data>
 </root>
