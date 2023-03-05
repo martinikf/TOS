@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 using TOS.Data;
 using TOS.Models;
+using TOS.Resources;
 using TOS.Services;
 
 namespace TOS.Areas.Identity.Pages.Account
@@ -20,14 +22,16 @@ namespace TOS.Areas.Identity.Pages.Account
         private readonly ILogger<LoginModel> _logger;
         private readonly ApplicationDbContext _context;
         private readonly IAuthentication _authentication;
-        
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger, ApplicationDbContext context, UserManager<ApplicationUser> userManager, IAuthentication authentication)
+        private readonly IStringLocalizer<SharedResource> _localizer;
+
+        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger, ApplicationDbContext context, UserManager<ApplicationUser> userManager, IAuthentication authentication, IStringLocalizer<SharedResource> localizer)
         {
             _signInManager = signInManager;
             _logger = logger;
             _context = context;
             _userManager = userManager;
             _authentication = authentication;
+            _localizer = localizer;
         }
         
         [BindProperty]
@@ -105,7 +109,7 @@ namespace TOS.Areas.Identity.Pages.Account
 
         private IActionResult InvalidLoginAttempt()
         {
-            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            ModelState.AddModelError(string.Empty, _localizer["ERROR:InvalidLoginAttempt"]);
             return Page();
         }
     }

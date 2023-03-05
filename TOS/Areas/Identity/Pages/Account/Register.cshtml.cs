@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using TOS.Models;
 using TOS.Resources;
+using TOS.Services;
 
 namespace TOS.Areas.Identity.Pages.Account
 {
@@ -25,13 +26,15 @@ namespace TOS.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly IEmailSender _emailSender;
         private readonly IHtmlLocalizer<SharedResource> _sharedLocalizer;
+        private readonly IAuthentication _authentication;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
-            IHtmlLocalizer<SharedResource> sharedLocalizer)
+            IHtmlLocalizer<SharedResource> sharedLocalizer,
+            IAuthentication authentication)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -39,6 +42,7 @@ namespace TOS.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _emailSender = emailSender;
             _sharedLocalizer = sharedLocalizer;
+            _authentication = authentication;
         }
         
         [BindProperty]
@@ -82,8 +86,10 @@ namespace TOS.Areas.Identity.Pages.Account
 
             if (Input.Email.ToLower().EndsWith("@upol.cz"))
             {
-                
-                //TODO - add error message
+                if (await _authentication.Authenticate(Input.Email, Input.Password, false))
+                {
+                    return LocalRedirect(returnUrl);
+                }
                 return RedirectToPage("./Login", new {ReturnUrl = returnUrl});
             }
             

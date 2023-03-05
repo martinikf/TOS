@@ -714,4 +714,7 @@
     <data name="Propose topic" xml:space="preserve">
         <value>Propose topic</value>
     </data>
+    <data name="ERROR:InvalidLoginAttempt" xml:space="preserve">
+        <value>Wrong login credentials</value>
+    </data>
 </root>

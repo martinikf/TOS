@@ -710,4 +710,7 @@
     <data name="Propose topic" xml:space="preserve">
         <value>Navrhnout téma</value>
     </data>
+    <data name="ERROR:InvalidLoginAttempt" xml:space="preserve">
+        <value>Špatné přihlašovací údaje</value>
+    </data>
 </root>
