@@ -24,4 +24,12 @@
     <data name="Administration_Users_Heading" xml:space="preserve">
         <value>Administrace - uživatelé</value>
     </data>
+    <data name="Administration_CreateProgramme_Error_AlreadyExists" xml:space="preserve">
+        <value>Administration_CreateProgramme_Error_AlreadyExists</value>
+        <comment>Administration_CreateProgramme_Error_AlreadyExists</comment>
+    </data>
+    <data name="ERROR:0Administrators" xml:space="preserve">
+        <value>ERROR:0Administrators</value>
+        <comment>ERROR:0Administrators</comment>
+    </data>
 </root>

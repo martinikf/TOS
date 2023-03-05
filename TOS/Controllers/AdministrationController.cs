@@ -39,7 +39,7 @@ public class AdministrationController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateProgramme([Bind("ProgrammeId,Name,NameEng,Active,Type")] Programme programme)
     {
-        if (_context.Programmes.Any(x => (x.Name.Equals(programme.Name) || x.NameEng!.Equals(programme.NameEng)) && x.Type.Equals(programme.Type)))
+        if (await _context.Programmes.AnyAsync(x => (x.Name.Equals(programme.Name) || x.NameEng!.Equals(programme.NameEng)) && x.Type.Equals(programme.Type)))
         {
             return RedirectToAction("CreateProgramme", new{error=_localizer["Administration_CreateProgramme_Error_AlreadyExists"]});
         }
@@ -63,7 +63,7 @@ public class AdministrationController : Controller
     [HttpPost]
     public async Task<IActionResult> EditProgramme([Bind("ProgrammeId,Name,NameEng,Active,Type")]Programme programme)
     {
-        if (_context.Programmes.Any(x => x.ProgrammeId != programme.ProgrammeId && (x.Name.Equals(programme.Name) || x.NameEng!.Equals(programme.NameEng)) && x.Type.Equals(programme.Type)))
+        if (await _context.Programmes.AnyAsync(x => x.ProgrammeId != programme.ProgrammeId && (x.Name.Equals(programme.Name) || x.NameEng!.Equals(programme.NameEng)) && x.Type.Equals(programme.Type)))
         {
             return RedirectToAction("CreateProgramme", new{error="ALREADY_EXISTS"});
         }
@@ -88,16 +88,15 @@ public class AdministrationController : Controller
     
     public async Task<IActionResult> Users(string searchString = "")
     {
-        var users =  _context.Users;
-
         if (searchString.Length > 2)
         {
             ViewData["searchString"] = searchString;
-            searchString = searchString.ToLower();
+            searchString = searchString.Trim().ToLower();
 
-            return View( await users.Where(x=>x.FirstName!.ToLower().Contains(searchString) 
-                                              || x.LastName!.ToLower().Contains(searchString) ||
-                                              x.Email!.ToLower().Contains(searchString)).ToListAsync());
+            return View( await _context.Users
+                .Where(x=>x.FirstName!.ToLower().Contains(searchString) || 
+                          x.LastName!.ToLower().Contains(searchString) ||
+                          x.Email!.ToLower().Contains(searchString)).ToListAsync());
         }
        
         return View(new List<ApplicationUser>());
@@ -107,7 +106,7 @@ public class AdministrationController : Controller
     {
         var user = await _context.Users.FirstAsync(x => x.Id.Equals(id));
         ViewData["Roles"] = new List<string> {"Student", "Teacher", "Administrator", "External"};
-
+        
         ViewData["Student"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name == "Student").Id));
         ViewData["Teacher"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name =="Teacher").Id));
         ViewData["Administrator"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name =="Administrator").Id));
@@ -123,11 +122,12 @@ public class AdministrationController : Controller
     {
         var user = await _context.Users.FirstAsync(x => x.Id.Equals(id));
         var adminRole = await _context.Roles.FirstAsync(x => x.Name == Role.Administrator.ToString());
-        var userIsAdmin = _context.UserRoles.Any(x => x.UserId == user.Id && x.RoleId == adminRole.Id);
+        var userIsAdmin = await _context.UserRoles.AnyAsync(x => x.UserId == user.Id && x.RoleId == adminRole.Id);
+        
         if (userIsAdmin && roleGroup != Role.Administrator.ToString())
         {
-            var administratorRole = _context.Roles.First(x=>x.Name == Role.Administrator.ToString());
-            if (_context.UserRoles.Count(x => x.RoleId == administratorRole.Id) <= 1)
+            var administratorRole = await _context.Roles.FirstAsync(x=>x.Name == Role.Administrator.ToString());
+            if (await _context.UserRoles.CountAsync(x => x.RoleId == administratorRole.Id) <= 1)
             {
                 return await EditRoles(id, true);
             }
@@ -147,14 +147,14 @@ public class AdministrationController : Controller
         return RedirectToAction(nameof(Users));
     }
 
-    public IActionResult Notifications()
+    public async Task<IActionResult> Notifications()
     {
-        return View(_context.Notifications.ToList());
+        return View(await _context.Notifications.ToListAsync());
     }
 
-    public IActionResult EditNotification(int id)
+    public async Task<IActionResult> EditNotification(int id)
     {
-        var not = _context.Notifications.First(x => x.NotificationId == id);
+        var not = await _context.Notifications.FirstAsync(x => x.NotificationId == id);
 
         return View(not);
     }
@@ -162,7 +162,7 @@ public class AdministrationController : Controller
     [HttpPost]
     public async Task<IActionResult> EditNotification([Bind("Name,Subject,SubjectEng,Text,TextEng,NotificationId")]Notification notification)
     {
-        if (_context.Notifications.Any(x =>
+        if (await _context.Notifications.AnyAsync(x =>
                 x.NotificationId != notification.NotificationId && x.Name == notification.Name))
         {
             return RedirectToAction(nameof(EditNotification), new {notification.NotificationId});

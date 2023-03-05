@@ -18,13 +18,13 @@ namespace TOS.Controllers
         // GET: Group
         public async Task<IActionResult> Index(string searchString = "", bool showHidden = false)
         {
-            var groups = await _context.Groups.Where(x=>!x.Selectable && x.NameEng != "Unassigned").Include(x => x.Creator).ToListAsync();
+            var groups = _context.Groups.Where(x => !x.Selectable && x.NameEng != "Unassigned");
 
             //Show hidden
             ViewData["showHidden"] = showHidden;
             if (!showHidden)
             {
-                groups = groups.Where(x => x.Visible).ToList();
+                groups = groups.Where(x => x.Visible);
             }
 
             //Search
@@ -33,26 +33,28 @@ namespace TOS.Controllers
                 ViewData["searchString"] = searchString;
                 searchString = searchString.ToLower();
                 groups = groups.Where(x =>
-                    x.Name.ToLower().Contains(searchString) || x.NameEng.ToLower().Contains(searchString)).ToList();
+                    x.Name.ToLower().Contains(searchString) || x.NameEng.ToLower().Contains(searchString));
             }
 
             //Higlight used groups
             var user = _context.Users.FirstOrDefault(x => User.Identity != null && x.UserName == User.Identity.Name);
+            var allGroups = await groups.ToListAsync();
             if (user is not null)
             {
-                foreach (var group in groups
+                foreach (var group in allGroups
                              .Where(group =>
                                  user.AssignedTopics.Any(x => x.GroupId == group.GroupId) ||
                                  user.SupervisedTopics.Any(x => x.GroupId == group.GroupId) ||
                                  user.CreatedGroups.Any(x => x.GroupId == group.GroupId) ||
                                  user.CreatedTopics.Any(x => x.GroupId == group.GroupId) ||
-                                 group.NameEng is "Bachelor" or "Master" or "Unassigned"))
+                                 group.NameEng == "Bachelor" || group.NameEng == "Master" || group.NameEng == "Unassigned")
+                             .ToList())
                 {
                     group.Highlight = true;
                 }
             }
             
-            return View(groups);
+            return View(allGroups);
         }
         
         // GET: Group/Create
@@ -73,7 +75,7 @@ namespace TOS.Controllers
             
             group.CreatorId = _context.Users.First(x => User.Identity != null && x.UserName == User.Identity.Name).Id;
             
-            _context.Add(group);
+            await _context.AddAsync(group);
             await _context.SaveChangesAsync();
             
             return RedirectToAction(nameof(Index));
@@ -143,7 +145,7 @@ namespace TOS.Controllers
             _context.Topics.RemoveRange(group.Topics);
             await _context.SaveChangesAsync();
             
-            //Delete grop
+            //Delete group
             _context.Groups.Remove(group);
             await _context.SaveChangesAsync();
             
