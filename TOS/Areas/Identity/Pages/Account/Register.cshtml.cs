@@ -80,8 +80,9 @@ namespace TOS.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
 
-            if (Input.Email.EndsWith("@upol.cz"))
+            if (Input.Email.ToLower().EndsWith("@upol.cz"))
             {
+                
                 //TODO - add error message
                 return RedirectToPage("./Login", new {ReturnUrl = returnUrl});
             }

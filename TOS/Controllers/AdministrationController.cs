@@ -98,8 +98,9 @@ public class AdministrationController : Controller
                           x.LastName!.ToLower().Contains(searchString) ||
                           x.Email!.ToLower().Contains(searchString)).ToListAsync());
         }
-       
-        return View(new List<ApplicationUser>());
+
+        //Return users without any role (potential new external users
+        return View(await _context.Users.Where(x => !_context.UserRoles.Any(y => y.UserId == x.Id)).ToListAsync());
     }
     
     public async Task<IActionResult> EditRoles(int? id, bool error = false)

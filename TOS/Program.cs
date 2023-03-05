@@ -53,25 +53,17 @@ builder.Services.Configure<RequestLocalizationOptions>(
         options.SupportedUICultures = supportedCultures;
     });
 
-builder.Services.AddScoped<SmtpEmailSenderSettings, SmtpEmailSenderSettings>(
-    _ => new SmtpEmailSenderSettings()
-    {
-        Username = builder.Configuration.GetSection("EmailSettings").GetValue<string>("Username") ?? throw new ConfigurationErrorsException("SMTP-Username is not set in appsettings.json"),
-        Password = builder.Configuration.GetSection("EmailSettings").GetValue<string>("Password") ?? throw new ConfigurationErrorsException("SMTP-Password is not set in appsettings.json"),
-        Port = builder.Configuration.GetSection("EmailSettings").GetValue<int>("Port"),
-        FromAddress = builder.Configuration.GetSection("EmailSettings").GetValue<string>("FromAddress") ?? throw new ConfigurationErrorsException("SMTP-FromAddress is not set in appsettings.json"),
-        SmtpServer = builder.Configuration.GetSection("EmailSettings").GetValue<string>("SmtpServer") ?? throw new ConfigurationErrorsException("SMTP-SmtpServer is not set in appsettings.json"),
-        EnableSsl = builder.Configuration.GetSection("EmailSettings").GetValue<bool>("EnableSsl")
-    });
 builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 
 builder.Services.AddScoped<INotificationManager, NotificationManager>();
+
+builder.Services.AddScoped<IAuthentication, UpolAuthentication>();
 
 var app = builder.Build();
 
 app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
-if(true)
+if(false)
     Seed.InfUpolSeed(app);
 
 // Configure the HTTP request pipeline.

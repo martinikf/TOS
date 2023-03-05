@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -181,7 +180,7 @@ namespace TOS.Controllers
             ViewData["Programmes"] = await _context.Programmes.Where(x => x.Active).ToListAsync();
             ViewData["UsersToAssign"] = new SelectList(await GetUsersWithRole("AssignedTopic"), "Id", "Email");
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = (await GetUser()).Id;
             ViewData["UsersToSupervise"] = new SelectList(await GetUsersWithRole("SuperviseTopic"), "Id", "Email", userId);
 
             return View();

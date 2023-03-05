@@ -44,6 +44,13 @@ namespace TOS.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync()
         {
+            //If AD/Stag user tries to reset password, redirect to login page
+            if (Input.Email.ToLower().EndsWith("@upol.cz"))
+            {
+                //TODO: Error message
+                return RedirectToPage("./Login");
+            }
+            
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(Input.Email);

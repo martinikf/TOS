@@ -7,30 +7,30 @@ namespace TOS.Services;
 
 public static class RoleHelper
 {
-    public static async Task<bool> AssignRoles(ApplicationUser user, Role role, ApplicationDbContext ctx)
+    public static async Task AssignRoles(ApplicationUser user, Role role, ApplicationDbContext ctx)
     {
         var roles = new List<string>();
         switch (role)
         {
-            case Role.Student:
-                roles.AddRange(new[] {"Student", "ProposeTopic", "InterestTopic", "Comment", "AnonymousComment", "AssignedTopic"});
+            case Role.Administrator:
+                roles.AddRange(new [] {"Administrator", "Topic", "AnyTopic", "Comment", "AnyComment", "Attachment","AnyAttachment", "Group", "AnyGroup"});
                 break;
             case Role.Teacher:
                 roles.AddRange(new[] {"Teacher", "Topic", "Comment", "AnyComment", "Attachment", "Group", "SuperviseTopic"});
                 break;
+            case Role.Student:
+                roles.AddRange(new[] {"Student", "ProposeTopic", "InterestTopic", "Comment", "AnonymousComment", "AssignedTopic"});
+                break;
             case Role.External:
                 roles.AddRange(new [] {"External", "ProposeTopic", "Comment", "Attachment"});
-                break;
-            case Role.Administrator:
-                roles.AddRange(new [] {"Administrator", "Topic", "AnyTopic", "Comment", "AnyComment", "Attachment","AnyAttachment", "Group", "AnyGroup"});
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(role), role, null);
         }
         
         //Delete users current roles
-        var userRoles = ctx.UserRoles.Where(x => x.UserId == user.Id);
-        ctx.UserRoles.RemoveRange(userRoles);
+        var userRoles = ctx.UserRoles.Where(x => x.UserId == user.Id).ToListAsync();
+        ctx.UserRoles.RemoveRange(await userRoles);
         await ctx.SaveChangesAsync();
 
         var roleIds = await ctx.Roles
@@ -47,7 +47,5 @@ public static class RoleHelper
             ctx.UserRoles.Add(ur);
         }
         await ctx.SaveChangesAsync();
-
-        return true;
     }
 }

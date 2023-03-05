@@ -9,16 +9,19 @@ public class SmtpEmailSender : IEmailSender
     private readonly SmtpClient _client;
     private readonly string _fromAddress;
 
-    public SmtpEmailSender(SmtpEmailSenderSettings settings)
+    public SmtpEmailSender( IConfiguration configuration)
     {
-        _fromAddress = settings.FromAddress;
-        var credentials = new NetworkCredential(settings.Username, settings.Password);
-        
-        _client = new SmtpClient(settings.SmtpServer)
+        _fromAddress = configuration["EmailSettings:FromAddress"] ?? throw new Exception("EmailSettings:FromAddress is not set in appsettings.json");
+       
+        var username = configuration["EmailSettings:Username"] ?? throw new Exception("EmailSettings:Username is not set in appsettings.json");
+        var password = configuration["EmailSettings:Password"] ?? throw new Exception("EmailSettings:Password is not set in appsettings.json");
+        var credentials = new NetworkCredential(username, password);
+
+        _client = new SmtpClient(configuration["EmailSettings:SmtpServer"])
         {
-            Port = settings.Port,
+            Port = int.Parse(configuration["EmailSettings:Port"] ?? throw new Exception("EmailSettings:Port is not set in appsettings.json")),
             Credentials = credentials,
-            EnableSsl = settings.EnableSsl
+            EnableSsl = bool.Parse(configuration["EmailSettings:EnableSsl"] ?? "true") 
         };
     }
     
@@ -26,14 +29,4 @@ public class SmtpEmailSender : IEmailSender
     {
         await _client.SendMailAsync(new MailMessage(_fromAddress, "martinik.filip01@gmail.com", subject, htmlMessage));
     }
-}
-
-public class SmtpEmailSenderSettings
-{
-    public string Username { get; init; } = string.Empty;
-    public string Password { get; init; } = string.Empty;
-    public string FromAddress { get; init; } = string.Empty;
-    public string SmtpServer { get; init; } = string.Empty;
-    public int Port { get; init; }
-    public bool EnableSsl { get; init; }
 }

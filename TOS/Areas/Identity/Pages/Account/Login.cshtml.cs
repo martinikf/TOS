@@ -3,16 +3,10 @@
 #nullable disable
 
 using System.ComponentModel.DataAnnotations;
-using Novell.Directory.Ldap;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Xml.Linq;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using TOS.Data;
 using TOS.Models;
 using TOS.Services;
@@ -25,15 +19,15 @@ namespace TOS.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly ApplicationDbContext _context;
-        private readonly IEmailSender _emailSender;
+        private readonly IAuthentication _authentication;
         
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger, ApplicationDbContext context, IEmailSender emailSender, UserManager<ApplicationUser> userManager)
+        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger, ApplicationDbContext context, UserManager<ApplicationUser> userManager, IAuthentication authentication)
         {
             _signInManager = signInManager;
             _logger = logger;
             _context = context;
-            _emailSender = emailSender;
             _userManager = userManager;
+            _authentication = authentication;
         }
         
         [BindProperty]
@@ -101,192 +95,13 @@ namespace TOS.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            
-            //Convert input username to lowercase
-            Input.Username = Input.Username.Trim().ToLower();
-
-            //Set Input.Username to correct format
-            PrepareInputUsername();
-
-            var successfulSignIn = false; //result shows if user was authenticated
-            var user = _context.Users.FirstOrDefault(x => x.UserName.Equals(Input.Username));
-
-            if (user != null)
+            var success = await _authentication.Authenticate(Input.Username, Input.Password, Input.RememberMe);
+            if (success)
             {
-                //User is in database ------
-                
-                //Authenticate user with server database
-                if (user.PasswordHash != null)
-                {
-                    successfulSignIn = await DatabaseSignIn(user, false);
-                }
-                
-                //Authenticate user with LDAP UPOL domain
-                if (!successfulSignIn)
-                {
-                    successfulSignIn = await LdapSignIn(user);
-                }
+                return LocalRedirect(returnUrl);
             }
-            else
-            {
-                //User not found in database -> register -> sign in 
-                ApplicationUser createdUser;
-                if ((createdUser = await CreateLdapUser()) != null)
-                {
-                    successfulSignIn = await LdapSignIn(createdUser);
-                }
+            return InvalidLoginAttempt();
             }
-
-            //Successful login
-            return successfulSignIn ? LocalRedirect(returnUrl) : InvalidLoginAttempt();
-        }
-
-        private bool LdapAuthenticate(string username, string password)
-        {
-            try
-            {
-                var ldapConn = new LdapConnection();
-                ldapConn.Connect("158.194.64.3", 389);
-                ldapConn.Bind("prfad\\" + username, password);
-                return ldapConn.Connected;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private async Task<ApplicationUser> CreateLdapUser()
-        {
-            try
-            {
-                if (!LdapAuthenticate(Input.Username, Input.Password)) return null;
-
-                //Decide if user is a teacher or student and get their userStagId
-                string userStagId;
-                const string stagServicesUrl = "https://stagservices.upol.cz/ws/services";
-                
-                var studentReq = stagServicesUrl + "/rest2/users/getOsobniCislaByExternalLogin?login=" + Input.Username;
-                if ((userStagId = GetUserStagId(studentReq)).Length >= 1) return await CreateUser(userStagId, true);
-                
-                //Student ID not found -> try teacher
-                var teacherReq = stagServicesUrl + "/rest2/users/getUcitIdnoByExternalLogin?externalLogin=" + Input.Username;
-                if ((userStagId = GetUserStagId(teacherReq, true)).Length >= 1)  return await CreateUser(userStagId, false);
-                
-                //Couldn't find any userStagId
-                return null;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        private async Task<ApplicationUser> CreateUser(string osCislo, bool student)
-        {
-            var req = student
-                ? "https://stagservices.upol.cz/ws/services/rest2/student/getStudentInfo?osCislo=" + osCislo
-                : "https://stagservices.upol.cz/ws/services/rest2/ucitel/getUcitelInfo?ucitIdno=" + osCislo;
-
-            var info = GetUserStagInfo(req);
-
-            var lastnameLowered = info.Item2[..1] + info.Item2[1..].ToLower();
-
-            var user = new ApplicationUser
-            {
-                FirstName = info.Item1,
-                LastName = lastnameLowered,
-                DisplayName = info.Item1 + " " + lastnameLowered,
-                Email = info.Item3,
-                UserName = Input.Username,
-                EmailConfirmed = true,
-                PasswordHash = null
-            };
-            user.SecurityStamp = Guid.NewGuid().ToString("D");
-            
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            
-            user = await _context.Users.FirstAsync(x => x.UserName.Equals(user.UserName));
-            await RoleHelper.AssignRoles(user, student ? Role.Student : Role.Teacher, _context);
-
-            return user;
-        }
-
-        private Tuple<string, string, string> GetUserStagInfo(string reqString)
-        {
-            try
-            {
-                var client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
-                    Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1")
-                        .GetBytes(Input.Username + ":" + Input.Password)));
-
-                client.BaseAddress = new Uri(reqString);
-
-                var response = client.GetAsync(reqString).Result;
-                var responseString = response.Content.ReadAsStringAsync().Result;
-
-                var xml = XDocument.Parse(responseString);
-
-                var firstname = xml.Descendants("jmeno").First().Value;
-                var lastname = xml.Descendants("prijmeni").First().Value;
-                var email = xml.Descendants("email").First().Value;
-
-                return new Tuple<string, string, string>(firstname, lastname, email);
-            }
-            catch
-            {
-                throw new Exception("STAGAPI connection failed");
-            }
-        }
-
-        private string GetUserStagId(string reqString, bool teacher = false)
-        {
-            try
-            {
-                var client = new HttpClient();
-                client.BaseAddress = new Uri(reqString);
-
-                var response = client.GetAsync(reqString).Result;
-                var responseString = response.Content.ReadAsStringAsync().Result;
-               
-                if (teacher)
-                {
-                    //Teacher http response is different -> not xml, contains only value in string
-                    return responseString;
-                }
-                else
-                {
-                    var xml = XDocument.Parse(responseString);
-                    return xml.Descendants("osCislo").First().Value;
-                }
-            }
-            catch
-            {
-                return "";
-            }
-        }
-        
-        private async Task<bool> DatabaseSignIn(ApplicationUser user, bool lockoutOnFailure)
-        {
-            if (user.UserName is null)
-                throw new Exception("User does not have a username");
-
-            var result =
-                await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe,
-                    lockoutOnFailure);
-            
-            return result.Succeeded;
-        }
-
-        private async Task<bool> LdapSignIn(ApplicationUser user)
-        {
-            if (!LdapAuthenticate(user.UserName, Input.Password)) return false;
-            
-            await _signInManager.SignInAsync(user, Input.RememberMe);
-            return true;
-        }
 
         private IActionResult InvalidLoginAttempt()
         {
