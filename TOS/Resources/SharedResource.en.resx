@@ -717,4 +717,10 @@
     <data name="ERROR:InvalidLoginAttempt" xml:space="preserve">
         <value>Wrong login credentials</value>
     </data>
+    <data name="AccessDenied_Heading" xml:space="preserve">
+        <value>Access denied</value>
+    </data>
+    <data name="AccessDenied_Text" xml:space="preserve">
+        <value>Access denied</value>
+    </data>
 </root>

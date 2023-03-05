@@ -713,4 +713,10 @@
     <data name="ERROR:InvalidLoginAttempt" xml:space="preserve">
         <value>Špatné přihlašovací údaje</value>
     </data>
+    <data name="AccessDenied_Heading" xml:space="preserve">
+        <value>Přístup zakázán</value>
+    </data>
+    <data name="AccessDenied_Text" xml:space="preserve">
+        <value>K přístupu k danému objektu nemáte dostatečná oprávnění</value>
+    </data>
 </root>
