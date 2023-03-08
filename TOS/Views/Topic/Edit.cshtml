@@ -133,7 +133,8 @@
     </div>
     
     <div class="mb-3">
-        <input type="submit" value="@SharedLocalizer["Topic_Edit_Submit"]" class="btn btn-primary" />
+        <a asp-controller="Topic" asp-action="Details" asp-route-id="@Model.TopicId" class="btn btn-secondary">@SharedLocalizer["Cancel"]</a>
+        <input type="submit" value="@SharedLocalizer["Topic_Edit_Submit"]" class="btn btn-primary"/>
     </div>
 </form>
 

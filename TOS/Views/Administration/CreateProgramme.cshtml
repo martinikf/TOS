@@ -32,7 +32,7 @@
         </select>
         <span asp-validation-for="Type" class="text-danger"></span>
     </div>
-    
+    <a asp-controller="Administration" asp-action="Programmes" class="btn btn-secondary">@SharedLocalizer["Cancel"]</a>
     <input type="submit" class="btn btn-primary" value="@SharedLocalizer["Administration_CreateProgramme_Submit"]"/>
 </form>
 

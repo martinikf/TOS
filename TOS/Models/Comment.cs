@@ -9,6 +9,7 @@ public class Comment
     public int CommentId { get; set; }
 
     [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_CommentTextRequired")]
+    [StringLength(1024, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_CommentTextMaxLength")]
     [MinLength(2, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_CommentTextMinLength")]
     public string Text { get; set; } = string.Empty;
     

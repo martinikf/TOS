@@ -719,4 +719,13 @@
     <data name="AccessDenied_Text" xml:space="preserve">
         <value>K přístupu k danému objektu nemáte dostatečná oprávnění</value>
     </data>
+    <data name="Proposed theses" xml:space="preserve">
+        <value>Navrhnuté závěrečné práce</value>
+    </data>
+    <data name="Cancel" xml:space="preserve">
+        <value>Storno</value>
+    </data>
+    <data name="Administration" xml:space="preserve">
+        <value>Administrace</value>
+    </data>
 </root>

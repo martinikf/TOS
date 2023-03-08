@@ -723,4 +723,13 @@
     <data name="AccessDenied_Text" xml:space="preserve">
         <value>Access denied</value>
     </data>
+    <data name="Proposed theses" xml:space="preserve">
+        <value>Proposed theses</value>
+    </data>
+    <data name="Cancel" xml:space="preserve">
+        <value>Cancel</value>
+    </data>
+    <data name="Administration" xml:space="preserve">
+        <value>Administartion</value>
+    </data>
 </root>

@@ -27,6 +27,14 @@ public class SmtpEmailSender : IEmailSender
     
     public async Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
-        await _client.SendMailAsync(new MailMessage(_fromAddress, "martinik.filip01@gmail.com", subject, htmlMessage));
+        try
+        {
+            await _client.SendMailAsync(new MailMessage(_fromAddress, "martinik.filip01@gmail.com", subject,
+                htmlMessage));
+        }
+        catch
+        {
+            Console.WriteLine("Failed to send email");
+        }
     }
 }

@@ -11,7 +11,7 @@ public class ApplicationUser : IdentityUser<int>
     
     public string? DisplayName { get; set; }
 
-        [InverseProperty("Creator")] 
+    [InverseProperty("Creator")] 
     public virtual ICollection<Topic> CreatedTopics { get; } = new HashSet<Topic>();
     
     [InverseProperty("Supervisor")]

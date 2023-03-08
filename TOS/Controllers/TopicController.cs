@@ -22,6 +22,23 @@ namespace TOS.Controllers
             _env = env;
             _notificationManager = notificationManager;
         }
+
+        public async Task<IActionResult> Topics(int groupId)
+        {
+            var group = await _context.Groups.FindAsync(groupId);
+            if (group is null) return RedirectToAction("Index", "Home");
+            
+            switch (group.NameEng)
+            {
+                case "Bachelor":
+                case "Master":
+                    return RedirectToAction("Index", "Topic", new{ groupName = group.NameEng});
+                case "Unassigned":
+                    return RedirectToAction("Unassigned", "Topic");
+                default:
+                    return RedirectToAction("Group", "Topic", new {groupId = group.GroupId});
+            }
+        }
         
         public async Task<IActionResult> Index(string groupName ="Bachelor", string programmeName = "",
             string searchString = "", bool showTakenTopics = false, string orderBy = "Supervisor",
@@ -124,7 +141,7 @@ namespace TOS.Controllers
             topics = ApplySearch(topics, searchString);
 
             topics = topics.Where(x => showHidden ? x.Visible || !x.Visible : x.Visible || x.Proposed);
-            topics = topics.Where(x => showProposed ? x.Proposed || !x.Proposed : !x.Proposed);
+            if(showProposed == false) topics = topics.Where(x => !x.Proposed);
 
             //If search string is provided, select all topics from groups that match the search string
             if (searchString.Length > 2)
@@ -174,6 +191,9 @@ namespace TOS.Controllers
 
                 ViewData["Groups"] = groups;
             }
+
+            //Used in storno button
+            ViewData["ReturnGroup"] = _context.Groups.FirstAsync(x => x.NameEng == groupName).Result.GroupId;
             
             ViewData["TopicType"] = type;
 
@@ -211,6 +231,9 @@ namespace TOS.Controllers
             {
                 ViewData["Groups"] = await _context.Groups.Where(x => x.GroupId.Equals(group.GroupId)).ToListAsync();
             }
+            
+            //Used in storno button
+            ViewData["ReturnGroup"] = _context.Groups.FirstAsync(x => x.NameEng == groupName).Result.GroupId;
             
             ViewData["TopicType"] = type;
 
@@ -258,7 +281,11 @@ namespace TOS.Controllers
             }
 
             ViewData["UsersToAssign"] = new SelectList(await GetUsersWithRole("AssignedTopic"), "Id", "Email", topic.AssignedId);
-            if (topic.Group.Selectable || topic.Group.NameEng.Equals("Unassigned"))
+            if (topic.Group.NameEng!.Equals("Unassigned"))
+            {
+                ViewData["Group"] = new SelectList(_context.Groups.Where(x => x.Selectable).OrderBy(x=>x.Name), "GroupId", "Name");
+            }
+            else if (topic.Group.Selectable)
             {
                 ViewData["Group"] = new SelectList(_context.Groups.Where(x => x.Selectable), "GroupId", "Name", topic.GroupId);
             }
@@ -329,6 +356,11 @@ namespace TOS.Controllers
             }
             else
             {
+                var proposed = topic.Proposed;
+                if (topic.Proposed && topic.SupervisorId > 0)
+                {
+                    topic.Proposed = false;
+                }
                 //Update topic
                 _context.Topics.Update(topic);
                 await _context.SaveChangesAsync();
@@ -341,9 +373,8 @@ namespace TOS.Controllers
                     .First(x=>x.TopicId.Equals(topic.TopicId));
                 
                 //Notify users
-                if (topic.Proposed && topic.SupervisorId > 0)
+                if (proposed && topic.SupervisorId > 0)
                 {
-                    topic.Proposed = true;
                     await _notificationManager.TopicAdopted(topic, CallbackDetailsUrl(topic.TopicId));
                 }
                 else if(topic.AssignedId != null && oldAssigned != topic.AssignedId)
@@ -397,16 +428,7 @@ namespace TOS.Controllers
             _context.Topics.Remove(topic);
             await _context.SaveChangesAsync();
 
-            switch (group.NameEng)
-            {
-                case "Bachelor":
-                case "Master":
-                    return RedirectToAction("Index", "Topic", new{ groupName = group.NameEng});
-                case "Unassigned":
-                    return RedirectToAction("Unassigned", "Topic");
-                default:
-                    return RedirectToAction("Group", "Topic", new {groupId = group.GroupId});
-            }
+            return await Topics(group.GroupId);
         }
 
         [Authorize(Roles = "InterestTopic")]

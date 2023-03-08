@@ -60,7 +60,16 @@ namespace TOS.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Komentář je příliš krátký..
+        ///   Looks up a localized string similar to Komentář je příliš dlouhý.
+        /// </summary>
+        internal static string ERROR_CommentTextMaxLength {
+            get {
+                return ResourceManager.GetString("ERROR_CommentTextMaxLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Komentář je příliš krátký.
         /// </summary>
         internal static string ERROR_CommentTextMinLength {
             get {
@@ -96,7 +105,43 @@ namespace TOS.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Název skupiny je povinný..
+        ///   Looks up a localized string similar to Popis je příliš dlouhý.
+        /// </summary>
+        internal static string ERROR_GroupDescriptionMaxLength {
+            get {
+                return ResourceManager.GetString("ERROR_GroupDescriptionMaxLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Název skupiny anglicky je povinný.
+        /// </summary>
+        internal static string ERROR_GroupNameEnRequired {
+            get {
+                return ResourceManager.GetString("ERROR_GroupNameEnRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Název skupiny je moc dlouhý.
+        /// </summary>
+        internal static string ERROR_GroupNameMaxLength {
+            get {
+                return ResourceManager.GetString("ERROR_GroupNameMaxLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Název skupiny je příliš krátký.
+        /// </summary>
+        internal static string ERROR_GroupNameMinLength {
+            get {
+                return ResourceManager.GetString("ERROR_GroupNameMinLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Název skupiny je povinný.
         /// </summary>
         internal static string ERROR_GroupNameRequired {
             get {
@@ -177,6 +222,15 @@ namespace TOS.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Popis je příliš dlouhý.
+        /// </summary>
+        internal static string ERROR_TopicDescriptionLongLength {
+            get {
+                return ResourceManager.GetString("ERROR_TopicDescriptionLongLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Kartký popis je příliš dlouhý.
         /// </summary>
         internal static string ERROR_TopicDescriptionShortLength {
@@ -191,6 +245,15 @@ namespace TOS.Resources {
         internal static string ERROR_TopicDescriptionShortRequired {
             get {
                 return ResourceManager.GetString("ERROR_TopicDescriptionShortRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Název je příliš dlouhý.
+        /// </summary>
+        internal static string ERROR_TopicNameLength {
+            get {
+                return ResourceManager.GetString("ERROR_TopicNameLength", resourceCulture);
             }
         }
         

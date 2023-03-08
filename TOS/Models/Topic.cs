@@ -10,18 +10,23 @@ public class Topic
         public int TopicId { get; set; }
 
         [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicNameRequired")]
+        [StringLength(128, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicNameLength")]
         public string Name { get; set; } = string.Empty;
         
+        [StringLength(128, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicNameLength")]
         public string? NameEng { get; set; } = string.Empty;
 
         [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicDescriptionShortRequired")]
         [StringLength(512, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicDescriptionShortLength")]
         public string DescriptionShort { get; set; } = string.Empty;
         
+        [StringLength(512, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicDescriptionShortLength")]
         public string? DescriptionShortEng { get; set; } = string.Empty;
         
+        [StringLength(16384 , ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicDescriptionLongLength")]
         public string? DescriptionLong { get; set; }
         
+        [StringLength(16384 , ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicDescriptionLongLength")]
         public string? DescriptionLongEng { get; set; }
 
         public bool Visible { get; set; }

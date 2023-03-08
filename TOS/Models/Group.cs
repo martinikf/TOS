@@ -10,12 +10,18 @@ public class Group
     public int GroupId { get; set; }
     
     [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_GroupNameRequired")]
+    [StringLength(64, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_GroupNameMaxLength")]
+    [MinLength(4, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_GroupNameMinLength")]
     public string Name { get; set; } = string.Empty;
     
-    public string NameEng { get; set; } = string.Empty;
+    [StringLength(64, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_GroupNameMaxLength")]
+    [MinLength(4, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_GroupNameMinLength")]
+    public string? NameEng { get; set; } = string.Empty;
 
+    [StringLength(4096, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_GroupDescriptionMaxLength")]
     public string? Description { get; set; } = string.Empty;
     
+    [StringLength(4096, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_GroupDescriptionMaxLength")]
     public string? DescriptionEng { get; set; } = string.Empty;
     
     public int CreatorId { get; set; }

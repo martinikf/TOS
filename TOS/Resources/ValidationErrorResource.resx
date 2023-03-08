@@ -19,7 +19,7 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="ERROR_GroupNameRequired" xml:space="preserve">
-        <value>Název skupiny je povinný.</value>
+        <value>Název skupiny je povinný</value>
     </data>
     <data name="ERROR_CommentTextRequired" xml:space="preserve">
         <value>Text komentáře je prázdný</value>
@@ -43,7 +43,7 @@
         <value>Kartký popis je příliš dlouhý</value>
     </data>
     <data name="ERROR_CommentTextMinLength" xml:space="preserve">
-        <value>Komentář je příliš krátký.</value>
+        <value>Komentář je příliš krátký</value>
     </data>
     <data name="ERROR_PasswordLength" xml:space="preserve">
         <value>Heslo je přílíš kratké</value>
@@ -65,5 +65,26 @@
     </data>
     <data name="ERROR_LoginRequired" xml:space="preserve">
         <value>Přihlašovací jméno není zadáno</value>
+    </data>
+    <data name="ERROR_CommentTextMaxLength" xml:space="preserve">
+        <value>Komentář je příliš dlouhý</value>
+    </data>
+    <data name="ERROR_GroupNameMaxLength" xml:space="preserve">
+        <value>Název skupiny je moc dlouhý</value>
+    </data>
+    <data name="ERROR_GroupNameMinLength" xml:space="preserve">
+        <value>Název skupiny je příliš krátký</value>
+    </data>
+    <data name="ERROR_GroupNameEnRequired" xml:space="preserve">
+        <value>Název skupiny anglicky je povinný</value>
+    </data>
+    <data name="ERROR_GroupDescriptionMaxLength" xml:space="preserve">
+        <value>Popis je příliš dlouhý</value>
+    </data>
+    <data name="ERROR_TopicNameLength" xml:space="preserve">
+        <value>Název je příliš dlouhý</value>
+    </data>
+    <data name="ERROR_TopicDescriptionLongLength" xml:space="preserve">
+        <value>Popis je příliš dlouhý</value>
     </data>
 </root>

@@ -53,8 +53,9 @@
     <div class="mb-3">
         <label asp-for="TextEng" class="form-label">@SharedLocalizer["Administration_EditNotification_TextEng"]</label>
         <textarea asp-for="TextEng" class="form-control" style="height: 125px"></textarea>
-         <span asp-validation-for="TextEng" class="text-danger"></span>
+        <span asp-validation-for="TextEng" class="text-danger"></span>
     </div>
+    <a asp-controller="Administration" asp-action="Notifications" class="btn btn-secondary">@SharedLocalizer["Cancel"]</a>
     <input type="submit" class="btn btn-primary" value="@SharedLocalizer["Administration_EditNotification_Submit"]"/>
 </form>
 

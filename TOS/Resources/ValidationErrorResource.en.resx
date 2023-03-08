@@ -12,7 +12,7 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="ERROR_GroupNameRequired" xml:space="preserve">
-        <value>Name of group is required.</value>
+        <value>Name of group is required</value>
     </data>
     <data name="ERROR_CommentTextRequired" xml:space="preserve">
         <value>Text of comment is empty</value>
@@ -58,5 +58,26 @@
     </data>
     <data name="ERROR_LoginRequired" xml:space="preserve">
         <value>Login name is required</value>
+    </data>
+    <data name="ERROR_CommentTextMaxLength" xml:space="preserve">
+        <value>Comment is too long</value>
+    </data>
+    <data name="ERROR_GroupDescriptionMaxLength" xml:space="preserve">
+        <value>Description is too long</value>
+    </data>
+    <data name="ERROR_GroupNameEnRequired" xml:space="preserve">
+        <value>Group name is required</value>
+    </data>
+    <data name="ERROR_GroupNameMaxLength" xml:space="preserve">
+        <value>Name is too long</value>
+    </data>
+    <data name="ERROR_GroupNameMinLength" xml:space="preserve">
+        <value>Name is too short</value>
+    </data>
+    <data name="ERROR_TopicDescriptionLongLength" xml:space="preserve">
+        <value>Description is too long</value>
+    </data>
+    <data name="ERROR_TopicNameLength" xml:space="preserve">
+        <value>Name is too long</value>
     </data>
 </root>

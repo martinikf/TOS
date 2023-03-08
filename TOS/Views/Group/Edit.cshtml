@@ -59,7 +59,8 @@
          <span asp-validation-for="DescriptionEng" class="text-danger"></span>
      </div>
     <div class="mb-3">
-        <input type="submit" value="@SharedLocalizer["Group_Edit_Submit"]" class="btn btn-primary" />
+        <a asp-controller="Topic" asp-action="Topics" asp-route-groupId="@Model.GroupId" class="btn btn-secondary">@SharedLocalizer["Cancel"]</a>
+        <input type="submit" value="@SharedLocalizer["Group_Edit_Submit"]" class="btn btn-primary"/>
     </div>
 </form>
 
