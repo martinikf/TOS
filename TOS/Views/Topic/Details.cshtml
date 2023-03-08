@@ -1,4 +1,5 @@
 @using TOS.Extensions
+@using System.Text
 @model TOS.Models.Topic
 
 @{
@@ -62,8 +63,16 @@
         {
             <span class="badge bg-secondary p-2">@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</span>
         }
-
-        <span class="badge rounded-pill bg-secondary ms-auto p-2">@SharedLocalizer["Topic_Details_InterestedStudents"]: @Model.UserInterestedTopics.Count</span>
+        @if (User.Identity!.IsAuthenticated)
+        {
+            <span type="button" class="badge rounded-pill bg-secondary p-2 ms-auto" data-bs-toggle="popover" data-bs-html="true" data-bs-placement="bottom" data-bs-title="@SharedLocalizer["Topic_Details_Interested_Heading"]"
+                    data-bs-content="
+                    @{ var sb = new StringBuilder(); sb.Append("<ul class=\"list-group list-group-flush\">");foreach (var user in Model.UserInterestedTopics.Select(x => x.User)) { sb.Append("<li class=\"list-group-item\">" + user.Email + "</li>"); } sb.Append("</ul>"); }
+                    @sb.ToString()">
+                @SharedLocalizer["Topic_Details_InterestedStudents"]: @Model.UserInterestedTopics.Count
+            </span>
+        }
+        
     </div>
     @if (Model.Proposed && (User.IsInRole("Topic") || User.IsInRole("AnyTopic")))
     {
@@ -203,6 +212,11 @@
 {
     <partial name="_ValidationScriptsPartial" />
     
+    <script>
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
+    </script>
     <script>
     $(document).ready(function (){
         $("#btn-interest").on("click", function (){

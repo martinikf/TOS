@@ -728,4 +728,10 @@
     <data name="Administration" xml:space="preserve">
         <value>Administrace</value>
     </data>
+    <data name="Topic_Details_Interested_Heading" xml:space="preserve">
+        <value>Studenti se zájmem</value>
+    </data>
+    <data name="Topic_Details_Heading" xml:space="preserve">
+        <value>Téma</value>
+    </data>
 </root>

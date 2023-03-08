@@ -77,7 +77,7 @@
     }
 
     <div class="mb-3">
-        <a asp-controller="Topic" asp-action="Details" asp-route-id="@((string)ViewData["ReturnGroup"]!)" class="btn btn-secondary">@SharedLocalizer["Cancel"]</a>
+        <a asp-controller="Topic" asp-action="Details" asp-route-id="@ViewData["ReturnGroup"]" class="btn btn-secondary">@SharedLocalizer["Cancel"]</a>
         <input type="submit" value="@SharedLocalizer["Topic_Create_Submit"]" class="btn btn-primary"/>
     </div>
 </form>
