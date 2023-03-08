@@ -137,9 +137,30 @@ public class NotificationManager : INotificationManager
         if(topic.Supervisor != null)
             users.Add(topic.Supervisor);
         users.Add(topic.Creator);
-
+        
+        var usersToRemove = await _context.Users.Where(x =>
+            x.UserSubscribedNotifications.Any(y =>
+                y.UserId == x.Id && y.NotificationId == notification.NotificationId) == false).ToListAsync();
+        usersToRemove.ForEach(x=> users.Remove(x));
+        
         var subject = $"{Parameterize(topic, notification.Subject, callbackUrl, null)} - {Parameterize(topic, notification.SubjectEng, callbackUrl, null)}";
         var body = $"{Parameterize(topic, notification.Text, callbackUrl, null)}\n---\n{Parameterize(topic, notification.TextEng, callbackUrl, null)}";
+        
+        foreach (var u in users)
+        {
+            await _emailSender.SendEmailAsync(u.Email!, subject, body);
+        }
+    }
+
+    public async Task NewExternalUser(ApplicationUser user)
+    {
+        var notification = await _context.Notifications.FirstOrDefaultAsync(x=>x.Name == "NewExternalUser");
+        if (notification is null) throw new Exception("Database is not seeded");
+        
+        var users = await _context.UserSubscribedNotifications.Where(x=>x.NotificationId == notification.NotificationId).Select(x=>x.User).ToListAsync();
+        
+        var subject = $"{Parameterize(null, notification.Subject, null, null)} - {Parameterize(null, notification.SubjectEng, null, null)}";
+        var body = $"{Parameterize(null, notification.Text, null, null)}\n---\n{Parameterize(null, notification.TextEng, null, null)}";
         
         foreach (var u in users)
         {
@@ -205,4 +226,6 @@ public interface INotificationManager
     Task TopicAdopted(Topic topic, string callbackUrl);
 
     Task NewInterest(Topic topic, ApplicationUser user, string callbackUrl);
+
+    Task NewExternalUser(ApplicationUser user);
 }

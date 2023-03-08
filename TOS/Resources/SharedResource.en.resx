@@ -193,7 +193,7 @@
         <value>Administration - notifications</value>
     </data>
     <data name="Administration_EditNotification_Heading" xml:space="preserve">
-        <value>Administration - notification edit</value>
+        <value>Administration - edit</value>
     </data>
     <data name="Administration_EditNotification_Tutorial" xml:space="preserve">
         <value>When creating a notification, you can use the parameters in square brackets: by placing them as text in the text box. As a result, the final notification will display the value of the object to which the notification refers. The parameters regarding the comment can only be used for the notification of a new comment</value>
@@ -746,5 +746,17 @@
     </data>
     <data name="Administration_Users_EmailConfirmed" xml:space="preserve">
         <value>Email confirmed</value>
+    </data>
+    <data name="Manage_ConfirmEmail_Success" xml:space="preserve">
+        <value>Email confirmed</value>
+    </data>
+    <data name="Manage_ConfirmEmail_Error" xml:space="preserve">
+        <value>Email couldn't be confirmed, error occured</value>
+    </data>
+    <data name="Manage_Notification_NewExternalUser" xml:space="preserve">
+        <value>New external user register</value>
+    </data>
+    <data name="NewExternalUser" xml:space="preserve">
+        <value>Notification: New external user register</value>
     </data>
 </root>

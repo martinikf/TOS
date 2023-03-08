@@ -13,19 +13,22 @@
     <div class="col-md-6">
         <form id="profile-form" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            @foreach (var notification in (ICollection<Notification>)ViewData["Notifications"]!)
+            @foreach (var notification in (ICollection<Notification>) ViewData["Notifications"]!)
             {
-                <div class="form-check mb-3">
-                    @if (notification.Selected)
-                    {
-                        <input type="checkbox" class="form-check-input" id="@notification.Name" name="selectedNotifications" value="@notification.NotificationId" checked/>
-                    }
-                    else
-                    {
-                        <input type="checkbox" class="form-check-input" id="@notification.Name" name="selectedNotifications" value="@notification.NotificationId"/>
-                    }
-                    <label class="form-check-label" for="@notification.Name">@SharedLocalizer["Manage_Notification_" + notification.Name]</label>
-                </div>
+                @if (notification.Name == "NewExternalUser" && User.IsInRole("Administrator") || notification.Name != "NewExternalUser")
+                {
+                    <div class="form-check mb-3">
+                        @if (notification.Selected)
+                        {
+                            <input type="checkbox" class="form-check-input" id="@notification.Name" name="selectedNotifications" value="@notification.NotificationId" checked/>
+                        }
+                        else
+                        {
+                            <input type="checkbox" class="form-check-input" id="@notification.Name" name="selectedNotifications" value="@notification.NotificationId"/>
+                        }
+                        <label class="form-check-label" for="@notification.Name">@SharedLocalizer["Manage_Notification_" + notification.Name]</label>
+                    </div>
+                }
             }
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">@SharedLocalizer["Manage_Notification_Submit"]</button>
         </form>
@@ -33,5 +36,5 @@
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial"/>
 }

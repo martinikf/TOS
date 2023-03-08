@@ -186,7 +186,7 @@
         <value>Administrace - notifikace</value>
     </data>
     <data name="Administration_EditNotification_Heading" xml:space="preserve">
-        <value>Administrace - editace notifikace</value>
+        <value>Administrace - editace</value>
     </data>
     <data name="Administration_EditNotification_Tutorial" xml:space="preserve">
         <value>Při vytváření notifikace můžete využít parametrů v hranatých závorkách: tak že je umístíte to textového pole jako text. Výsledkem bude, že se ve finální notifikaci zobrazí daná hodnota objektu, kterého se daná notifikace týka. Parametry ohledně komentáře lze využít jen u notifikace nového komentáře</value>
@@ -742,5 +742,17 @@
     </data>
     <data name="Administration_Users_EmailConfirmed" xml:space="preserve">
         <value>Potvrzený email</value>
+    </data>
+    <data name="Manage_ConfirmEmail_Success" xml:space="preserve">
+        <value>E-mail úspěšně ověřen</value>
+    </data>
+    <data name="Manage_ConfirmEmail_Error" xml:space="preserve">
+        <value>Při ověřování emailu nastala chyba</value>
+    </data>
+    <data name="Manage_Notification_NewExternalUser" xml:space="preserve">
+        <value>Nový externí uživatel se zaregistroval</value>
+    </data>
+    <data name="NewExternalUser" xml:space="preserve">
+        <value>Notifikace: Registrace nového externího uživatele</value>
     </data>
 </root>
