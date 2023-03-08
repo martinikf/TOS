@@ -127,6 +127,25 @@ public class NotificationManager : INotificationManager
             await _emailSender.SendEmailAsync(user.Email!, subjectF, bodyF);
         }
     }
+
+    public async Task NewInterest(Topic topic, ApplicationUser user, string callbackUrl)
+    {
+        var notification = await _context.Notifications.FirstOrDefaultAsync(x=>x.Name == "TopicInterest");
+        if (notification is null) throw new Exception("Database is not seeded");
+
+        var users = topic.UserInterestedTopics.Select(x => x.User).ToList();
+        if(topic.Supervisor != null)
+            users.Add(topic.Supervisor);
+        users.Add(topic.Creator);
+
+        var subject = $"{Parameterize(topic, notification.Subject, callbackUrl, null)} - {Parameterize(topic, notification.SubjectEng, callbackUrl, null)}";
+        var body = $"{Parameterize(topic, notification.Text, callbackUrl, null)}\n---\n{Parameterize(topic, notification.TextEng, callbackUrl, null)}";
+        
+        foreach (var u in users)
+        {
+            await _emailSender.SendEmailAsync(u.Email!, subject, body);
+        }
+    }
     
     private static string Parameterize(Topic topic, string text, string callbackUrl, Comment? comment)
     {
@@ -184,4 +203,6 @@ public interface INotificationManager
     Task TopicAssigned(Topic topic, ApplicationUser student, string callbackUrl);
 
     Task TopicAdopted(Topic topic, string callbackUrl);
+
+    Task NewInterest(Topic topic, ApplicationUser user, string callbackUrl);
 }

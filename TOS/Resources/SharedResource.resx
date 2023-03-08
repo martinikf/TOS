@@ -734,4 +734,10 @@
     <data name="Topic_Details_Heading" xml:space="preserve">
         <value>Téma</value>
     </data>
+    <data name="NewInterest" xml:space="preserve">
+        <value>Notifikace: Zájem o téma</value>
+    </data>
+    <data name="Manage_Notification_NewInterest" xml:space="preserve">
+        <value>Při projevení zájmu někým</value>
+    </data>
 </root>

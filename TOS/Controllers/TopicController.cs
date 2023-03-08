@@ -147,7 +147,7 @@ namespace TOS.Controllers
             if (searchString.Length > 2)
             {
                 topics = topics.Concat(_context.Groups
-                    .Where(x=> x.NameEng.ToLower().Contains(searchString) || x.Name.ToLower().Contains(searchString))
+                    .Where(x=> x.NameEng!.ToLower().Contains(searchString) || x.Name.ToLower().Contains(searchString))
                      .Select(y=>y.Topics).SelectMany(z=>z));
             }
  
@@ -251,7 +251,7 @@ namespace TOS.Controllers
 
             if (topic.GroupId == -1)
             {
-                topic.Group = await _context.Groups.FirstAsync(x => x.NameEng.Equals("Unassigned"));
+                topic.Group = await _context.Groups.FirstAsync(x => x.NameEng!.Equals("Unassigned"));
                 topic.GroupId = topic.Group.GroupId;
             }
 
@@ -440,7 +440,11 @@ namespace TOS.Controllers
             var user = await GetUser();
 
             //Topic
-            var topic = await _context.Topics.FirstAsync(x => x.TopicId.Equals(topicId));
+            var topic = await _context.Topics
+                .Include(x=>x.Supervisor)
+                .Include(x=>x.Creator)
+                .Include(x=>x.UserInterestedTopics)
+                .FirstAsync(x => x.TopicId.Equals(topicId));
 
             if (await _context.UserInterestedTopics.AnyAsync(x => x.UserId.Equals(user.Id) && x.TopicId.Equals(topic.TopicId)))
             {
@@ -457,8 +461,10 @@ namespace TOS.Controllers
                     DateTime = DateTime.Now
                 });
             }
-
             await _context.SaveChangesAsync();
+
+            await _notificationManager.NewInterest(topic, user, CallbackDetailsUrl(topic.TopicId));
+            
             return Json(true);
         }
 
@@ -607,7 +613,7 @@ namespace TOS.Controllers
         
         private async Task<Group> GetGroup(string groupName)
         {
-            var group = await _context.Groups.FirstOrDefaultAsync(x => x.NameEng.Equals(groupName));
+            var group = await _context.Groups.FirstOrDefaultAsync(x => x.NameEng!.Equals(groupName));
             
             return group ?? throw new Exception("Group not found");
         }

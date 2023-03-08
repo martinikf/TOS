@@ -186,6 +186,8 @@ public static class Seed
         CreateNotification("TopicAdopted", "Téma bylo přijato", "Topic was accepted", "TODO", "TODO", ctx);
 
         CreateNotification("CommentNew", "Nový komentář", "New comment", "[COMMENT]", "[COMMENT]", ctx);
+
+        CreateNotification("NewInterest", "Někdo projevil zájem", "Someone is interested", "TODO", "TODO", ctx);
     }
 
     public static Notification CreateNotification(string name, string subject, string subjectEng, string text, string textEng, ApplicationDbContext ctx)

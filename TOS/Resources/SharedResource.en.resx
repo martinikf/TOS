@@ -738,4 +738,10 @@
     <data name="Topic_Details_Heading" xml:space="preserve">
         <value>Topic</value>
     </data>
+    <data name="NewInterest" xml:space="preserve">
+        <value>Notification: Interest in topic</value>
+    </data>
+    <data name="Manage_Notification_NewInterest" xml:space="preserve">
+        <value>Topic someone interested</value>
+    </data>
 </root>
