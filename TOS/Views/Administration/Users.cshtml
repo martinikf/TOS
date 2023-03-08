@@ -23,6 +23,7 @@
     <tr>
         <th scope="col">@SharedLocalizer["Administration_Users_DisplayName"]</th>
         <th scope="col">@SharedLocalizer["Administration_Users_Email"]</th>
+        <th scope="col">@SharedLocalizer["Administration_Users_EmailConfirmed"]</th>
         <th scope="col">#</th>
     </tr>
     </thead>
@@ -32,6 +33,14 @@
         <tr>
             <td>@user.GetDisplayName()</td>
             <td>@user.Email</td>
+            @if (user.PasswordHash != null)
+            {
+                <td>@SharedLocalizer[user.EmailConfirmed.ToString()]</td>
+            }
+            else
+            {
+                <td>-</td>
+            }
             <td><a asp-controller="Administration" asp-action="EditRoles" asp-route-id="@user.Id">@SharedLocalizer["Administration_Users_EditRoles"]</a></td>
         </tr>
     }

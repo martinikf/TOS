@@ -6,122 +6,122 @@
 }
 
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/TOS.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/lib/dselect/css/dselect.scss">
-    <script src="https://kit.fontawesome.com/4afee75a5b.js" crossorigin="anonymous"></script>
-    
-</head>
-<body>
-<header>
-    <nav class="navbar navbar-expand-lg navbar-toggleable-lg border-bottom box-shadow mb-3">
-        <div class="container-fluid">
-            <a class="navbar-brand" asp-action="Index" asp-controller="Home">
-                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="704.000000pt" height="715.000000pt" viewBox="0 0 704.000000 715.000000" preserveAspectRatio="xMidYMid meet" id="logo" style="width: 2rem; height: 2rem;" aria-hidden="true">
-                    <g transform="translate(0.000000,715.000000) scale(0.100000,-0.100000)" fill="#026bac" stroke="none">
-                        <path d="M6875 7094 c-977 -275 -2577 -368 -4120 -239 -491 41 -1048 116
-                                                                              -1454 196 -84 16 -154 28 -155 27 -1 -2 -14 -47 -29 -101 -53 -189 -158 -359
-                                                                              -323 -518 -190 -182 -414 -304 -672 -364 -57 -13 -105 -25 -107 -27 -2 -2 23
-                                                                              -134 55 -295 227 -1128 713 -2251 1475 -3409 334 -507 713 -1008 1286 -1699
-                                                                              237 -286 440 -540 479 -598 14 -20 27 -37 30 -36 3 0 30 32 60 72 30 40 192
-                                                                              236 359 437 629 753 969 1201 1343 1770 898 1366 1497 2774 1817 4275 36 170
-                                                                              101 514 101 536 0 13 -12 11 -145 -27z m-4970 -837 c144 -38 213 -41 970 -43
-                                                                              665 -1 747 -3 805 -19 327 -86 559 -342 640 -705 43 -195 45 -400 4 -637 -55
-                                                                              -326 -190 -558 -400 -689 -126 -79 -302 -124 -480 -124 l-94 0 0 -1015 0
-                                                                              -1015 74 0 c97 0 260 32 359 70 296 114 513 349 590 641 23 85 35 216 112
-                                                                              1190 47 601 88 1104 91 1117 l4 22 425 0 425 0 0 -29 c0 -28 -2 -29 -62 -36
-                                                                              -112 -13 -173 -54 -231 -155 -92 -160 -119 -328 -207 -1270 -69 -752 -92 -886
-                                                                              -183 -1100 -195 -459 -660 -726 -1318 -756 -300 -14 -671 57 -904 173 -245
-                                                                              122 -430 315 -529 550 -65 156 -90 282 -131 663 -13 129 -40 381 -59 560 -19
-                                                                              179 -42 393 -51 475 -63 609 -151 817 -365 860 -52 11 -55 13 -58 43 l-3 32
-                                                                              425 0 425 0 5 -42 c3 -24 30 -531 61 -1128 52 -1021 56 -1090 79 -1175 103
-                                                                              -382 270 -584 529 -640 l57 -13 0 1964 0 1964 -695 0 c-382 0 -695 2 -695 6 0
-                                                                              3 64 68 143 145 105 103 147 138 162 135 11 -2 47 -11 80 -19z"></path>
-                        <path d="M3350 5125 l0 -864 53 5 c239 25 382 200 458 561 21 96 23 137 24
-                                                                              373 0 247 -2 271 -24 360 -71 282 -234 430 -473 430 l-38 0 0 -865z"></path>
-                    </g>
-                </svg>
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link @(path.Contains("Home") || path == "/" ? "active" : "")" asp-controller="Home" asp-action="Index">@SharedLocalizer["NavHome"]</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle @(path.Contains("Topic") && !path.Contains("MyTopics") ? "active" : "")"
-                           role="button" data-bs-toggle="dropdown" aria-expanded="false" asp-area="">
-                            @SharedLocalizer["Topics"]
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" asp-controller="Topic" asp-action="Index" asp-route-groupName="Bachelor" asp-route-showTakenTopics="false">@SharedLocalizer["Topics_Bachelor"]</a></li>
-                            <li><a class="dropdown-item" asp-controller="Topic" asp-action="Index" asp-route-groupName="Master" asp-route-showTakenTopics="false">@SharedLocalizer["Topics_Master"]</a></li>
-                            @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
+<html lang="cz">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"]</title>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/TOS.styles.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/lib/dselect/css/dselect.scss">
+        <script src="https://kit.fontawesome.com/4afee75a5b.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-toggleable-lg border-bottom box-shadow mb-3">
+                <div class="container-fluid">
+                    <a class="navbar-brand" asp-action="Index" asp-controller="Home">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="704.000000pt" height="715.000000pt" viewBox="0 0 704.000000 715.000000" preserveAspectRatio="xMidYMid meet" id="logo" style="width: 2rem; height: 2rem;" aria-hidden="true">
+                            <g transform="translate(0.000000,715.000000) scale(0.100000,-0.100000)" fill="#026bac" stroke="none">
+                                <path d="M6875 7094 c-977 -275 -2577 -368 -4120 -239 -491 41 -1048 116
+                                                                                      -1454 196 -84 16 -154 28 -155 27 -1 -2 -14 -47 -29 -101 -53 -189 -158 -359
+                                                                                      -323 -518 -190 -182 -414 -304 -672 -364 -57 -13 -105 -25 -107 -27 -2 -2 23
+                                                                                      -134 55 -295 227 -1128 713 -2251 1475 -3409 334 -507 713 -1008 1286 -1699
+                                                                                      237 -286 440 -540 479 -598 14 -20 27 -37 30 -36 3 0 30 32 60 72 30 40 192
+                                                                                      236 359 437 629 753 969 1201 1343 1770 898 1366 1497 2774 1817 4275 36 170
+                                                                                      101 514 101 536 0 13 -12 11 -145 -27z m-4970 -837 c144 -38 213 -41 970 -43
+                                                                                      665 -1 747 -3 805 -19 327 -86 559 -342 640 -705 43 -195 45 -400 4 -637 -55
+                                                                                      -326 -190 -558 -400 -689 -126 -79 -302 -124 -480 -124 l-94 0 0 -1015 0
+                                                                                      -1015 74 0 c97 0 260 32 359 70 296 114 513 349 590 641 23 85 35 216 112
+                                                                                      1190 47 601 88 1104 91 1117 l4 22 425 0 425 0 0 -29 c0 -28 -2 -29 -62 -36
+                                                                                      -112 -13 -173 -54 -231 -155 -92 -160 -119 -328 -207 -1270 -69 -752 -92 -886
+                                                                                      -183 -1100 -195 -459 -660 -726 -1318 -756 -300 -14 -671 57 -904 173 -245
+                                                                                      122 -430 315 -529 550 -65 156 -90 282 -131 663 -13 129 -40 381 -59 560 -19
+                                                                                      179 -42 393 -51 475 -63 609 -151 817 -365 860 -52 11 -55 13 -58 43 l-3 32
+                                                                                      425 0 425 0 5 -42 c3 -24 30 -531 61 -1128 52 -1021 56 -1090 79 -1175 103
+                                                                                      -382 270 -584 529 -640 l57 -13 0 1964 0 1964 -695 0 c-382 0 -695 2 -695 6 0
+                                                                                      3 64 68 143 145 105 103 147 138 162 135 11 -2 47 -11 80 -19z"></path>
+                                <path d="M3350 5125 l0 -864 53 5 c239 25 382 200 458 561 21 96 23 137 24
+                                                                                      373 0 247 -2 271 -24 360 -71 282 -234 430 -473 430 l-38 0 0 -865z"></path>
+                            </g>
+                        </svg>
+                    </a>
+                    
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse">
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link @(path.Contains("Home") || path == "/" ? "active" : "")" asp-controller="Home" asp-action="Index">@SharedLocalizer["NavHome"]</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle @(path.Contains("Topic") && !path.Contains("MyTopics") ? "active" : "")"
+                                   role="button" data-bs-toggle="dropdown" aria-expanded="false" asp-area="">
+                                    @SharedLocalizer["Topics"]
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-controller="Topic" asp-action="Index" asp-route-groupName="Bachelor" asp-route-showTakenTopics="false">@SharedLocalizer["Topics_Bachelor"]</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Topic" asp-action="Index" asp-route-groupName="Master" asp-route-showTakenTopics="false">@SharedLocalizer["Topics_Master"]</a></li>
+                                    @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
+                                    {
+                                        <li><a class="dropdown-item" asp-controller="Topic" asp-action="Unassigned" asp-route-groupName="Unassigned" asp-route-showHidden="true" asp-route-showProposed="true">@SharedLocalizer["Topics_Unassigned"]</a></li>
+                                    }
+                                </ul>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link @(path.Contains("Group") ? "active" : "")" asp-area="" asp-controller="Group" asp-action="Index">@SharedLocalizer["NavGroups"]</a>
+                            </li>
+
+                            @if (User.IsInRole("External"))
                             {
-                                <li><a class="dropdown-item" asp-controller="Topic" asp-action="Unassigned" asp-route-groupName="Unassigned" asp-route-showHidden="true" asp-route-showProposed="true">@SharedLocalizer["Topics_Unassigned"]</a></li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(path.Contains("Propose") ? "active" : "")" asp-action="Propose" asp-controller="Topic">@SharedLocalizer["Propose topic"]</a>
+                                </li>
+                            }
+                            @if (User.Identity != null && User.Identity.IsAuthenticated)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link @(path.Contains("MyTopics") ? "active" : "")" asp-action="MyTopics" asp-controller="Topic">@SharedLocalizer["MyTopics"]</a>
+                                </li>
+                            }
+                            @if (User.IsInRole("Administrator"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle @(path.Contains("Administration") ? "active" : "")" role="button" data-bs-toggle="dropdown" aria-expanded="false" asp-area="">
+                                        @SharedLocalizer["Administration"]
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" asp-controller="Administration" asp-action="Users">@SharedLocalizer["Administration_Users"]</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Administration" asp-action="Programmes">@SharedLocalizer["Administration_Programmes"]</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Administration" asp-action="Notifications">@SharedLocalizer["Administration_Notifications"]</a></li>
+                                    </ul>
+                                </li>
                             }
                         </ul>
-                    </li>
+                        <partial name="_Darkmode"/>
+                        <partial name="_Culture"/>
+                        <partial name="_LoginPartial"/>
+                    </div>
+                </div>
+            </nav>
+        </header>
 
-                    <li class="nav-item">
-                        <a class="nav-link @(path.Contains("Group") ? "active" : "")" asp-area="" asp-controller="Group" asp-action="Index">@SharedLocalizer["NavGroups"]</a>
-                    </li>
-
-                    @if (User.IsInRole("External"))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link @(path.Contains("Propose") ? "active" : "")" asp-action="Propose" asp-controller="Topic">@SharedLocalizer["Propose topic"]</a>
-                        </li>
-                    }
-                    @if (User.Identity != null && User.Identity.IsAuthenticated)
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link @(path.Contains("MyTopics") ? "active" : "")" asp-action="MyTopics" asp-controller="Topic">@SharedLocalizer["MyTopics"]</a>
-                        </li>
-                    }
-                    @if (User.IsInRole("Administrator"))
-                    {
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle @(path.Contains("Administration") ? "active" : "")" role="button" data-bs-toggle="dropdown" aria-expanded="false" asp-area="">
-                                @SharedLocalizer["Administration"]
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="Administration" asp-action="Users">@SharedLocalizer["Administration_Users"]</a></li>
-                                <li><a class="dropdown-item" asp-controller="Administration" asp-action="Programmes">@SharedLocalizer["Administration_Programmes"]</a></li>
-                                <li><a class="dropdown-item" asp-controller="Administration" asp-action="Notifications">@SharedLocalizer["Administration_Notifications"]</a></li>
-                            </ul>
-                        </li>
-                    }
-                </ul>
-                <partial name="_Darkmode"/>
-                <partial name="_Culture"/>
-                <partial name="_LoginPartial"/>
-            </div>
+        <div class="container">
+            <main >
+                @RenderBody()
+            </main>
         </div>
-    </nav>
-</header>
-<div class="container">
-    <main class="pb-3">
-        @RenderBody()
-    </main>
-</div>
 
-<footer class="border-top footer text-muted">
-</footer>
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
-@await RenderSectionAsync("Scripts", required: false)
-</body>
+        <footer></footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        @await RenderSectionAsync("Scripts", required: false)
+    </body>
 </html>
 
 @functions{

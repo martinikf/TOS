@@ -740,4 +740,7 @@
     <data name="Manage_Notification_NewInterest" xml:space="preserve">
         <value>Při projevení zájmu někým</value>
     </data>
+    <data name="Administration_Users_EmailConfirmed" xml:space="preserve">
+        <value>Potvrzený email</value>
+    </data>
 </root>

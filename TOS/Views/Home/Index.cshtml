@@ -1,9 +1,31 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "UPOL - TOS";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-     <h2>Localization test: @SharedLocalizer["Bachelor theses"]</h2>
+    <p>Portál pro nabídku závěrečných prací a správu úkolů a projektů konkrétních předmětů vyučovaných na katedře informatiky Univerzity Palackého</p>
+    <a class="link-secondary" href="https://www.inf.upol.cz/">https://www.inf.upol.cz/</a>
+</div>
+
+<hr/>
+
+<h3>Přihlášení</h3>
+<div class="row g-5">
+    <div class="col-lg-6">
+        <h3>Pro studenty a vyučující na katedře informatiky</h3>
+        <p>
+            Aplikace je napojena na služby Univerzity Palackého a umožňuje vám přihlášení pomocí přihlašovacích údajů k AD/Stagu.
+            <strong>Z tohoto důvodu nevyužívejte registrace, ale rovnou se přihlašujte: <a class="link-primary" href="~/Identity/Account/Login">zde</a></strong>
+            pomocí stejných přihlašovacích údajů jako ke službám Univerzity Palackého.
+        </p>
+    </div>
+    <div class="col-lg-6">
+        <h3>Pro externí uživatele</h3>
+        <p>
+            Externí uživatelé mají možnost navrhnout témata závěrečných prací.
+            Pro pokračování se přihlaste nebo zaregistrujte.
+            Vaše registrace bude muset být potvrzena vedením katedry.
+            <a class="link-primary" href="~/Identity/Account/Register">Registrovat se můžete zde.</a>
+        </p>
+    </div>
 </div>
