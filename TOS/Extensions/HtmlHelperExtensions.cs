@@ -33,13 +33,7 @@ public static class HtmlHelperExtensions
         
         return false;
     }
-
     
-    public static bool CanDeleteTopic(this IHtmlHelper htmlHelper, Topic topicObj, string? username, bool topic, bool anyTopic, bool proposeTopic)
-    {
-        if (username is null) return false;
-        return CanEditTopic(htmlHelper, topicObj, username, topic, anyTopic, proposeTopic);
-    }
 
     public static bool CanDeleteComment(this IHtmlHelper htmlHelper, Comment comment, string? username, bool commentRole,
         bool anyCommentRole)
