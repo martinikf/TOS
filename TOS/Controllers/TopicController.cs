@@ -283,15 +283,17 @@ namespace TOS.Controllers
             ViewData["UsersToAssign"] = new SelectList(await GetUsersWithRole("AssignedTopic"), "Id", "Email", topic.AssignedId);
             if (topic.Group.NameEng!.Equals("Unassigned"))
             {
-                ViewData["Group"] = new SelectList(_context.Groups.Where(x => x.Selectable).OrderBy(x=>x.Name), "GroupId", "Name");
+                ViewData["Groups"] = await _context.Groups.Where(x => x.Selectable).OrderBy(x=>x.Name).ToListAsync();
             }
             else if (topic.Group.Selectable)
             {
-                ViewData["Group"] = new SelectList(_context.Groups.Where(x => x.Selectable), "GroupId", "Name", topic.GroupId);
+                var groups = await _context.Groups.Where(x => x.Selectable).ToListAsync();
+                groups.First(x=>x.GroupId.Equals(topic.GroupId)).Highlight = true;
+                ViewData["Groups"] = groups;
             }
             else
             {
-                ViewData["Group"] = new SelectList(new List<Group> {topic.Group}, "GroupId", "Name", topic.GroupId);
+                ViewData["Groups"] = new List<Group> {topic.Group};
             }
 
             ViewData["UsersToSupervise"] = new SelectList(await GetUsersWithRole("SuperviseTopic"), "Id", "Email", topic.SupervisorId);
