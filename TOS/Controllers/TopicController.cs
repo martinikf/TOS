@@ -71,6 +71,8 @@ namespace TOS.Controllers
             topicsToShow = ApplyProgramme(topicsToShow, programmeName);
             topicsToShow = ApplyShowOnlyProposed(topicsToShow, showOnlyProposed);
             topicsToShow = ApplySort(topicsToShow, orderBy);
+            
+            
 
             vm.Topics = await topicsToShow.ToListAsync();
             return View(vm);
@@ -699,7 +701,7 @@ namespace TOS.Controllers
             switch (orderBy)
             {
                 case "Name":
-                    topics = CultureInfo.CurrentCulture.Name.Contains("cz") ? topics.OrderBy(x => x.Name) : topics.OrderBy(x => x.NameEng);
+                    topics = CultureInfo.CurrentCulture.Name.Contains("cz") ? topics.OrderBy(x => x.Name.ToLower()) : topics.OrderBy(x => x.NameEng!.ToLower());
                     break;
                 case "Interest":
                     topics = topics.OrderByDescending(x => x.UserInterestedTopics.Count);
