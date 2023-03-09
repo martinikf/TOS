@@ -130,7 +130,7 @@ public class NotificationManager : INotificationManager
 
     public async Task NewInterest(Topic topic, ApplicationUser user, string callbackUrl)
     {
-        var notification = await _context.Notifications.FirstOrDefaultAsync(x=>x.Name == "TopicInterest");
+        var notification = await _context.Notifications.FirstOrDefaultAsync(x=>x.Name == "NewInterest");
         if (notification is null) throw new Exception("Database is not seeded");
 
         var users = topic.UserInterestedTopics.Select(x => x.User).ToList();

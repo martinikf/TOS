@@ -759,4 +759,13 @@
     <data name="NewExternalUser" xml:space="preserve">
         <value>Notification: New external user register</value>
     </data>
+    <data name="Topic_Edit_Attachment_Delete" xml:space="preserve">
+        <value>Delete</value>
+    </data>
+    <data name="Proposed topic" xml:space="preserve">
+        <value>Proposed</value>
+    </data>
+    <data name="Topic_MyTopics_SearchPlaceholder" xml:space="preserve">
+        <value>Search string</value>
+    </data>
 </root>

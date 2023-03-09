@@ -132,7 +132,7 @@
                 <div class="border border-dark rounded p-2 m-2 col-auto">
                     <h4>@attachment.Name</h4>
                     @attachment.Creator.Email
-                    <a asp-action="DeleteAttachment" asp-route-attachmentId="@attachment.AttachmentId" asp-route-topicId="@Model.TopicId">Delete</a>
+                    <a asp-action="DeleteAttachment" asp-route-attachmentId="@attachment.AttachmentId" asp-route-topicId="@Model.TopicId">@SharedLocalizer["Topic_Edit_Attachment_Delete"]</a>
                 </div>
             }
         </div>

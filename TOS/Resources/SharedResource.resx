@@ -755,4 +755,13 @@
     <data name="NewExternalUser" xml:space="preserve">
         <value>Notifikace: Registrace nového externího uživatele</value>
     </data>
+    <data name="Topic_Edit_Attachment_Delete" xml:space="preserve">
+        <value>Smazat</value>
+    </data>
+    <data name="Proposed topic" xml:space="preserve">
+        <value>Navrhnuté</value>
+    </data>
+    <data name="Topic_MyTopics_SearchPlaceholder" xml:space="preserve">
+        <value>Hledaný výraz</value>
+    </data>
 </root>

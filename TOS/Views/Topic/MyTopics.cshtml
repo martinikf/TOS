@@ -15,7 +15,7 @@
 <form asp-action="MyTopics" method="get">
     <div class="row g-3 align-items-center">
         <div class="col-auto">
-            <input type="text" class="form-control" name="searchString" placeholder="Search string..." value="@Model.SearchString"/>
+            <input type="text" class="form-control" name="searchString" placeholder="@SharedLocalizer["Topic_MyTopics_SearchPlaceholder"]" value="@Model.SearchString"/>
         </div>
 
         <div class="col-auto form-check">
@@ -95,12 +95,12 @@
     @foreach (var group in Model.Topics.Where(x => x.Type != TopicType.Thesis).Select(g => g.Group).Distinct())
     {
         <div class="accordion-item">
-            <h2 class="accordion-header" id="heading@(group.NameEng)">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collpase@(group.NameEng)" aria-expanded="false" aria-controls="collpase@(group.NameEng)">
+            <h2 class="accordion-header" id="heading@(group.GroupId)">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collpase@(group.GroupId)" aria-expanded="false" aria-controls="collpase@(group.GroupId)">
                     @Html.SelectStringByLanguage(group.NameEng, group.Name)
                 </button>
             </h2>
-            <div id="collpase@(group.NameEng)" class="accordion-collapse collapse" aria-labelledby="heading@(group.NameEng)" data-bs-parent="#accordionExample">
+            <div id="collpase@(group.GroupId)" class="accordion-collapse collapse" aria-labelledby="heading@(group.GroupId)" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
                     @if (group.Topics.Any(x => x.Type == TopicType.Homework))
                     {

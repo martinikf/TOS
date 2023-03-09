@@ -218,10 +218,18 @@ public class UpolAuthentication : IAuthentication
     private string GetStudentStagId(string username)
     {
         var request = StagServicesStudentOsCisloByExternal + username;
-        var response =  StagRequest(request, null, null);
+        var response = StagRequest(request, null, null);
         var xml = XDocument.Parse(response);
-        return xml.Descendants("osCislo").First().Value;
-    }
+        try
+        {
+            var result = xml.Descendants("osCislo").First().Value;
+            return result;
+        }
+        catch
+        {
+            return string.Empty;
+        }
+}
     
     private string GetTeacherStagId(string username)
     {

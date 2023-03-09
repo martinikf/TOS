@@ -2,7 +2,7 @@
 @model TOS.Models.Topic
 
 <article class="position-relative border-bottom">
-    <h3 class="h4"><a asp-controller="Topic" asp-action="Details" asp-route-id="@Model.TopicId">@Html.SelectStringByLanguage(Model.NameEng, Model.Name)</a></h3>
+    <h3 class="h5"><a asp-controller="Topic" asp-action="Details" asp-route-id="@Model.TopicId">@Html.SelectStringByLanguage(Model.NameEng, Model.Name)</a></h3>
     @if (Model.SupervisorId != null)
     {
         <h4 class="h6">@Model.Supervisor!.GetDisplayName()</h4>

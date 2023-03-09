@@ -47,6 +47,7 @@ namespace TOS.Controllers
                                  user.SupervisedTopics.Any(x => x.GroupId == group.GroupId) ||
                                  user.CreatedGroups.Any(x => x.GroupId == group.GroupId) ||
                                  user.CreatedTopics.Any(x => x.GroupId == group.GroupId) ||
+                                 user.UserInterestedTopics.Any(x=>x.Topic.GroupId == group.GroupId) ||
                                  group.NameEng == "Bachelor" || group.NameEng == "Master" || group.NameEng == "Unassigned")
                              .ToList())
                 {

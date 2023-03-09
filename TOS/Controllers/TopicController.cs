@@ -463,6 +463,7 @@ namespace TOS.Controllers
             }
             await _context.SaveChangesAsync();
 
+            //TODO remove await?
             await _notificationManager.NewInterest(topic, user, CallbackDetailsUrl(topic.TopicId));
             
             return Json(true);
