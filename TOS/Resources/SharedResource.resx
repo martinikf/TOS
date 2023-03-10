@@ -381,7 +381,7 @@
         <value>Skryté</value>
     </data>
     <data name="Topic_Details_AssignedStudent" xml:space="preserve">
-        <value>Přiřazený student:</value>
+        <value>Přiřazený student</value>
     </data>
     <data name="Topic_Details_Supervisor" xml:space="preserve">
         <value>Vedoucí</value>

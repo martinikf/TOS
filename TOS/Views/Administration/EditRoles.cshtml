@@ -5,7 +5,7 @@
     ViewData["Title"] = @SharedLocalizer["Administration_EditRoles_Heading"];
 }
 
-<h1>@SharedLocalizer["Administration_EditRoles_Heading"] - @Model.DisplayName</h1>
+<h1>@SharedLocalizer["Administration_EditRoles_Heading"] - @Model.GetDisplayName()</h1>
 
 @if (ViewData["Error"] != null)
 {
