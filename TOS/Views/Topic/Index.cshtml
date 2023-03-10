@@ -50,14 +50,7 @@
                 <option value="">@SharedLocalizer["Topic_Index_AllProgrammes"]</option>
                 @foreach (var programme in Model.Programmes)
                 {
-                    @if (Model.SelectedProgramme == programme.NameEng)
-                    {
-                        <option value="@programme.NameEng" selected>@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</option>
-                    }
-                    else
-                    {
-                        <option value="@programme.NameEng">@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</option>
-                    }
+                    <option value="@programme.NameEng" @Html.Raw(Model.SelectedProgramme == programme.NameEng ? "selected": "")>@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</option>
                 }
             </select>
         </div>
@@ -99,6 +92,16 @@
 
 @if (Model.OrderBy == "Supervisor")
 {
+    @if (Model.Topics.Any(x => x.Supervisor == null))
+    {
+        <h2 class="h3 mt-4 mb-2">@SharedLocalizer["Topic_Index_TopicsWithoutSupervisor"]</h2>
+
+        @foreach (var topic in Model.Topics.Where(x => x.Supervisor == null))
+        {
+            <partial name="TopicPreview" model="topic"/>
+        }
+    }
+
     @foreach (var supervisor in Model.Topics.Where(topic => topic.Supervisor != null).Select(x => x.Supervisor).Distinct().OrderBy(y => y!.LastName!))
     {
         <h2 class="h3 mt-4 mb-2">@supervisor!.GetDisplayName()</h2>

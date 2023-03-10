@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TOS.Data;
 using TOS.Models;
 
@@ -39,7 +38,7 @@ public static class RoleHelper
         
         foreach (var roleId in roleIds)
         {
-            var ur = new IdentityUserRole<int>
+            var ur = new ApplicationUserRole()
             {
                 RoleId = roleId,
                 UserId = user.Id

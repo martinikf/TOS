@@ -71,8 +71,6 @@ namespace TOS.Controllers
             topicsToShow = ApplyProgramme(topicsToShow, programmeName);
             topicsToShow = ApplyShowOnlyProposed(topicsToShow, showOnlyProposed);
             topicsToShow = ApplySort(topicsToShow, orderBy);
-            
-            
 
             vm.Topics = await topicsToShow.ToListAsync();
             return View(vm);
@@ -361,7 +359,7 @@ namespace TOS.Controllers
             else
             {
                 var proposed = topic.Proposed;
-                if (topic.Proposed && topic.SupervisorId > 0)
+                if (topic.Proposed && (topic.SupervisorId > 0 || topic.Visible))
                 {
                     topic.Proposed = false;
                 }
@@ -415,6 +413,7 @@ namespace TOS.Controllers
         [Authorize(Roles = "Topic,AnyTopic,ProposeTopic")]
         public async Task<IActionResult> Delete(int? id)
         {
+            //TODO delete files
             var topic = await _context.Topics.FirstAsync(x => x.TopicId.Equals(id));
             var group = topic.Group;
 
@@ -513,9 +512,9 @@ namespace TOS.Controllers
         }
 
         [Authorize(Roles = "Attachment,AnyAttachment")]
-        public async Task<IActionResult> DeleteAttachment(int Id)
+        public async Task<IActionResult> DeleteAttachment(int id)
         {
-            var attachment = await _context.Attachments.FirstAsync(x => x.AttachmentId.Equals(Id));
+            var attachment = await _context.Attachments.FirstAsync(x => x.AttachmentId.Equals(id));
             var topicId = attachment.TopicId;
             
             if (User.IsInRole("Topic") && !User.IsInRole("AnyTopic"))
@@ -527,7 +526,7 @@ namespace TOS.Controllers
             }
 
             //Delete the file from server
-            var a = await _context.Attachments.FirstAsync(x => x.AttachmentId.Equals(Id));
+            var a = await _context.Attachments.FirstAsync(x => x.AttachmentId.Equals(id));
             var file = new FileInfo(Path.Combine(_env.WebRootPath, "files", topicId.ToString(), a.Name));
             if (file.Exists)
             {
@@ -535,7 +534,7 @@ namespace TOS.Controllers
             }
 
             //Update database
-            _context.Attachments.Remove(_context.Attachments.First(x => x.AttachmentId.Equals(Id)));
+            _context.Attachments.Remove(_context.Attachments.First(x => x.AttachmentId.Equals(id)));
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Edit", new {id = topicId});

@@ -44,6 +44,10 @@
         {
             <span class="badge bg-danger p-2">@SharedLocalizer["Hidden topic"]</span>
         }
+        @if (Model.Creator.UserRoles.Any(x=>x.Role.Name!.Equals("External")))
+        {
+            <span class="badge bg-success p-2">@SharedLocalizer["External topic"]</span>
+        }
         @if (Model.Proposed)
         {
             <span class="badge bg-success p-2">@SharedLocalizer["Proposed topic"]</span>

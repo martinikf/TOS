@@ -313,7 +313,7 @@
         <value>Show taken</value>
     </data>
     <data name="Topic_Index_ShowProposedOnly" xml:space="preserve">
-        <value>Proposed only</value>
+        <value>Proposed only by students</value>
     </data>
     <data name="Topic_Index_ShowHidden" xml:space="preserve">
         <value>Show hidden</value>
@@ -782,5 +782,11 @@
     </data>
     <data name="Topic_Attachment_Delete" xml:space="preserve">
         <value>Delete</value>
+    </data>
+    <data name="Topic_Index_TopicsWithoutSupervisor" xml:space="preserve">
+        <value>Theses without supervisor</value>
+    </data>
+    <data name="External topic" xml:space="preserve">
+        <value>External topic</value>
     </data>
 </root>

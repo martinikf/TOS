@@ -6,10 +6,29 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace TOS.Migrations
 {
-    public partial class Rework : Migration
+    /// <inheritdoc />
+    public partial class CompleteRework : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Notification",
+                columns: table => new
+                {
+                    NotificationId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Subject = table.Column<string>(type: "text", nullable: false),
+                    SubjectEng = table.Column<string>(type: "text", nullable: false),
+                    Text = table.Column<string>(type: "text", nullable: false),
+                    TextEng = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notification", x => x.NotificationId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Programme",
                 columns: table => new
@@ -17,6 +36,7 @@ namespace TOS.Migrations
                     ProgrammeId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
+                    NameEng = table.Column<string>(type: "text", nullable: true),
                     Active = table.Column<bool>(type: "boolean", nullable: false),
                     Type = table.Column<string>(type: "text", nullable: false)
                 },
@@ -48,6 +68,7 @@ namespace TOS.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     FirstName = table.Column<string>(type: "text", nullable: true),
                     LastName = table.Column<string>(type: "text", nullable: true),
+                    DisplayName = table.Column<string>(type: "text", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -55,10 +76,7 @@ namespace TOS.Migrations
                     EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
                     PasswordHash = table.Column<string>(type: "text", nullable: true),
                     SecurityStamp = table.Column<string>(type: "text", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -153,7 +171,10 @@ namespace TOS.Migrations
                 {
                     GroupId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    NameEng = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true),
+                    Description = table.Column<string>(type: "character varying(4096)", maxLength: 4096, nullable: true),
+                    DescriptionEng = table.Column<string>(type: "character varying(4096)", maxLength: 4096, nullable: true),
                     CreatorId = table.Column<int>(type: "integer", nullable: false),
                     Selectable = table.Column<bool>(type: "boolean", nullable: false),
                     Visible = table.Column<bool>(type: "boolean", nullable: false)
@@ -194,18 +215,48 @@ namespace TOS.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserSubscribedNotification",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    NotificationId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserSubscribedNotification", x => new { x.UserId, x.NotificationId });
+                    table.ForeignKey(
+                        name: "FK_UserSubscribedNotification_Notification_NotificationId",
+                        column: x => x.NotificationId,
+                        principalTable: "Notification",
+                        principalColumn: "NotificationId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserSubscribedNotification_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Topic",
                 columns: table => new
                 {
                     TopicId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    NameEng = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    DescriptionShort = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false),
+                    DescriptionShortEng = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: true),
+                    DescriptionLong = table.Column<string>(type: "character varying(16384)", maxLength: 16384, nullable: true),
+                    DescriptionLongEng = table.Column<string>(type: "character varying(16384)", maxLength: 16384, nullable: true),
                     Visible = table.Column<bool>(type: "boolean", nullable: false),
+                    Proposed = table.Column<bool>(type: "boolean", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
                     CreatorId = table.Column<int>(type: "integer", nullable: false),
                     SupervisorId = table.Column<int>(type: "integer", nullable: true),
                     AssignedId = table.Column<int>(type: "integer", nullable: true),
-                    GroupId = table.Column<int>(type: "integer", nullable: true)
+                    GroupId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -214,7 +265,8 @@ namespace TOS.Migrations
                         name: "FK_Topic_Group_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Group",
-                        principalColumn: "GroupId");
+                        principalColumn: "GroupId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Topic_User_AssignedId",
                         column: x => x.AssignedId,
@@ -240,8 +292,6 @@ namespace TOS.Migrations
                     AttachmentId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Path = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatorId = table.Column<int>(type: "integer", nullable: false),
                     TopicId = table.Column<int>(type: "integer", nullable: false)
                 },
@@ -268,13 +318,13 @@ namespace TOS.Migrations
                 {
                     CommentId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Text = table.Column<string>(type: "text", nullable: false),
+                    Text = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Anonymous = table.Column<bool>(type: "boolean", nullable: false),
                     AuthorId = table.Column<int>(type: "integer", nullable: false),
                     Comments = table.Column<int>(type: "integer", nullable: false),
                     ParentCommentId = table.Column<int>(type: "integer", nullable: true),
-                    TopicId = table.Column<int>(type: "integer", nullable: false),
-                    Anonymous = table.Column<bool>(type: "boolean", nullable: false)
+                    TopicId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -327,7 +377,8 @@ namespace TOS.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "integer", nullable: false),
-                    TopicId = table.Column<int>(type: "integer", nullable: false)
+                    TopicId = table.Column<int>(type: "integer", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -442,8 +493,14 @@ namespace TOS.Migrations
                 name: "IX_UserRole_RoleId",
                 table: "UserRole",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserSubscribedNotification_NotificationId",
+                table: "UserSubscribedNotification",
+                column: "NotificationId");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
@@ -474,6 +531,9 @@ namespace TOS.Migrations
                 name: "UserRole");
 
             migrationBuilder.DropTable(
+                name: "UserSubscribedNotification");
+
+            migrationBuilder.DropTable(
                 name: "Programme");
 
             migrationBuilder.DropTable(
@@ -481,6 +541,9 @@ namespace TOS.Migrations
 
             migrationBuilder.DropTable(
                 name: "Role");
+
+            migrationBuilder.DropTable(
+                name: "Notification");
 
             migrationBuilder.DropTable(
                 name: "Group");
