@@ -768,4 +768,19 @@
     <data name="Topic_MyTopics_SearchPlaceholder" xml:space="preserve">
         <value>Search string</value>
     </data>
+    <data name="Topic_Attachment_Delete_Title" xml:space="preserve">
+        <value>Warning</value>
+    </data>
+    <data name="Topic_Attachment_Delete_Body" xml:space="preserve">
+        <value>Attachment will be deleted</value>
+    </data>
+    <data name="Topic_Attachment_Delete_Cancel" xml:space="preserve">
+        <value>No</value>
+    </data>
+    <data name="Topic_Attachment_Delete_Confirm" xml:space="preserve">
+        <value>Delete</value>
+    </data>
+    <data name="Topic_Attachment_Delete" xml:space="preserve">
+        <value>Delete</value>
+    </data>
 </root>

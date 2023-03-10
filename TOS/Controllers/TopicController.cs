@@ -513,19 +513,21 @@ namespace TOS.Controllers
         }
 
         [Authorize(Roles = "Attachment,AnyAttachment")]
-        public async Task<IActionResult> DeleteAttachment(int attachmentId, int topicId)
+        public async Task<IActionResult> DeleteAttachment(int Id)
         {
+            var attachment = await _context.Attachments.FirstAsync(x => x.AttachmentId.Equals(Id));
+            var topicId = attachment.TopicId;
+            
             if (User.IsInRole("Topic") && !User.IsInRole("AnyTopic"))
             {
                 var user = await GetUser();
                 var topic = await _context.Topics.FirstAsync(x => x.TopicId.Equals(topicId));
-                var attachment = await _context.Attachments.FirstAsync(x => x.AttachmentId.Equals(attachmentId));
                 if (topic.CreatorId != user.Id && topic.SupervisorId != user.Id && attachment.Creator.Id != user.Id)
                     return Forbid();
             }
 
             //Delete the file from server
-            var a = await _context.Attachments.FirstAsync(x => x.AttachmentId.Equals(attachmentId));
+            var a = await _context.Attachments.FirstAsync(x => x.AttachmentId.Equals(Id));
             var file = new FileInfo(Path.Combine(_env.WebRootPath, "files", topicId.ToString(), a.Name));
             if (file.Exists)
             {
@@ -533,7 +535,7 @@ namespace TOS.Controllers
             }
 
             //Update database
-            _context.Attachments.Remove(_context.Attachments.First(x => x.AttachmentId.Equals(attachmentId)));
+            _context.Attachments.Remove(_context.Attachments.First(x => x.AttachmentId.Equals(Id)));
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Edit", new {id = topicId});
