@@ -12,8 +12,8 @@ using TOS.Data;
 namespace TOS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230221132030_Notifications")]
-    partial class Notifications
+    [Migration("20230310091722_CompleteRework")]
+    partial class CompleteRework
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,35 +27,6 @@ namespace TOS.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex");
-
-                    b.ToTable("Role", (string)null);
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
@@ -128,21 +99,6 @@ namespace TOS.Migrations
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("UserRole", (string)null);
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
                     b.Property<int>("UserId")
@@ -162,6 +118,35 @@ namespace TOS.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("TOS.Models.ApplicationRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("Role", (string)null);
                 });
 
             modelBuilder.Entity("TOS.Models.ApplicationUser", b =>
@@ -222,6 +207,21 @@ namespace TOS.Migrations
                     b.ToTable("User", (string)null);
                 });
 
+            modelBuilder.Entity("TOS.Models.ApplicationUserRole", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRole", (string)null);
+                });
+
             modelBuilder.Entity("TOS.Models.Attachment", b =>
                 {
                     b.Property<int>("AttachmentId")
@@ -230,21 +230,10 @@ namespace TOS.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AttachmentId"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
                     b.Property<int>("CreatorId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("NameEng")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Path")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -285,7 +274,8 @@ namespace TOS.Migrations
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)");
 
                     b.Property<int>("TopicId")
                         .HasColumnType("integer");
@@ -312,13 +302,22 @@ namespace TOS.Migrations
                     b.Property<int>("CreatorId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(4096)
+                        .HasColumnType("character varying(4096)");
+
+                    b.Property<string>("DescriptionEng")
+                        .HasMaxLength(4096)
+                        .HasColumnType("character varying(4096)");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<string>("NameEng")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<bool>("Selectable")
                         .HasColumnType("boolean");
@@ -345,7 +344,11 @@ namespace TOS.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("NameEng")
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SubjectEng")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -359,7 +362,7 @@ namespace TOS.Migrations
 
                     b.HasKey("NotificationId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notification", (string)null);
                 });
 
             modelBuilder.Entity("TOS.Models.Programme", b =>
@@ -378,7 +381,6 @@ namespace TOS.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("NameEng")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Type")
@@ -405,29 +407,33 @@ namespace TOS.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("DescriptionLong")
-                        .HasColumnType("text");
+                        .HasMaxLength(16384)
+                        .HasColumnType("character varying(16384)");
 
                     b.Property<string>("DescriptionLongEng")
-                        .HasColumnType("text");
+                        .HasMaxLength(16384)
+                        .HasColumnType("character varying(16384)");
 
                     b.Property<string>("DescriptionShort")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
 
                     b.Property<string>("DescriptionShortEng")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
 
                     b.Property<int>("GroupId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.Property<string>("NameEng")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.Property<bool>("Proposed")
                         .HasColumnType("boolean");
@@ -500,12 +506,12 @@ namespace TOS.Migrations
 
                     b.HasIndex("NotificationId");
 
-                    b.ToTable("UserSubscribedNotifications");
+                    b.ToTable("UserSubscribedNotification", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
+                    b.HasOne("TOS.Models.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -530,21 +536,6 @@ namespace TOS.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TOS.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
                     b.HasOne("TOS.Models.ApplicationUser", null)
@@ -552,6 +543,25 @@ namespace TOS.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("TOS.Models.ApplicationUserRole", b =>
+                {
+                    b.HasOne("TOS.Models.ApplicationRole", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TOS.Models.ApplicationUser", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TOS.Models.Attachment", b =>
@@ -697,6 +707,11 @@ namespace TOS.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("TOS.Models.ApplicationRole", b =>
+                {
+                    b.Navigation("UserRoles");
+                });
+
             modelBuilder.Entity("TOS.Models.ApplicationUser", b =>
                 {
                     b.Navigation("AssignedTopics");
@@ -712,6 +727,8 @@ namespace TOS.Migrations
                     b.Navigation("SupervisedTopics");
 
                     b.Navigation("UserInterestedTopics");
+
+                    b.Navigation("UserRoles");
 
                     b.Navigation("UserSubscribedNotifications");
                 });

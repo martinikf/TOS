@@ -32,7 +32,9 @@ public class ApplicationUser : IdentityUser<int>
     public virtual ICollection<UserInterestedTopic> UserInterestedTopics { get; } = new HashSet<UserInterestedTopic>();
 
     public virtual ICollection<UserSubscribedNotification> UserSubscribedNotifications { get; } = new HashSet<UserSubscribedNotification>();
-    
+
+    public virtual ICollection<ApplicationUserRole> UserRoles { get; } = new HashSet<ApplicationUserRole>();
+
     public string GetDisplayName()
     {
         if (DisplayName == null)

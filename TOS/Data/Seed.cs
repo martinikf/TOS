@@ -245,7 +245,7 @@ public static class Seed
         var role = ctx.Roles.FirstOrDefault(r => r.Name!.Equals(name));
         if (role == null)
         {
-            role = new IdentityRole<int>
+            role = new ApplicationRole()
             {
                 Name = name,
                 NormalizedName = name.ToUpper()
@@ -263,7 +263,7 @@ public static class Seed
             var userRole = ctx.UserRoles.FirstOrDefault(r => r.UserId.Equals(user.Id) && r.RoleId.Equals(role.Id));
             if (userRole == null)
             {
-                userRole = new IdentityUserRole<int>
+                userRole = new ApplicationUserRole()
                 {
                     UserId = user.Id,
                     RoleId = role.Id

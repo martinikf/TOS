@@ -5,18 +5,18 @@ using TOS.Models;
 
 namespace TOS.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int, IdentityUserClaim<int>, ApplicationUserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
-
         public DbSet<Attachment> Attachments { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Group> Groups { get; set; }
+        
+        public DbSet<Notification> Notifications { get; set; }
         public DbSet<Programme> Programmes { get; set; }
         public DbSet<Topic> Topics { get; set; }
         public DbSet<TopicRecommendedProgramme> TopicRecommendedProgrammes { get; set; }
         public DbSet<UserInterestedTopic> UserInterestedTopics { get; set; }
         
-        public DbSet<Notification> Notifications { get; set; }
         public DbSet<UserSubscribedNotification> UserSubscribedNotifications { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
@@ -27,6 +27,30 @@ namespace TOS.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+
+            builder.Entity<ApplicationUser>(b =>
+            {
+                b.HasMany(e => e.UserRoles)
+                    .WithOne(e => e.User)
+                    .HasForeignKey(ur => ur.UserId)
+                    .IsRequired();
+            });
+            
+            builder.Entity<ApplicationRole>(b =>
+            {
+                // Each Role can have many entries in the UserRole join table
+                b.HasMany(e => e.UserRoles)
+                    .WithOne(e => e.Role)
+                    .HasForeignKey(ur => ur.RoleId)
+                    .IsRequired();
+            });
+
+            builder.Entity<ApplicationUserRole>(b =>
+            {
+                b.HasKey(p => new {p.UserId, p.RoleId});
+            });
+            
             //Ignore some default User columns
             builder.Entity<ApplicationUser>()
                 .Ignore(c => c.PhoneNumber)
@@ -41,11 +65,11 @@ namespace TOS.Data
             {
                 b.ToTable("User");
             });
-            builder.Entity<IdentityUserRole<int>>(b =>
+            builder.Entity<ApplicationUserRole>(b =>
             {
                 b.ToTable("UserRole");
             });
-            builder.Entity<IdentityRole<int>>(b =>
+            builder.Entity<ApplicationRole>(b =>
             {
                 b.ToTable("Role");
             });
@@ -60,6 +84,10 @@ namespace TOS.Data
             builder.Entity<Group>(b =>
             {
                 b.ToTable("Group");
+            });
+            builder.Entity<Notification>(b =>
+            {
+                b.ToTable("Notification");
             });
             builder.Entity<Programme>(b =>
             {
@@ -76,6 +104,10 @@ namespace TOS.Data
             builder.Entity<UserInterestedTopic>(b =>
             {
                 b.ToTable("UserInterestedTopic");
+            });
+            builder.Entity<UserSubscribedNotification>(b =>
+            {
+                b.ToTable("UserSubscribedNotification");
             });
 
             //M:N relation

@@ -306,7 +306,7 @@
         <value>Zobrazit zabrané</value>
     </data>
     <data name="Topic_Index_ShowProposedOnly" xml:space="preserve">
-        <value>Pouze navrhnuté</value>
+        <value>Pouze navrhnuté studenty</value>
     </data>
     <data name="Topic_Index_ShowHidden" xml:space="preserve">
         <value>Zobrazit skryté</value>
@@ -778,5 +778,11 @@
     </data>
     <data name="Topic_Attachment_Delete" xml:space="preserve">
         <value>Smazat</value>
+    </data>
+    <data name="Topic_Index_TopicsWithoutSupervisor" xml:space="preserve">
+        <value>Témata bez vedoucího</value>
+    </data>
+    <data name="External topic" xml:space="preserve">
+        <value>Externí práce</value>
     </data>
 </root>
