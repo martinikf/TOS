@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -131,6 +132,15 @@ public class AdministrationController : Controller
             if (await _context.UserRoles.CountAsync(x => x.RoleId == administratorRole.Id) <= 1)
             {
                 return await EditRoles(id, true);
+            }
+
+            //If administrator role was removed from user, remove all notifications that are specific to administrator
+            var notificationToDelete = await _context.Notifications.FirstAsync(x => x.Name == "NewExternalUser");
+            UserSubscribedNotification? ur = null;
+            if ((ur = await _context.UserSubscribedNotifications.FirstOrDefaultAsync(x => x.UserId == user.Id && x.NotificationId == notificationToDelete.NotificationId)) != null)
+            {
+                _context.UserSubscribedNotifications.Remove(ur);
+                await _context.SaveChangesAsync();
             }
         }
 
