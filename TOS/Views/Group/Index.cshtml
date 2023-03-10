@@ -30,31 +30,14 @@
     </div>
 </form>
 
-@if (Model.Any(x => x.Highlight))
-{
-    <h2>@SharedLocalizer["Group_Index_HighlightGroups"]</h2>
-    <div class="list-group">
-    @foreach (var group in Model.Where(x => x.Highlight))
-    {
-        <a class="list-group-item list-group-item-action" asp-controller="Topic" asp-action="Group" asp-route-groupId="@group.GroupId">
-            <div class="ms-2 me-auto">
-                <div class="fw-bold">
-                    @Html.SelectStringByLanguage(group.NameEng, group.Name)
-                </div>
-                @group.Creator.GetDisplayName()
-            </div>
-        </a>
-    }
-    </div>
-}
-
 <hr/>
 
-@if (Model.Any(x => x.Highlight == false))
+@if (Model.Any(x => x.Highlight))
 {
-    <h2>@SharedLocalizer["Group_Index_OtherGroups"]</h2>
-    <div class="list-group">
-        @foreach (var group in Model.Where(x => x.Highlight == false))
+    <section>
+        <h2>@SharedLocalizer["Group_Index_HighlightGroups"]</h2>
+        <div class="list-group">
+        @foreach (var group in Model.Where(x => x.Highlight))
         {
             <a class="list-group-item list-group-item-action" asp-controller="Topic" asp-action="Group" asp-route-groupId="@group.GroupId">
                 <div class="ms-2 me-auto">
@@ -65,5 +48,26 @@
                 </div>
             </a>
         }
-    </div>
+        </div>
+    </section>
+}
+
+@if (Model.Any(x => x.Highlight == false))
+{
+    <section>
+        <h2>@SharedLocalizer["Group_Index_OtherGroups"]</h2>
+        <div class="list-group">
+            @foreach (var group in Model.Where(x => x.Highlight == false))
+            {
+                <a class="list-group-item list-group-item-action" asp-controller="Topic" asp-action="Group" asp-route-groupId="@group.GroupId">
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold">
+                            @Html.SelectStringByLanguage(group.NameEng, group.Name)
+                        </div>
+                        @group.Creator.GetDisplayName()
+                    </div>
+                </a>
+            }
+        </div>
+    </section>
 }

@@ -703,7 +703,7 @@
         <value>Instructions for editing a notification</value>
     </data>
     <data name="Topic_Index_Heading_Unnasigned" xml:space="preserve">
-        <value>Proposed theses by externists</value>
+        <value>Unassigned proposed theses by externists</value>
     </data>
     <data name="Topic_Index_Search_Submit" xml:space="preserve">
         <value>Search</value>
@@ -788,5 +788,11 @@
     </data>
     <data name="External topic" xml:space="preserve">
         <value>External topic</value>
+    </data>
+    <data name="Student topic" xml:space="preserve">
+        <value>Student topic</value>
+    </data>
+    <data name="Topic_Details_Description" xml:space="preserve">
+        <value>Description</value>
     </data>
 </root>

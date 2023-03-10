@@ -3,14 +3,12 @@
 @using TOS.Extensions
 @model TOS.ViewModels.MyTopicsViewModel
 
-
 @{
     ViewData["Title"] = SharedLocalizer["Topic_MyTopics_Heading"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>@SharedLocalizer["Topic_MyTopics_Heading"]</h1>
-
 
 <form asp-action="MyTopics" method="get">
     <div class="row g-3 align-items-center">
@@ -24,38 +22,40 @@
         </div>
     
         @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
-         {
-             <div class="col-auto form-check">
-                 <label for="showHidden">@SharedLocalizer["Topic_MyTopics_ShowHidden"]</label>
-                 <input class="form-check-input" name="showHidden" id="showHidden" type="checkbox" value="true" @Html.Raw(Model.ShowHiddenTopics ? "checked" : "")/>
-             </div>
-         }
+        {
+            <div class="col-auto form-check">
+                <label for="showHidden">@SharedLocalizer["Topic_MyTopics_ShowHidden"]</label>
+                <input class="form-check-input" name="showHidden" id="showHidden" type="checkbox" value="true" @Html.Raw(Model.ShowHiddenTopics ? "checked" : "")/>
+            </div>
+        }
     
         <div class="col-auto">
             <input type="submit" class="btn btn-primary" value="@SharedLocalizer["Topic_Index_Search"]"/>
         </div>
     </div>
 </form>
+
 <hr/>
+
 <div class="accordion" id="accordionPanelsStayOpenExample">
     @if (Model.Topics.Any(x => x.Type == TopicType.Thesis && x.Group.NameEng == "Unassigned"))
-        {
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingUnassigned">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#Unassigned" aria-expanded="true" aria-controls="Unassigned">
-                        @SharedLocalizer["Proposed theses"]
-                    </button>
-                </h2>
-                <div id="Unassigned" class="accordion-collapse collapse" aria-labelledby="headingUnassigned" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
-                        @foreach (var topic in Model.Topics.Where(x => x.Type == TopicType.Thesis && x.Group.NameEng == "Unassigned"))
-                        {
-                            <partial name="TopicPreview" model="topic"/>
-                        }
-                    </div>
+    {
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingUnassigned">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#Unassigned" aria-expanded="true" aria-controls="Unassigned">
+                    @SharedLocalizer["Proposed theses"]
+                </button>
+            </h2>
+            <div id="Unassigned" class="accordion-collapse collapse" aria-labelledby="headingUnassigned" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    @foreach (var topic in Model.Topics.Where(x => x.Type == TopicType.Thesis && x.Group.NameEng == "Unassigned"))
+                    {
+                        <partial name="TopicPreview" model="topic"/>
+                    }
                 </div>
             </div>
-        }
+        </div>
+    }
     @if (Model.Topics.Any(x => x.Type == TopicType.Thesis && x.Group.NameEng == "Bachelor"))
     {
         <div class="accordion-item">

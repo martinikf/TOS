@@ -2,22 +2,25 @@
 @model TOS.Models.Topic
 
 <article class="position-relative border-bottom">
-    <h3 class="h4"><a asp-controller="Topic" asp-action="Details" asp-route-id="@Model.TopicId">@Html.SelectStringByLanguage(Model.NameEng, Model.Name)</a></h3>
-    @if (Model.Proposed)
-    {
-        <span class="badge bg-success">@SharedLocalizer["Proposed topic"]</span>
-    }
-    else
-    {
-        @if (Model.AssignedId == null)
+    <header>
+        <h3 class="h4"><a asp-controller="Topic" asp-action="Details" asp-route-id="@Model.TopicId">@Html.SelectStringByLanguage(Model.NameEng, Model.Name)</a></h3>
+        @if (Model.Proposed)
         {
-            <span class="badge bg-success">@SharedLocalizer["Free topic"]</span>
+            <span class="badge bg-success">@SharedLocalizer["Proposed topic"]</span>
         }
         else
         {
-            <span class="badge bg-danger">@SharedLocalizer["Taken topic"]</span>
+            @if (Model.AssignedId == null)
+            {
+                <span class="badge bg-success">@SharedLocalizer["Free topic"]</span>
+            }
+            else
+            {
+                <span class="badge bg-danger">@SharedLocalizer["Taken topic"]</span>
+            }
         }
-    }
-    <span class="badge rounded-pill bg-secondary">@Model.UserInterestedTopics.Count</span>
+        <span class="badge rounded-pill bg-secondary">@Model.UserInterestedTopics.Count</span>
+    </header>
+    
     <p>@Html.SelectStringByLanguage(Model.DescriptionShortEng!, Model.DescriptionShort)</p>
 </article>

@@ -28,6 +28,7 @@
 <partial name="Text" model="@Html.SelectStringByLanguage(Model.Group.DescriptionEng, Model.Group.Description)"/>
 
 <hr/>
+
 <form asp-action="Group" method="get">
     <input type="hidden" name="groupId" value="@Model.Group.GroupId"/>
     <div class="row g-2 align-items-center">
@@ -63,6 +64,7 @@
 </form>
 
 <hr/>
+
 @if (Model.Topics.Any(x => x.Type == TopicType.Homework))
 {
     <h2 class="h3">@SharedLocalizer["Group_Homework"]</h2>
@@ -72,9 +74,10 @@
        <partial name="HomeworkPreview" model="hw"/>
     }
 }
-<hr class="border border-primary border-3 opacity-75"/>
+
 @if (Model.Topics.Any(x => x.Type == TopicType.Project))
 {
+    <hr class="border border-primary border-3 opacity-75"/>
     <h2 class="h3">@SharedLocalizer["Group_Projects"]</h2>
     @foreach (var project in Model.Topics.Where(x => x.Type == TopicType.Project))
     {

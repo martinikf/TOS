@@ -699,7 +699,7 @@
         <value>Návod na editaci notifikace</value>
     </data>
     <data name="Topic_Index_Heading_Unnasigned" xml:space="preserve">
-        <value>Návrhy prací od externistů</value>
+        <value>Nezařazené návrhy prací od externistů</value>
     </data>
     <data name="Topic_Index_Search_Submit" xml:space="preserve">
         <value>Hledat</value>
@@ -784,5 +784,11 @@
     </data>
     <data name="External topic" xml:space="preserve">
         <value>Externí práce</value>
+    </data>
+    <data name="Student topic" xml:space="preserve">
+        <value>Studentská práce</value>
+    </data>
+    <data name="Topic_Details_Description" xml:space="preserve">
+        <value>Popis</value>
     </data>
 </root>

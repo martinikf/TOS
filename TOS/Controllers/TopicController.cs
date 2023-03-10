@@ -1,7 +1,6 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TOS.Data;
 using TOS.Models;
@@ -598,19 +597,6 @@ namespace TOS.Controllers
             }
             
             return RedirectToAction("Details", new {id = topicId});
-        }
-
-        private async Task<IEnumerable<ApplicationUser>> GetUsersWithRole(string role)
-        {
-            var roleId = _context.Roles.FirstOrDefault(x => x.Name!.ToLower().Equals(role.ToLower()))!.Id;
-
-            List<ApplicationUser> users = new();
-
-            if (roleId != 0)
-                users = await _context.Users.Where(x => _context.UserRoles.Any(y => y.UserId == x.Id && y.RoleId == roleId))
-                    .ToListAsync();
-
-            return users;
         }
 
         private string CallbackDetailsUrl(int id)

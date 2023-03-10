@@ -62,11 +62,11 @@
                                     @SharedLocalizer["Topics"]
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" asp-controller="Topic" asp-action="Index" asp-route-groupName="Bachelor" asp-route-showTakenTopics="false">@SharedLocalizer["Topics_Bachelor"]</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Topic" asp-action="Index" asp-route-groupName="Master" asp-route-showTakenTopics="false">@SharedLocalizer["Topics_Master"]</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Topic" asp-action="Index" asp-route-groupName="Bachelor">@SharedLocalizer["Topics_Bachelor"]</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Topic" asp-action="Index" asp-route-groupName="Master">@SharedLocalizer["Topics_Master"]</a></li>
                                     @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
                                     {
-                                        <li><a class="dropdown-item" asp-controller="Topic" asp-action="Unassigned" asp-route-groupName="Unassigned" asp-route-showHidden="true" asp-route-showProposed="true">@SharedLocalizer["Topics_Unassigned"]</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Topic" asp-action="Unassigned">@SharedLocalizer["Topics_Unassigned"]</a></li>
                                     }
                                 </ul>
                             </li>
