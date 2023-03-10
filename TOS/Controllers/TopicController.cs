@@ -197,12 +197,13 @@ namespace TOS.Controllers
             
             ViewData["TopicType"] = type;
 
-            ViewData["Programmes"] = await _context.Programmes.Where(x => x.Active).ToListAsync();
-            ViewData["UsersToAssign"] = new SelectList(await GetUsersWithRole("AssignedTopic"), "Id", "Email");
-
-            var userId = (await GetUser()).Id;
-            ViewData["UsersToSupervise"] = new SelectList(await GetUsersWithRole("SuperviseTopic"), "Id", "Email", userId);
-
+            ViewData["Programmes"] = 
+                await _context.Programmes.Where(x => x.Active).ToListAsync();
+            ViewData["UsersToAssign"] = 
+                await _context.Users.Where(x => x.UserRoles.Any(y => y.Role.Name == "AssignedTopic")).ToListAsync();
+            ViewData["UsersToSupervise"] = 
+                await _context.Users.Where(x => x.UserRoles.Any(y => y.Role.Name == "SuperviseTopic")).ToListAsync();
+                
             return View();
         }
         
@@ -280,7 +281,6 @@ namespace TOS.Controllers
                 return NotFound();
             }
 
-            ViewData["UsersToAssign"] = new SelectList(await GetUsersWithRole("AssignedTopic"), "Id", "Email", topic.AssignedId);
             if (topic.Group.NameEng!.Equals("Unassigned"))
             {
                 ViewData["Groups"] = await _context.Groups.Where(x => x.Selectable).OrderBy(x=>x.Name).ToListAsync();
@@ -296,7 +296,10 @@ namespace TOS.Controllers
                 ViewData["Groups"] = new List<Group> {topic.Group};
             }
 
-            ViewData["UsersToSupervise"] = new SelectList(await GetUsersWithRole("SuperviseTopic"), "Id", "Email", topic.SupervisorId);
+            ViewData["UsersToAssign"] = 
+                await _context.Users.Where(x => x.UserRoles.Any(y => y.Role.Name == "AssignedTopic")).ToListAsync();
+            ViewData["UsersToSupervise"] = 
+                await _context.Users.Where(x => x.UserRoles.Any(y => y.Role.Name == "SuperviseTopic")).ToListAsync();
             
             ViewData["TopicType"] = topic.Type;
 
