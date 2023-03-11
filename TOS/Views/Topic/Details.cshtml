@@ -44,7 +44,7 @@
         <p>
             @if (Model.AssignedId != null && (User.IsInRole("Topic") || User.IsInRole("AnyTopic")))
             {
-                <span>@SharedLocalizer["Topic_Details_AssignedStudent"] - @Model.AssignedStudent!.GetDisplayName() (@Model.AssignedStudent.Email)</span>
+                <span>@SharedLocalizer["Topic_Details_AssignedStudent"] - @Model.AssignedStudent!.GetDisplayName() (@Model.AssignedStudent.Email)</span> <br/>
             }
             @if ((Model.Proposed || Model.Creator.UserRoles.Any(x => x.Role.Name!.Equals("External"))) && (User.IsInRole("Topic") || User.IsInRole("AnyTopic")))
             {

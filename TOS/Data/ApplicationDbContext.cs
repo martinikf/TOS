@@ -60,6 +60,8 @@ namespace TOS.Data
                 .Ignore(c => c.LockoutEnd)
                 .Ignore(c => c.AccessFailedCount);
 
+            builder.Entity<ApplicationRole>().Ignore(x => x.ConcurrencyStamp);
+
             //Rename identity tables
             builder.Entity<ApplicationUser>(b =>
             {
