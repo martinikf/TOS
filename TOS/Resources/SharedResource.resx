@@ -791,4 +791,16 @@
     <data name="Topic_Details_Description" xml:space="preserve">
         <value>Popis</value>
     </data>
+    <data name="Topic_Edit_Attachment_Delete_Cancel_Title" xml:space="preserve">
+        <value>Varování</value>
+    </data>
+    <data name="Topic_Edit_Attachment_Delete_Body" xml:space="preserve">
+        <value>Opravdu chcete smazat tuto přílohu?</value>
+    </data>
+    <data name="Topic_Edit_Attachment_Delete_Cancel" xml:space="preserve">
+        <value>Ne</value>
+    </data>
+    <data name="Topic_Edit_Attachment_Delete_Confirm" xml:space="preserve">
+        <value>Smazat</value>
+    </data>
 </root>

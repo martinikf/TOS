@@ -795,4 +795,16 @@
     <data name="Topic_Details_Description" xml:space="preserve">
         <value>Description</value>
     </data>
+    <data name="Topic_Edit_Attachment_Delete_Cancel_Title" xml:space="preserve">
+        <value>Warning</value>
+    </data>
+    <data name="Topic_Edit_Attachment_Delete_Body" xml:space="preserve">
+        <value>Are you sure?</value>
+    </data>
+    <data name="Topic_Edit_Attachment_Delete_Cancel" xml:space="preserve">
+        <value>No</value>
+    </data>
+    <data name="Topic_Edit_Attachment_Delete_Confirm" xml:space="preserve">
+        <value>Delete</value>
+    </data>
 </root>

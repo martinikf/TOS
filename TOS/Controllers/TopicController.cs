@@ -514,18 +514,10 @@ namespace TOS.Controllers
         }
 
         [Authorize(Roles = "Attachment,AnyAttachment")]
-        public async Task<IActionResult> DeleteAttachment(int id)
+        public async Task<JsonResult> DeleteAttachment(int id)
         {
             var attachment = await _context.Attachments.FirstAsync(x => x.AttachmentId.Equals(id));
             var topicId = attachment.TopicId;
-            
-            if (User.IsInRole("Topic") && !User.IsInRole("AnyTopic"))
-            {
-                var user = await GetUser();
-                var topic = await _context.Topics.FirstAsync(x => x.TopicId.Equals(topicId));
-                if (topic.CreatorId != user.Id && topic.SupervisorId != user.Id && attachment.Creator.Id != user.Id)
-                    return Forbid();
-            }
 
             //Delete the file from server
             var a = await _context.Attachments.FirstAsync(x => x.AttachmentId.Equals(id));
@@ -539,7 +531,7 @@ namespace TOS.Controllers
             _context.Attachments.Remove(_context.Attachments.First(x => x.AttachmentId.Equals(id)));
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Edit", new {id = topicId});
+            return Json(true);
         }
         
         [Authorize(Roles = "Comment,AnyComment")]

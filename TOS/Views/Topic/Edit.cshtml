@@ -139,18 +139,30 @@
         <div class="d-flex flex-wrap">
             @foreach (var attachment in Model.Attachments)
             {
-                <div class="border border-dark rounded p-2 m-2 col-auto">
+                <div class="border border-dark rounded p-2 m-2 col-auto" id="attachment@(attachment.AttachmentId)">
                     <h4>@attachment.Name</h4>
                     @attachment.Creator.Email
-                    <a asp-action="DeleteAttachment" asp-route-attachmentId="@attachment.AttachmentId">@SharedLocalizer["Topic_Edit_Attachment_Delete"]</a>
-                    @{
-                   
-                        var data = new Tuple<int, string, string, string, string, string, string>
-                            (attachment.AttachmentId, "DeleteAttachment",
-                                SharedLocalizer["Topic_Attachment_Delete"].Value, SharedLocalizer["Topic_Attachment_Delete_Title"].Value,
-                                SharedLocalizer["Topic_Attachment_Delete_Body"].Value, SharedLocalizer["Topic_Attachment_Delete_Cancel"].Value, SharedLocalizer["Topic_Attachment_Delete_Confirm"].Value);
-                    }
-                    <partial name="DeleteModal" model="data"/>
+                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#DeleteConfirmation@(attachment.AttachmentId)">
+                        @SharedLocalizer["Topic_Edit_Attachment_Delete"]
+                    </button>
+                    <div class="modal" id="DeleteConfirmation@(attachment.AttachmentId)" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <span class="modal-title">@SharedLocalizer["Topic_Edit_Attachment_Delete_Cancel_Title"]</span>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>@SharedLocalizer["Topic_Edit_Attachment_Delete_Body"]</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@SharedLocalizer["Topic_Edit_Attachment_Delete_Cancel"]</button>
+                                    <a onclick="deleteAttachment(@attachment.AttachmentId)" data-bs-dismiss="modal" class="btn btn-primary interested" id="btn-delete">@SharedLocalizer["Topic_Edit_Attachment_Delete_Confirm"]</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                 </div>
             }
         </div>
@@ -158,7 +170,7 @@
     
      <div class="form-check">
         <label class="form-check-label" asp-for="Visible">@SharedLocalizer["Topic_Create_Visible"]</label>
-        <input class="form-check-input" asp-for="Visible" checked/>
+        <input class="form-check-input" asp-for="Visible"/>
     </div>
     
     <div class="mb-3">
@@ -170,8 +182,8 @@
 
 @section Scripts
 {
-    <partial name="_ValidationScriptsPartial" />
-    
+    <partial name="_ValidationScriptsPartial"/>
+
     <script>
         window.onload = function () {
             RefreshProgrammes(true);
@@ -210,20 +222,40 @@
              }
         }
     </script>
-    
-        <script type="text/javascript" src="~/lib/dselect/js/dselect.js"></script>
-        <script type="text/javascript">
-            $(function () {
-                const config={
-                search: true,
-                placeholder: "@SharedLocalizer["Topic_Create_Placeholder"]",
-                maxHeight: '200px'
+
+    <script type="text/javascript" src="~/lib/dselect/js/dselect.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            const config={
+            search: true,
+            placeholder: "@SharedLocalizer["Topic_Create_Placeholder"]",
+            maxHeight: '200px'
+            }
+            //If #dAssigned is not null
+            if (document.querySelector('#dAssigned') != null)
+                dselect(document.querySelector('#dAssigned'), config)
+            dselect(document.querySelector('#dSupervisor'), config)
+        });
+    </script>
+
+    <script>
+        function deleteAttachment(id){
+            var url = '@Url.Action("DeleteAttachment", "Topic")' + "?id=" + id;
+            console.log(url);
+            $.ajax({
+            type: 'GET',
+            url: url,
+            contentType: false,
+            processData: false,
+            cache: false,
+            success: function (response) {
+                $("#attachment" + id).remove();
+            },
+             error: function (response){
+                console.log("Ajax failed");
                 }
-                //If #dAssigned is not null
-                if (document.querySelector('#dAssigned') != null)
-                    dselect(document.querySelector('#dAssigned'), config)
-                dselect(document.querySelector('#dSupervisor'), config)
             });
-        </script>
+        }
+    </script>
 }
 
