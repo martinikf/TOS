@@ -698,9 +698,6 @@
     <data name="Administration_EditNotification_Guide" xml:space="preserve">
         <value>Návod na editaci notifikace</value>
     </data>
-    <data name="Topic_Index_Heading_Unnasigned" xml:space="preserve">
-        <value>Nezařazené návrhy prací od externistů</value>
-    </data>
     <data name="Topic_Index_Search_Submit" xml:space="preserve">
         <value>Hledat</value>
     </data>
@@ -802,5 +799,8 @@
     </data>
     <data name="Topic_Edit_Attachment_Delete_Confirm" xml:space="preserve">
         <value>Smazat</value>
+    </data>
+    <data name="Topic_Create_NoResults" xml:space="preserve">
+        <value>Nic nenalezeno</value>
     </data>
 </root>

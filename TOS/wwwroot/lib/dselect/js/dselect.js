@@ -97,6 +97,7 @@ function dselect(el, option = {}) {
   const defaultSize = ''
   const search = attrBool('search') || option.search || defaultSearch
   const placeholder = option.placeholder || "Search"
+  const noResults = option.noResults || "No results found"
   const creatable = attrBool('creatable') || option.creatable || defaultCreatable
   const clearable = attrBool('clearable') || option.clearable || defaultClearable
   const maxHeight = el.dataset.dselectMaxHeight || option.maxHeight || defaultMaxHeight
@@ -200,7 +201,7 @@ function dselect(el, option = {}) {
           <div class="dselect-items" style="max-height:${maxHeight};overflow:auto">
             ${itemTags(el.querySelectorAll('*'))}
           </div>
-          <div class="${classNoResults} d-none">No results found</div>
+          <div class="${classNoResults} d-none">${noResults}</div>
         </div>
       </div>
       ${clearBtn}

@@ -2,11 +2,11 @@
 @model IEnumerable<TOS.Models.Topic>
 
 @{
-    ViewData["Title"] = SharedLocalizer["Topic_Index_Heading_Unnasigned"];
+    ViewData["Title"] = SharedLocalizer["Topic_Index_Heading_Unassigned"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>@SharedLocalizer["Topic_Index_Heading_Unnasigned"]</h1>
+<h1>@SharedLocalizer["Topic_Index_Heading_Unassigned"]</h1>
 
 
 <form asp-action="Unassigned" method="get">

@@ -76,7 +76,7 @@
         <value>Theses</value>
     </data>
     <data name="Unassigned option" xml:space="preserve">
-        <value>Unassigned option</value>
+        <value>Unassigned</value>
     </data>
     <data name="New comment" xml:space="preserve">
         <value>New comment</value>
@@ -702,9 +702,6 @@
     <data name="Administration_EditNotification_Guide" xml:space="preserve">
         <value>Instructions for editing a notification</value>
     </data>
-    <data name="Topic_Index_Heading_Unnasigned" xml:space="preserve">
-        <value>Unassigned proposed theses by externists</value>
-    </data>
     <data name="Topic_Index_Search_Submit" xml:space="preserve">
         <value>Search</value>
     </data>
@@ -806,5 +803,8 @@
     </data>
     <data name="Topic_Edit_Attachment_Delete_Confirm" xml:space="preserve">
         <value>Delete</value>
+    </data>
+    <data name="Topic_Create_NoResults" xml:space="preserve">
+        <value>No results found</value>
     </data>
 </root>
