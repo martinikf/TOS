@@ -12,12 +12,10 @@ public static class Seed
         var ctx = scope.ServiceProvider.GetService<ApplicationDbContext>();
         if (ctx is null) return;
         
-        //Create Roles: Administrator, Teacher, Student, External
-        var adminRole = CreateRole("Administrator", ctx);
-        var teacherRole = CreateRole("Teacher", ctx);
-        var studentRole = CreateRole("Student", ctx);
-        var externalRole = CreateRole("External", ctx);
-
+        CreateRole("Administrator", ctx);
+        CreateRole("Teacher", ctx);
+        CreateRole("Student", ctx);
+        CreateRole("External", ctx);
         CreateRole("Topic", ctx);
         CreateRole("ProposeTopic", ctx);
         CreateRole("AnyTopic", ctx);
@@ -29,72 +27,31 @@ public static class Seed
         CreateRole("AnonymousComment", ctx);
         CreateRole("AnyComment", ctx);
 
+        CreateRole("Attachment", ctx);
+        CreateRole("AnyAttachment", ctx);
+
         CreateRole("InterestTopic", ctx);
         CreateRole("AssignedTopic", ctx);
         CreateRole("SuperviseTopic", ctx);
-        
-        
-        //Create users
-        var adminUser = CreateUser("Admin", "User", "", "admin@tos.tos","admin@tos.tos", true, "password", ctx);
-        var teacherUser = CreateUser("Teacher", "User","",  "teacher@tos.tos","teacher@tos.tos", true, "password", ctx);
-        var studentUser = CreateUser("Student", "User","",  "student@tos.tos", "student@tos.tos",true, "password", ctx);
-        var externalUser = CreateUser("External", "User", "", "external@tos.tos", "external@tos.tos",true, "password", ctx);
-        
+
+        var adminUser = CreateUser("Admin", "User", "ADMIN", "admin@tos.tos", "admin@tos.tos", true, "password",
+            ctx);
         await RoleHelper.AssignRoles(adminUser, Role.Administrator, ctx);
-        await RoleHelper.AssignRoles(teacherUser, Role.Teacher, ctx);
-        await RoleHelper.AssignRoles(studentUser, Role.Student, ctx);
-        await RoleHelper.AssignRoles(externalUser, Role.External, ctx);
         
-        //Create default Groups: Unassigned, Bachelor, Master for topics
-        var unassignedGroup = CreateGroup("Nezařazeno", "Unassigned", adminUser, true, false, ctx);
-        var bachelorGroup = CreateGroup("Bakalářská","Bachelor", adminUser, true, true, ctx);
-        var masterGroup = CreateGroup("Magisterská","Master", adminUser, true, true, ctx);
-        //Example for course
-        var jj1Group = CreateGroup("KMI/JJ1-2022-A", null, teacherUser, false, true, ctx);
+        CreateGroup("Nezařazeno", "Unassigned", adminUser, false, false, ctx);
+        CreateGroup("Bakalářská", "Bachelor", adminUser, true, true, ctx);
+        CreateGroup("Magisterská", "Master", adminUser, true, true, ctx);
         
-        //Create programmees
-        //Bachelor
-        var bcITProgramme = CreateProgramme("Informační technologie","Information Technology", true, ProgramType.Bachelor, ctx);
-        var bcInfProgramme = CreateProgramme("Informatika", "Informatics",  true, ProgramType.Bachelor, ctx);
-        var bcSwProgramme = CreateProgramme("Informatika - Vývoj software","Informatics - Software Development", true, ProgramType.Bachelor, ctx);
-        var bcGeneralInfProgramme = CreateProgramme("Informatika - Obecná informatika","Informatics - General Informatics", true, ProgramType.Bachelor, ctx);
-        //Master
-        var mcInfProgramme = CreateProgramme("Obecná informatika" , "General informatics", true, ProgramType.Master, ctx);
-        var mcSwProgramme = CreateProgramme("Vývoj software","Software Development", true, ProgramType.Master, ctx);
-        var mcGeneralInfProgramme = CreateProgramme("Úmělá inteligence","Artificial intelligence", true, ProgramType.Master, ctx);
-        CreateProgramme("Počítačové systémy a technologie","Computer systems and technologies", true, ProgramType.Master, ctx);
-
-        
-        //Create topics
-        var tosTopic = CreateTopic("TOS", null, "Krátký popis", "System for offering topics of diploma theses", "Dlouhý popis","Longer description shown in details.", true, teacherUser,
-            teacherUser, studentUser, bachelorGroup, ctx);
-
-        var deskovkyTopic = CreateTopic("Mobilní aplikace pro seznamování hračů deskových her", null,
-            "Mobilní aplikace, která bude mít za úkol seskupovat lidi se zájmem o stejné deskové hry. Umožní chat mezi takovými lidmi.", "Eng",
-            "Long desc","Eng", true, teacherUser, teacherUser, null, bachelorGroup, ctx);
-
-        var masterTopic = CreateTopic("Překladač pro jazyk LISP", "LISP ENG",
-            "Překladač pro jazyk LISP, který bude umožnovat velkou možnost optimalizace kodu","Eng", "Long desc","Eng", true, externalUser,
-            teacherUser, null, masterGroup, ctx);
-
-        var master2Topic = CreateTopic("MVC framework pro jednoduchý vývoj webových aplikací", null,
-            "Framework pro studentem vybraný programovací jazyk. Framework umožní jednoduchý vývoj web apliackí pomocí architektruy MVC.", null,
-            "long Desc", null, true, teacherUser, teacherUser, null, masterGroup, ctx);
-        
-        
-        //Recommended programmes for topics
-        CreateTopicRecommendedProgramme(bcSwProgramme, tosTopic, ctx);
-        CreateTopicRecommendedProgramme(bcSwProgramme, deskovkyTopic, ctx);
-        CreateTopicRecommendedProgramme(bcInfProgramme, deskovkyTopic, ctx);
-        CreateTopicRecommendedProgramme(mcInfProgramme, masterTopic, ctx);
-        CreateTopicRecommendedProgramme(mcInfProgramme, master2Topic, ctx);
-        CreateTopicRecommendedProgramme(mcSwProgramme, master2Topic, ctx);
-        CreateTopicRecommendedProgramme(mcGeneralInfProgramme, masterTopic, ctx);
-
-    
+        CreateNotification("TopicEdit", "Změna tématu", "Topic Change", "Téma bylo změněno.", "Topic was edited.", ctx);
+        CreateNotification("TopicAssigned-Student", "Téma bylo přiřazeno Vám", "Topic was assigned to You", "TODO", "TODO", ctx);
+        CreateNotification("TopicAssigned-Others", "Téma bylo přiřazeno", "Topic was assigned", "TODO", "TODO", ctx);
+        CreateNotification("TopicAdopted", "Téma bylo přijato", "Topic was accepted", "TODO", "TODO", ctx);
+        CreateNotification("CommentNew", "Nový komentář", "New comment", "[COMMENT]", "[COMMENT]", ctx);
+        CreateNotification("NewInterest", "Někdo projevil zájem", "Someone is interested", "TODO", "TODO", ctx);
+        CreateNotification("NewExternalUser", "TODO", "TODO", "TODO", "TODO", ctx);
     }
 
-    public static async void InfUpolSeed(WebApplication app)
+    public static async void DevSeed(WebApplication app)
     {
         using var scope = app.Services.CreateScope();
         var ctx = scope.ServiceProvider.GetService<ApplicationDbContext>();
