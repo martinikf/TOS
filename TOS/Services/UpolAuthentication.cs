@@ -3,7 +3,8 @@ using System.Text;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Novell.Directory.Ldap;
+using System.DirectoryServices.Protocols;
+using System.Net;
 using TOS.Data;
 using TOS.Models;
 
@@ -98,12 +99,29 @@ public class UpolAuthentication : IAuthentication
     {
         try
         {
+            /*
+            //Multiplatform but without ssl
             var ldapConn = new LdapConnection();
             ldapConn.Connect(_configuration["UpolActiveDirectory:IP"], 
                 int.Parse(_configuration["UpolActiveDirectory:Port"] ?? throw new Exception("UpolActiveDirectory:Port is not set in appsettings.json")));
             ldapConn.Bind(_configuration["UpolActiveDirectory:dn"] + "\\" + username, password);
             
             return ldapConn.Connected;
+            */
+            //Work only under windows, ssl 
+            var endpoint = new LdapDirectoryIdentifier(_configuration["UpolActiveDirectory:IP"] ?? string.Empty,  int.Parse(_configuration["UpolActiveDirectory:Port"] ?? string.Empty), true, false);
+            using var ldap = new LdapConnection(endpoint, new NetworkCredential(_configuration["UpolActiveDirectory:Dn"] + "\\" + username, password))
+            {
+                AuthType = AuthType.Basic
+            };
+            ldap.SessionOptions.SecureSocketLayer = true;
+            ldap.SessionOptions.ProtocolVersion = 3;
+            ldap.SessionOptions.VerifyServerCertificate = new VerifyServerCertificateCallback((con, cer) => true);
+            ldap.Timeout = TimeSpan.FromMinutes(1);
+            
+            ldap.Bind();
+            
+            return true;
         }
         catch
         {
@@ -217,11 +235,12 @@ public class UpolAuthentication : IAuthentication
 
     private string GetStudentStagId(string username)
     {
-        var request = StagServicesStudentOsCisloByExternal + username;
-        var response = StagRequest(request, null, null);
-        var xml = XDocument.Parse(response);
         try
         {
+            var request = StagServicesStudentOsCisloByExternal + username;
+            var response = StagRequest(request, null, null);
+            var xml = XDocument.Parse(response);
+       
             var result = xml.Descendants("osCislo").First().Value;
             return result;
         }
