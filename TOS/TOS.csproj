@@ -18,7 +18,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Owin.StaticFiles" Version="4.2.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.1" />
     <PackageReference Include="System.DirectoryServices.Protocols" Version="7.0.0" />
@@ -26,6 +25,7 @@
 
   <ItemGroup>
     <Folder Include="Migrations" />
+    <Folder Include="wwwroot\files" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,6 +50,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ValidationErrorResource.cz.resx</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\files\20\PolAgroDronNahledVidea.jpg" />
   </ItemGroup>
 
 </Project>

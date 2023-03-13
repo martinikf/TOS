@@ -447,10 +447,10 @@
         <value>Odebírání notifikací</value>
     </data>
     <data name="Manage_Notification_TopicEdit" xml:space="preserve">
-        <value>Při změně tématu</value>
+        <value>Změna vašeho tématu</value>
     </data>
     <data name="Manage_Notification_TopicAssigned-Student" xml:space="preserve">
-        <value>Při přiřazení tématu Vám</value>
+        <value>Téma přiřazeno vám</value>
     </data>
     <data name="Manage_Notification_TopicAssigned-Others" xml:space="preserve">
         <value>Téma přiřazeno jinému studentovi</value>
@@ -732,7 +732,7 @@
         <value>Notifikace: Zájem o téma</value>
     </data>
     <data name="Manage_Notification_NewInterest" xml:space="preserve">
-        <value>Při projevení zájmu někým</value>
+        <value>Při projevení zájmu někým u vašeho tématu</value>
     </data>
     <data name="Administration_Users_EmailConfirmed" xml:space="preserve">
         <value>Potvrzený email</value>

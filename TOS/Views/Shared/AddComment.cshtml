@@ -13,10 +13,14 @@
 
     @if (User.IsInRole("AnonymousComment"))
     {
-        <div class="form-check">
-            <label class="form-check-label" for="Anonymous">@SharedLocalizer["Anonymous"]</label>
-            <input type="checkbox" class="form-check-input" id="Anonymous" asp-for="Anonymous" value="true"/>
-        </div>
+        {
+            var uniqueId = Guid.NewGuid().ToString();
+        
+            <div class="form-check">
+                <label class="form-check-label" for="Anonymous@(uniqueId)">@SharedLocalizer["Anonymous"]</label>
+                <input type="checkbox" class="form-check-input" id="Anonymous@(uniqueId)" asp-for="Anonymous" value="true"/>
+            </div>
+        }
     }
     <div class="d-flex justify-content-end">
         <!--<a href="javascript:;" class="ReplyButton" value="" onclick="ReplyButtonClick('@Model.ParentCommentId')">@SharedLocalizer["Cancel"]</a>-->

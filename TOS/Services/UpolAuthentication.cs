@@ -172,11 +172,7 @@ public class UpolAuthentication : IAuthentication
 
     private async Task<ApplicationUser> CreateUser(string request, string username, string password)
     {
-        string firstname;
-        string lastname;
-        string email;
-
-        if (!GetStagInfo(request, username, password, out firstname, out lastname, out email))
+        if (!GetStagInfo(request, username, password, out var firstname, out var lastname, out var email))
             throw new Exception("Stag API failed");
         
         //Lower case lastname except first letter

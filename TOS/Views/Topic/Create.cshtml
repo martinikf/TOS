@@ -1,6 +1,5 @@
 @using TOS.Data
 @using TOS.Extensions
-@using System.Collections
 @model TOS.Models.Topic
 
 @{
@@ -8,7 +7,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>@SharedLocalizer["Topic_Create_Heading"]</h1>
+<h1>@SharedLocalizer["Topic_Create_Heading"] - @SharedLocalizer[((TopicType) ViewData["TopicType"]!).ToString()]</h1>
 
 <hr />
 

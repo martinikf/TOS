@@ -119,8 +119,8 @@ public class NotificationManager : INotificationManager
 
     private async Task<Notification> GetNotification(string name)
     {
-        var notification = await _context.Notifications.FirstOrDefaultAsync(x=>x.Name == "name");
-        if (notification is null) throw new Exception($"Database is not seeded. Notification ${name} is missing.");
+        var notification = await _context.Notifications.FirstOrDefaultAsync(x=>x.Name == name);
+        if (notification is null) throw new Exception($"Database is not seeded. Notification {name} is missing.");
         
         return notification;
     }

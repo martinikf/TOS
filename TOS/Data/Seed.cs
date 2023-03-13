@@ -58,10 +58,10 @@ public static class Seed
         if (ctx is null) return;
         
         //Create Roles: Administrator, Teacher, Student, External
-        var adminRole = CreateRole("Administrator", ctx);
-        var teacherRole = CreateRole("Teacher", ctx);
-        var studentRole = CreateRole("Student", ctx);
-        var externalRole = CreateRole("External", ctx);
+        CreateRole("Administrator", ctx);
+        CreateRole("Teacher", ctx);
+        CreateRole("Student", ctx);
+        CreateRole("External", ctx);
         CreateRole("Topic", ctx);
         CreateRole("ProposeTopic", ctx);
         CreateRole("AnyTopic", ctx);

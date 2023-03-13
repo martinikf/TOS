@@ -313,7 +313,7 @@
         <value>Show taken</value>
     </data>
     <data name="Topic_Index_ShowProposedOnly" xml:space="preserve">
-        <value>Proposed only by students</value>
+        <value>Proposed by students</value>
     </data>
     <data name="Topic_Index_ShowHidden" xml:space="preserve">
         <value>Show hidden</value>
@@ -457,7 +457,7 @@
         <value>Subscribe to notifications</value>
     </data>
     <data name="Manage_Notification_TopicEdit" xml:space="preserve">
-        <value>Topic change</value>
+        <value>Your topic edit</value>
     </data>
     <data name="Manage_Notification_TopicAssigned-Student" xml:space="preserve">
         <value>Topic assigned to You</value>
@@ -727,7 +727,7 @@
         <value>Cancel</value>
     </data>
     <data name="Administration" xml:space="preserve">
-        <value>Administartion</value>
+        <value>Administration</value>
     </data>
     <data name="Topic_Details_Interested_Heading" xml:space="preserve">
         <value>Interested students</value>
@@ -739,7 +739,7 @@
         <value>Notification: Interest in topic</value>
     </data>
     <data name="Manage_Notification_NewInterest" xml:space="preserve">
-        <value>Topic someone interested</value>
+        <value>Someone is interested in your topic</value>
     </data>
     <data name="Administration_Users_EmailConfirmed" xml:space="preserve">
         <value>Email confirmed</value>

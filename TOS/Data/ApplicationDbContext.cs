@@ -7,17 +7,17 @@ namespace TOS.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int, IdentityUserClaim<int>, ApplicationUserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
-        public DbSet<Attachment> Attachments { get; set; }
-        public DbSet<Comment> Comments { get; set; }
-        public DbSet<Group> Groups { get; set; }
-        
-        public DbSet<Notification> Notifications { get; set; }
-        public DbSet<Programme> Programmes { get; set; }
-        public DbSet<Topic> Topics { get; set; }
-        public DbSet<TopicRecommendedProgramme> TopicRecommendedProgrammes { get; set; }
-        public DbSet<UserInterestedTopic> UserInterestedTopics { get; set; }
-        
-        public DbSet<UserSubscribedNotification> UserSubscribedNotifications { get; set; }
+        public DbSet<Attachment> Attachments { get; set; } = null!;
+        public DbSet<Comment> Comments { get; set; } = null!;
+        public DbSet<Group> Groups { get; set; } = null!;
+
+        public DbSet<Notification> Notifications { get; set; } = null!;
+        public DbSet<Programme> Programmes { get; set; } = null!;
+        public DbSet<Topic> Topics { get; set; } = null!;
+        public DbSet<TopicRecommendedProgramme> TopicRecommendedProgrammes { get; set; } = null!;
+        public DbSet<UserInterestedTopic> UserInterestedTopics { get; set; } = null!;
+
+        public DbSet<UserSubscribedNotification> UserSubscribedNotifications { get; set; } = null!;
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
