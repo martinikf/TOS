@@ -14,15 +14,14 @@ namespace TOS.Controllers
         {
             _context = context;
         }
-
-        // GET: Group
+        
         public async Task<IActionResult> Index(string searchString = "", bool showHidden = false)
         {
             var groups = _context.Groups.Where(x => !x.Selectable && x.NameEng != "Unassigned");
 
             //Show hidden
             ViewData["showHidden"] = showHidden;
-            if (!showHidden)
+            if (!showHidden || (!User.IsInRole("Group") && !User.IsInRole("AnyGroup")))
             {
                 groups = groups.Where(x => x.Visible);
             }
@@ -33,7 +32,7 @@ namespace TOS.Controllers
                 ViewData["searchString"] = searchString;
                 searchString = searchString.ToLower();
                 groups = groups.Where(x =>
-                    x.Name.ToLower().Contains(searchString) || x.NameEng.ToLower().Contains(searchString));
+                    x.Name.ToLower().Contains(searchString) || x.NameEng!.ToLower().Contains(searchString));
             }
 
             //Higlight used groups
@@ -57,16 +56,13 @@ namespace TOS.Controllers
             
             return View(allGroups);
         }
-        
-        // GET: Group/Create
-        
+
         [Authorize(Roles ="Group,AnyGroup")]
         public IActionResult Create()
         {
             return View();
         }
-
-        // POST: Group/Create
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Group,AnyGroup")]
@@ -82,8 +78,6 @@ namespace TOS.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Group/Edit/5
-        
         [Authorize(Roles ="Group,AnyGroup")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -91,8 +85,7 @@ namespace TOS.Controllers
             
             return View(group);
         }
-
-        // POST: Group/Edit/5
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Group,AnyGroup")]
@@ -126,8 +119,7 @@ namespace TOS.Controllers
                     return RedirectToAction("Group", "Topic", new {groupId = group.GroupId});
             }
         }
-
-        // GET: Group/Delete/5
+        
         [Authorize(Roles ="Group,AnyGroup")]
         public async Task<IActionResult> Delete(int? id)
         {
