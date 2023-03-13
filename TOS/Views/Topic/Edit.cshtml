@@ -59,73 +59,87 @@
         <span asp-validation-for="DescriptionLongEng" class="text-danger"></span>
     </div>
     
-    <div class="row g-3 align-items-center mb-3">
-    <div class="col-xl">
-        <label asp-for="SupervisorId" class="form-label">@SharedLocalizer["Topic_Create_Supervisor"]</label>
-        <select class="form-select" id="dSupervisor" asp-for="SupervisorId">
-            <option value="null">@SharedLocalizer["Unassigned option"]</option>
-            @foreach (var user in (IEnumerable<ApplicationUser>)ViewData["UsersToSupervise"]!)
+    @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
+    {
+        <div class="row g-3 align-items-center mb-3">
+            <div class="col-xl">
+                <label asp-for="SupervisorId" class="form-label">@SharedLocalizer["Topic_Create_Supervisor"]</label>
+                <select class="form-select" id="dSupervisor" asp-for="SupervisorId">
+                    <option value="null">@SharedLocalizer["Unassigned option"]</option>
+                    @foreach (var user in (IEnumerable<ApplicationUser>) ViewData["UsersToSupervise"]!)
+                    {
+                        <option value="@user.Id">@user.GetDisplayName() (@user.Email)</option>
+                    }
+                </select>
+            </div>
+
+            @if ((TopicType) ViewData["TopicType"]! != TopicType.Homework)
             {
-                <option value="@user.Id">@user.GetDisplayName() (@user.Email)</option>
+                <div class="col-xl">
+                    <label asp-for="AssignedId" class="form-label">@SharedLocalizer["Topic_Create_Assigned"]</label>
+                    <select class="form-select" id="dAssigned" asp-for="AssignedId">
+                        <option value="null">@SharedLocalizer["Unassigned option"]</option>
+                        @foreach (var user in (IEnumerable<ApplicationUser>) ViewData["UsersToAssign"]!)
+                        {
+                            <option value="@user.Id">@user.GetDisplayName() (@user.Email)</option>
+                        }
+                    </select>
+                </div>
             }
-        </select>
-    </div>
-        
-     @if ((TopicType) ViewData["TopicType"]! != TopicType.Homework)
-     {
-         <div class="col-xl">
-            <label asp-for="AssignedId" class="form-label">@SharedLocalizer["Topic_Create_Assigned"]</label>
-            <select class="form-select" id="dAssigned" asp-for="AssignedId">
-                <option value="null">@SharedLocalizer["Unassigned option"]</option>
-                @foreach (var user in (IEnumerable<ApplicationUser>)ViewData["UsersToAssign"]!)
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="GroupId" class="form-label">@SharedLocalizer["Topic_Create_Group"]</label>
+            <select asp-for="GroupId" class="form-select" onchange="RefreshProgrammes()">
+                @foreach (Group group in ViewBag.Groups)
                 {
-                    <option value="@user.Id">@user.GetDisplayName() (@user.Email)</option>
+                    @if (group.Highlight)
+                    {
+                        <option value="@group.GroupId" selected>@Html.SelectStringByLanguage(group.NameEng, group.Name)</option>
+                    }
+                    else
+                    {
+                        <option value="@group.GroupId">@Html.SelectStringByLanguage(group.NameEng, group.Name)</option>
+                    }
                 }
             </select>
         </div>
-    }
-    </div>
-    
-    <div class="mb-3">
-        <label asp-for="GroupId" class="form-label">@SharedLocalizer["Topic_Create_Group"]</label>
-        <select asp-for="GroupId" class="form-select" onchange="RefreshProgrammes()">
-            @foreach (Group group in ViewBag.Groups)
-            {
-                @if (group.Highlight)
-                {
-                    <option value="@group.GroupId" selected>@Html.SelectStringByLanguage(group.NameEng, group.Name)</option>
-                }
-                else
-                {
-                    <option value="@group.GroupId">@Html.SelectStringByLanguage(group.NameEng, group.Name)</option>
-                }
-            }
-        </select>
-    </div>
 
-    @if ((TopicType) ViewData["TopicType"]! == TopicType.Thesis)
-    {
-        <hr/>
-        @if (ViewData["Programmes"] != null)
+        @if ((TopicType) ViewData["TopicType"]! == TopicType.Thesis)
         {
-            <span>@SharedLocalizer["Topic_Create_RecommendedProgrammes"]</span>
-            <div class="form-check">
-                @foreach (var programme in (IEnumerable<Programme>) ViewData["Programmes"]!)
-                {
-                    <div class="Programme @programme.Type">
-                        @if (programme.Selected)
-                        {
-                            <input class="form-check-input" id="@programme.NameEng" type="checkbox" name="programmes" value="@programme.ProgrammeId" checked/>
-                        }
-                        else
-                        {
-                            <input class="form-check-input" id="@programme.NameEng" type="checkbox" name="programmes" value="@programme.ProgrammeId"/>
-                        }
-                        <label for="@programme.NameEng">@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</label>
-                    </div>
-                }
-            </div>
             <hr/>
+            @if (ViewData["Programmes"] != null)
+            {
+                <span>@SharedLocalizer["Topic_Create_RecommendedProgrammes"]</span>
+                <div class="form-check">
+                    @foreach (var programme in (IEnumerable<Programme>) ViewData["Programmes"]!)
+                    {
+                        <div class="Programme @programme.Type">
+                            @if (programme.Selected)
+                            {
+                                <input class="form-check-input" id="@programme.NameEng" type="checkbox" name="programmes" value="@programme.ProgrammeId" checked/>
+                            }
+                            else
+                            {
+                                <input class="form-check-input" id="@programme.NameEng" type="checkbox" name="programmes" value="@programme.ProgrammeId"/>
+                            }
+                            <label for="@programme.NameEng">@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</label>
+                        </div>
+                    }
+                </div>
+                <hr/>
+            }
+        }
+    }
+    else
+    {
+        @if (User.IsInRole("Student") || (TopicType) ViewData["TopicType"]! == TopicType.Project)
+        {
+            <input type="hidden" asp-for="GroupId"/>
+        }
+        else
+        {
+            <input type="hidden" asp-for="GroupId" value="-1"/>
         }
     }
     
@@ -168,10 +182,17 @@
         </div>
     }
     
-     <div class="form-check">
-        <label class="form-check-label" asp-for="Visible">@SharedLocalizer["Topic_Create_Visible"]</label>
-        <input class="form-check-input" asp-for="Visible"/>
-    </div>
+     @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
+     {
+         <div class="form-check">
+             <label class="form-check-label" asp-for="Visible">@SharedLocalizer["Topic_Create_Visible"]</label>
+             <input class="form-check-input" asp-for="Visible"/>
+         </div>
+     }
+     else
+     {
+         <input type="hidden" asp-for="Visible"/>
+     }
     
     <div class="mb-3">
         <a asp-controller="Topic" asp-action="Details" asp-route-id="@Model.TopicId" class="btn btn-secondary">@SharedLocalizer["Cancel"]</a>

@@ -27,7 +27,7 @@ public static class HtmlHelperExtensions
     {
         if (username is null) return false;
         if (anyTopic) return true;
-        if (topic && topicObj.Proposed) return true;
+        if (topic && (topicObj.Proposed || topicObj.SupervisorId == null)) return true;
         if (topic && (topicObj.Creator.UserName == username || (topicObj.Supervisor != null && topicObj.Supervisor.UserName == username))) return true;
         if ( proposeTopic && topicObj.Proposed && topicObj.Creator.UserName == username) return true;
         

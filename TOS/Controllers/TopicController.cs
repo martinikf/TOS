@@ -33,7 +33,11 @@ namespace TOS.Controllers
                 case "Master":
                     return RedirectToAction("Index", "Topic", new{ groupName = group.NameEng});
                 case "Unassigned":
-                    return RedirectToAction("Unassigned", "Topic");
+                    if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
+                    {
+                        return RedirectToAction("Unassigned", "Topic");
+                    }
+                    return RedirectToAction("MyTopics");
                 default:
                     return RedirectToAction("Group", "Topic", new {groupId = group.GroupId});
             }
@@ -66,7 +70,7 @@ namespace TOS.Controllers
 
             topicsToShow = ApplyShowHidden(topicsToShow, showHidden, showOnlyProposed);
             topicsToShow = ApplySearch(topicsToShow, searchString);
-            topicsToShow = ApplyShowTaken(topicsToShow, showTakenTopics);
+            topicsToShow = ApplyShowTaken(topicsToShow, showTakenTopics || showOnlyProposed);
             topicsToShow = ApplyProgramme(topicsToShow, programmeName);
             topicsToShow = ApplyShowOnlyProposed(topicsToShow, showOnlyProposed);
             topicsToShow = ApplySort(topicsToShow, orderBy);
@@ -94,7 +98,7 @@ namespace TOS.Controllers
 
             topicsToShow = ApplyShowHidden(topicsToShow, showHidden, showProposed);
             topicsToShow = ApplySearch(topicsToShow, searchString);
-            topicsToShow = ApplyShowTaken(topicsToShow, showTakenTopics);
+            topicsToShow = ApplyShowTaken(topicsToShow, showProposed || showTakenTopics);
             topicsToShow = ApplyShowOnlyProposed(topicsToShow, showProposed);
 
             vm.Topics = await topicsToShow.ToListAsync();
@@ -258,6 +262,12 @@ namespace TOS.Controllers
             var user = await GetUser();
             
             topic.Creator = user;
+            if (User.IsInRole("Student"))
+            {
+                topic.AssignedId = user.Id;
+                topic.AssignedStudent = user;
+            }
+
             topic.Visible = false;
             topic.Proposed = true;
 
@@ -327,7 +337,7 @@ namespace TOS.Controllers
             
             var canEdit = User.IsInRole("AnyTopic");
             //User can edit topics he created or supervise
-            if (User.IsInRole("Topic") && (topic.CreatorId == user.Id || topic.SupervisorId == user.Id || topic.Proposed))
+            if (User.IsInRole("Topic") && (topic.CreatorId == user.Id || topic.SupervisorId == user.Id || topic.Proposed || topic.SupervisorId == null))
                 canEdit = true;
             if(User.IsInRole("ProposeTopic") && topic.Proposed && topic.CreatorId == user.Id)
                 canEdit = true;
@@ -468,7 +478,7 @@ namespace TOS.Controllers
 
             //TODO remove await?
             await _notificationManager.NewInterest(topic, user, CallbackDetailsUrl(topic.TopicId));
-            
+
             return Json(true);
         }
 

@@ -32,7 +32,6 @@ public class NotificationManager : INotificationManager
         users.AddRange( topic.UserInterestedTopics.Select(x=>x.User));
         
         users.Remove(author);
-        users.RemoveWhere(u => u.UserSubscribedNotifications.Any(x => x.NotificationId == notification.NotificationId) == false);
 
         await SendNotification(users, topic, notification, null, callbackUrl);
     }
@@ -54,8 +53,7 @@ public class NotificationManager : INotificationManager
         }
         
         users.Remove(comment.Author);
-        users.RemoveWhere(u=>u.UserSubscribedNotifications.Any(x=>x.NotificationId == notification.NotificationId) == false);
-        
+
         await SendNotification(users, topic, notification, comment, callbackUrl);
     }
 
@@ -68,15 +66,14 @@ public class NotificationManager : INotificationManager
         var users = new HashSet<ApplicationUser>();
         
         users.Add(topic.Creator);
-        users.Add(topic.AssignedStudent!);
         if (topic.Supervisor != null) users.Add(topic.Supervisor);
         users.AddRange( topic.UserInterestedTopics.Select(x=>x.User));
         
         users.Remove(author);
-        users.RemoveWhere(u => u.UserSubscribedNotifications.Any(x => x.NotificationId == nOthers.NotificationId || x.NotificationId == nStudent.NotificationId) == false);
-        
-        await SendNotification(users.Where(x => x.Id == topic.AssignedId).ToList(), topic, nStudent, null, callbackUrl);
-        await SendNotification(users.Where(x => x.Id != topic.AssignedId).ToList(), topic, nOthers, null, callbackUrl);
+        users.Remove(topic.AssignedStudent!);
+
+        await SendNotification(new List<ApplicationUser>(){topic.AssignedStudent!}, topic, nStudent, null, callbackUrl);
+        await SendNotification(users.ToList(), topic, nOthers, null, callbackUrl);
     }
 
     public async Task TopicAdopted(Topic topic, string callbackUrl)
@@ -85,8 +82,6 @@ public class NotificationManager : INotificationManager
         
         //Prepare users to notify
         var users = new HashSet<ApplicationUser> {topic.Creator};
-
-        if (topic.AssignedStudent != null) users.Add(topic.AssignedStudent);
 
         await SendNotification(users, topic, notification, null, callbackUrl);
     }
@@ -99,11 +94,6 @@ public class NotificationManager : INotificationManager
         if(topic.Supervisor != null)
             users.Add(topic.Supervisor);
         users.Add(topic.Creator);
-        
-        var usersToRemove = await _context.Users.Where(x =>
-            x.UserSubscribedNotifications.Any(y =>
-                y.UserId == x.Id && y.NotificationId == notification.NotificationId) == false).ToListAsync();
-        usersToRemove.ForEach(x=> users.Remove(x));
 
         await SendNotification(users, topic, notification, null, callbackUrl);
     }
@@ -130,7 +120,8 @@ public class NotificationManager : INotificationManager
         var subject = $"{Parameterize(topic, notification.Subject, callbackUrl, comment)} - {Parameterize(topic, notification.SubjectEng, callbackUrl, comment)}";
         var body = $"{Parameterize(topic, notification.Text, callbackUrl, comment)}\n---\n{Parameterize(topic, notification.TextEng, callbackUrl, comment)}";
         
-        foreach (var u in users)
+        //Foreach each user that is subscribed to this notification
+        foreach (var u in users.Where(x => x.UserSubscribedNotifications.Any(y => y.NotificationId == notification.NotificationId)))
         {
             await _emailSender.SendEmailAsync(u.Email!, subject, body);
         }
@@ -180,7 +171,6 @@ public class NotificationManager : INotificationManager
 
         return sb.ToString();
     }
-    
 }
 
 public interface INotificationManager

@@ -51,7 +51,14 @@
                 <option value="null">@SharedLocalizer["Unassigned option"]</option>
                 @foreach (var user in (IEnumerable<ApplicationUser>)ViewData["UsersToSupervise"]!)
                 {
-                    <option value="@user.Id">@user.GetDisplayName() - (@user.Email)</option>
+                    @if (user.UserName == User.Identity!.Name)
+                    {
+                        <option value="@user.Id" selected>@user.GetDisplayName() - (@user.Email)</option>
+                    }
+                    else
+                    {
+                        <option value="@user.Id">@user.GetDisplayName() - (@user.Email)</option>
+                    }
                 }
             </select>
         </div>
