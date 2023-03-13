@@ -807,4 +807,7 @@
     <data name="Topic_Create_NoResults" xml:space="preserve">
         <value>No results found</value>
     </data>
+    <data name="Your topic" xml:space="preserve">
+        <value>Assigned</value>
+    </data>
 </root>

@@ -800,4 +800,7 @@
     <data name="Topic_Create_NoResults" xml:space="preserve">
         <value>Nic nenalezeno</value>
     </data>
+    <data name="Your topic" xml:space="preserve">
+        <value>Přiřazené</value>
+    </data>
 </root>

@@ -20,7 +20,14 @@
         }
         else
         {
-            <span class="badge bg-danger">@SharedLocalizer["Taken topic"]</span>
+            if (Model.AssignedStudent?.UserName == User.Identity!.Name)
+            {
+                <span class="badge bg-success">@SharedLocalizer["Your topic"]</span>
+            }
+            else
+            {
+                <span class="badge bg-danger">@SharedLocalizer["Taken topic"]</span>
+            }
         }
         @if (Model.Proposed)
         {
