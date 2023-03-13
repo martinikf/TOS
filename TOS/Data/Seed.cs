@@ -55,7 +55,8 @@ public static class Seed
     {
         using var scope = app.Services.CreateScope();
         var ctx = scope.ServiceProvider.GetService<ApplicationDbContext>();
-  
+        if (ctx is null) return;
+        
         //Create Roles: Administrator, Teacher, Student, External
         var adminRole = CreateRole("Administrator", ctx);
         var teacherRole = CreateRole("Teacher", ctx);
@@ -105,16 +106,16 @@ public static class Seed
                 "miroslova.kolarik@upol.c", true, "password", ctx), Role.Teacher, ctx);
 
         //create random students
-        for (int i = 0; i < 50; i++)
+        for (var i = 0; i < 50; i++)
         {
             var student = CreateUser("Student" + i, "Student" + i, null, "student" + i + "@student.tos",
                 "student" + i + "@student.tos", true, "password", ctx);
             await RoleHelper.AssignRoles(student, Role.Student, ctx);
         }
 
-        var unassignedGroup = CreateGroup("Nezařazeno", "Unassigned", adminUser, false, false, ctx);
-        var bachelorGroup = CreateGroup("Bakalářská", "Bachelor", adminUser, true, true, ctx);
-        var masterGroup = CreateGroup("Magisterská", "Master", adminUser, true, true, ctx);
+        CreateGroup("Nezařazeno", "Unassigned", adminUser, false, false, ctx);
+        CreateGroup("Bakalářská", "Bachelor", adminUser, true, true, ctx);
+        CreateGroup("Magisterská", "Master", adminUser, true, true, ctx);
 
         //Create programmees
         //Bachelor
@@ -162,7 +163,7 @@ public static class Seed
         return ctx.Notifications.First(x => x.Name.Equals(name));
     }
 
-    public static ApplicationUser CreateUser(string firstname, string lastname, string displayname, string email, string username, bool emailConfirmed, string? password, ApplicationDbContext ctx)
+    public static ApplicationUser CreateUser(string firstname, string lastname, string? displayname, string email, string username, bool emailConfirmed, string? password, ApplicationDbContext ctx)
     {
         //Create usef if not exists
         var user = ctx.Users.FirstOrDefault(u => u.Email == email);

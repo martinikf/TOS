@@ -29,8 +29,7 @@ public class SmtpEmailSender : IEmailSender
     {
         try
         {
-            await _client.SendMailAsync(new MailMessage(_fromAddress, "martinik.filip01@gmail.com", subject,
-                htmlMessage));
+            await _client.SendMailAsync(new MailMessage(_fromAddress, email, subject, htmlMessage));
         }
         catch
         {

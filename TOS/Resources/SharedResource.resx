@@ -530,9 +530,6 @@
     <data name="ResendConfirmationEmail_Submit" xml:space="preserve">
         <value>Odeslat</value>
     </data>
-    <data name="ForgotPassword_Submit" xml:space="preserve">
-        <value />
-    </data>
     <data name="EmailChange_SendVerificationEmail" xml:space="preserve">
         <value>Poslat potvrzovací email</value>
     </data>

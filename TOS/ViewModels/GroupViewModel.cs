@@ -4,11 +4,11 @@ namespace TOS.ViewModels;
 
 public class GroupViewModel
 {
-    public  IEnumerable<Topic> Topics { get; set; }
-    
-    public Group Group { get; set; }
+    public  IEnumerable<Topic> Topics { get; set; } = null!;
 
-    public string SearchString { get; set; }
+    public Group Group { get; set; } = null!;
+
+    public string SearchString { get; set; } = null!;
 
     public bool ShowTakenTopics { get; set; }
     public bool ShowProposedTopics { get; set; }

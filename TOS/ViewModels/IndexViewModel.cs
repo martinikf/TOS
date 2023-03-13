@@ -4,17 +4,17 @@ namespace TOS.ViewModels;
 
 public class IndexViewModel
 {
-    public  IEnumerable<Topic> Topics { get; set; }
+    public  IEnumerable<Topic> Topics { get; set; } = null!;
     
-    public Group Group { get; set; }
+    public Group Group { get; set; } = null!;
     
-    public IEnumerable<Programme> Programmes { get; set; }
+    public IEnumerable<Programme> Programmes { get; set; } = null!;
 
-    public string SelectedProgramme { get; set; }
+    public string SelectedProgramme { get; set; } = null!;
     
-    public string SearchString { get; set; }
+    public string SearchString { get; set; } = null!;
     
-    public string OrderBy { get; set; }
+    public string OrderBy { get; set; } = null!;
     
     public bool ShowTakenTopics { get; set; }
     public bool ShowProposedTopics { get; set; }

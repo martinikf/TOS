@@ -13,7 +13,7 @@
 }
 
 <form asp-action="EditRoles">
-    @foreach(var r in ViewData["Roles"] as List<string>)
+    @foreach(var r in (ViewData["Roles"] as List<string>)!)
     {
         <div class="form-check">
             @if ((bool) ViewData[r]!)
