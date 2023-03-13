@@ -196,12 +196,11 @@
                 </div>
             }
         </section>
+         <section>
+             <h4>@SharedLocalizer["Topic_Details_NewComment"]</h4>
+             @{ await Html.RenderPartialAsync("AddComment", new Comment() {TopicId = Model.TopicId}); }
+         </section>
     }
-
-    <section>
-        <h4>@SharedLocalizer["Topic_Details_NewComment"]</h4>
-        @{ await Html.RenderPartialAsync("AddComment", new Comment() {TopicId = Model.TopicId}); }
-    </section>
 </article>
 
 @functions{
