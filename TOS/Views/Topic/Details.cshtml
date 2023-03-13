@@ -133,9 +133,9 @@
             {
                 <div style="margin-left: @(comment.Depth * 40)px">
                     <div class="border rounded p-2 m-2">
-                        @if (!comment.Anonymous || User.IsInRole("SeeAuthorOfAnonymousComment") || User.Identity!.Name!.Equals(comment.Author.UserName))
+                        @if (!comment.Anonymous || User.IsInRole("Teacher") || User.IsInRole("Administrator") || User.Identity!.Name!.Equals(comment.Author.UserName))
                         {
-                            <h5 class="h6">@comment.Author.FirstName @comment.Author.LastName - @comment.Author.Email @Html.Raw(comment.Anonymous ? " - " + SharedLocalizer["Anonymous"] : "")</h5>
+                            <h5 class="h6">@comment.Author.FirstName @comment.Author.LastName - @comment.Author.Email @Html.Raw(comment.Anonymous ? " - " + SharedLocalizer["Anonymous"].Value : "")</h5>
                         }
                         else
                         {

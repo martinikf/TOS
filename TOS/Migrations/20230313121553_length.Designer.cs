@@ -13,7 +13,7 @@ namespace TOS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20230313121553_length")]
-    partial class length
+    partial class RoleConc
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

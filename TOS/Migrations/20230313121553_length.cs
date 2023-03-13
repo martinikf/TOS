@@ -5,7 +5,7 @@
 namespace TOS.Migrations
 {
     /// <inheritdoc />
-    public partial class length : Migration
+    public partial class RoleConc : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
