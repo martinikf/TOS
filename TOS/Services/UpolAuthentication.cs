@@ -99,15 +99,6 @@ public class UpolAuthentication : IAuthentication
     {
         try
         {
-            /*
-            //Multiplatform but without ssl
-            var ldapConn = new LdapConnection();
-            ldapConn.Connect(_configuration["UpolActiveDirectory:IP"], 
-                int.Parse(_configuration["UpolActiveDirectory:Port"] ?? throw new Exception("UpolActiveDirectory:Port is not set in appsettings.json")));
-            ldapConn.Bind(_configuration["UpolActiveDirectory:dn"] + "\\" + username, password);
-            
-            return ldapConn.Connected;
-            */
             //Work only under windows, ssl 
             var endpoint = new LdapDirectoryIdentifier(_configuration["UpolActiveDirectory:IP"] ?? string.Empty,  int.Parse(_configuration["UpolActiveDirectory:Port"] ?? string.Empty), true, false);
             using var ldap = new LdapConnection(endpoint, new NetworkCredential(_configuration["UpolActiveDirectory:Dn"] + "\\" + username, password))
@@ -116,7 +107,8 @@ public class UpolAuthentication : IAuthentication
             };
             ldap.SessionOptions.SecureSocketLayer = true;
             ldap.SessionOptions.ProtocolVersion = 3;
-            ldap.SessionOptions.VerifyServerCertificate = new VerifyServerCertificateCallback((con, cer) => true);
+            //Allow self signed certificates
+            ldap.SessionOptions.VerifyServerCertificate = (_, _) => true;
             ldap.Timeout = TimeSpan.FromMinutes(1);
             
             ldap.Bind();
