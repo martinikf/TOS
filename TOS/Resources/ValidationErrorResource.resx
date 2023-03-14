@@ -87,4 +87,7 @@
     <data name="ERROR_TopicDescriptionLongLength" xml:space="preserve">
         <value>Popis je příliš dlouhý</value>
     </data>
+    <data name="ERROR_EmailInvalid" xml:space="preserve">
+        <value>Tohle není validní email</value>
+    </data>
 </root>

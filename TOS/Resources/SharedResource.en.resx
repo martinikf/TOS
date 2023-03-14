@@ -523,10 +523,10 @@
         <value>An email has been sent to your email address to reset your password.</value>
     </data>
     <data name="Confirmation_Email_Subject" xml:space="preserve">
-        <value>Forgot password</value>
+        <value>Email confirmation</value>
     </data>
     <data name="Confirmation_Email_Body" xml:space="preserve">
-        <value>You can reset your password</value>
+        <value>You can confirm your email</value>
     </data>
     <data name="Confirmation_Email_Link" xml:space="preserve">
         <value>here</value>
@@ -809,5 +809,44 @@
     </data>
     <data name="Your topic" xml:space="preserve">
         <value>Assigned</value>
+    </data>
+    <data name="ConfirmEmail_Heading" xml:space="preserve">
+        <value>Email confirmation</value>
+    </data>
+    <data name="ConfirmEmailChangeSuccess" xml:space="preserve">
+        <value>Email successfully updated</value>
+    </data>
+    <data name="ConfirmEmailChangeError" xml:space="preserve">
+        <value>Error</value>
+    </data>
+    <data name="ForgotPassword_Email_Subject" xml:space="preserve">
+        <value>Forgot password</value>
+    </data>
+    <data name="ForgotPassword_Email_Body" xml:space="preserve">
+        <value>For password reset</value>
+    </data>
+    <data name="ForgotPassword_Email_Link" xml:space="preserve">
+        <value>click here</value>
+    </data>
+    <data name="ResetPassword_Heading" xml:space="preserve">
+        <value>Password reset</value>
+    </data>
+    <data name="ResetPassword_Submit" xml:space="preserve">
+        <value>Reset password</value>
+    </data>
+    <data name="ResetPasswordConfirmation_Heading" xml:space="preserve">
+        <value>Forgot password</value>
+    </data>
+    <data name="ResetPasswordConfirmation_Info" xml:space="preserve">
+        <value>Password was updated</value>
+    </data>
+    <data name="ResetPasswordConfirmation_Login" xml:space="preserve">
+        <value>login</value>
+    </data>
+    <data name="Confirmation_Email_NotChanged" xml:space="preserve">
+        <value>New email is unchanged</value>
+    </data>
+    <data name="ChangePassword_Success" xml:space="preserve">
+        <value>Password was changed</value>
     </data>
 </root>

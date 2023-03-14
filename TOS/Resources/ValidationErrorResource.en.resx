@@ -80,4 +80,7 @@
     <data name="ERROR_TopicNameLength" xml:space="preserve">
         <value>Name is too long</value>
     </data>
+    <data name="ERROR_EmailInvalid" xml:space="preserve">
+        <value>This is not a valid email address</value>
+    </data>
 </root>

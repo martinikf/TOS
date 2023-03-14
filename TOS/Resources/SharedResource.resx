@@ -516,10 +516,10 @@
         <value>Na Vaši emailovou adresu byl zaslán email pro restratování hesla.</value>
     </data>
     <data name="Confirmation_Email_Subject" xml:space="preserve">
-        <value>Obnovení hesla</value>
+        <value>Potvrzení emailu</value>
     </data>
     <data name="Confirmation_Email_Body" xml:space="preserve">
-        <value>Zapomenuté heslo můžete obnovit</value>
+        <value>Váš email můžete potvrdit</value>
     </data>
     <data name="Confirmation_Email_Link" xml:space="preserve">
         <value>zde</value>
@@ -802,5 +802,44 @@
     </data>
     <data name="Your topic" xml:space="preserve">
         <value>Přiřazené</value>
+    </data>
+    <data name="ConfirmEmail_Heading" xml:space="preserve">
+        <value>Potvrzení emailu</value>
+    </data>
+    <data name="ConfirmEmailChangeSuccess" xml:space="preserve">
+        <value>Email úspěšně změněn</value>
+    </data>
+    <data name="ConfirmEmailChangeError" xml:space="preserve">
+        <value>Chyba</value>
+    </data>
+    <data name="ForgotPassword_Email_Subject" xml:space="preserve">
+        <value>Zapomenuté heslo</value>
+    </data>
+    <data name="ForgotPassword_Email_Body" xml:space="preserve">
+        <value>Pro obnovení hesla</value>
+    </data>
+    <data name="ForgotPassword_Email_Link" xml:space="preserve">
+        <value>klikněte zde</value>
+    </data>
+    <data name="ResetPassword_Heading" xml:space="preserve">
+        <value>Obnova hesla</value>
+    </data>
+    <data name="ResetPassword_Submit" xml:space="preserve">
+        <value>Obnovit heslo</value>
+    </data>
+    <data name="ResetPasswordConfirmation_Heading" xml:space="preserve">
+        <value>Obnova hesla</value>
+    </data>
+    <data name="ResetPasswordConfirmation_Info" xml:space="preserve">
+        <value>Úspěšně změněno</value>
+    </data>
+    <data name="ResetPasswordConfirmation_Login" xml:space="preserve">
+        <value>přihlášení</value>
+    </data>
+    <data name="Confirmation_Email_NotChanged" xml:space="preserve">
+        <value>Nový email je stejný</value>
+    </data>
+    <data name="ChangePassword_Success" xml:space="preserve">
+        <value>Heslo bylo změněno</value>
     </data>
 </root>

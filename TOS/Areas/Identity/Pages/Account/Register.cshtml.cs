@@ -121,8 +121,8 @@ namespace TOS.Areas.Identity.Pages.Account
                 {
                     await _emailSender.SendEmailAsync(Input.Email, _sharedLocalizer["Confirmation_Email_Subject"].Value,
                         _sharedLocalizer["Confirmation_Email_Body"].Value +
-                        $"<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>" +
-                        _sharedLocalizer["Confirmation_Email_Link"] + "</a>.");
+                        $" <a href='{callbackUrl}'>" +
+                        _sharedLocalizer["Confirmation_Email_Link"].Value + "</a>.");
                 }
                 catch
                 {

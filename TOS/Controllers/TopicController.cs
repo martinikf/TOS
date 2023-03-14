@@ -387,7 +387,7 @@ namespace TOS.Controllers
                     .First(x=>x.TopicId.Equals(topic.TopicId));
                 
                 //Notify users
-                if (proposed && topic.SupervisorId > 0)
+                if (proposed && (topic.SupervisorId > 0 || topic.Visible))
                 {
                     await _notificationManager.TopicAdopted(topic, CallbackDetailsUrl(topic.TopicId));
                 }
@@ -703,5 +703,6 @@ namespace TOS.Controllers
 
             return topics;
         }
+        
     }
 }

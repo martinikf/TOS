@@ -87,6 +87,15 @@ namespace TOS.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tohle není validní email.
+        /// </summary>
+        internal static string ERROR_EmailInvalid {
+            get {
+                return ResourceManager.GetString("ERROR_EmailInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email je povinný.
         /// </summary>
         internal static string ERROR_EmailRequired {

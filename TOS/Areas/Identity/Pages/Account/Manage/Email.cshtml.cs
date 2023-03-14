@@ -106,14 +106,14 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
                     protocol: Request.Scheme);
                 await _emailSender.SendEmailAsync(Input.NewEmail, _localizer["Confirmation_Email_Subject"].Value,
                     _localizer["Confirmation_Email_Body"].Value +
-                    $"<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>" +
+                    $" <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>" +
                     _localizer["Confirmation_Email_Link"] + "</a>.");
 
-                StatusMessage = "Confirmation link to change email sent. Please check your email.";
+                StatusMessage = _localizer["Confirmation_Email_Sent"];
                 return RedirectToPage();
             }
 
-            StatusMessage = "Your email is unchanged.";
+            StatusMessage = _localizer["Confirmation_Email_NotChanged"];
             return RedirectToPage();
         }
 
@@ -144,7 +144,7 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
             {
                 await _emailSender.SendEmailAsync(Input.NewEmail, _localizer["Confirmation_Email_Subject"].Value,
                     _localizer["Confirmation_Email_Body"].Value +
-                    $"<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>" +
+                    $" <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>" +
                     _localizer["Confirmation_Email_Link"] + "</a>.");
             }
             catch

@@ -33,7 +33,7 @@ public class NotificationManager : INotificationManager
         
         users.Remove(author);
 
-        await SendNotification(users, topic, notification, null, callbackUrl);
+        SendNotification(users, topic, notification, null, callbackUrl);
     }
 
     public async Task NewComment(Comment comment, string callbackUrl)
@@ -54,7 +54,7 @@ public class NotificationManager : INotificationManager
         
         users.Remove(comment.Author);
 
-        await SendNotification(users, topic, notification, comment, callbackUrl);
+        SendNotification(users, topic, notification, comment, callbackUrl);
     }
 
     public async Task TopicAssigned(Topic topic, ApplicationUser author, string callbackUrl)
@@ -72,8 +72,8 @@ public class NotificationManager : INotificationManager
         users.Remove(author);
         users.Remove(topic.AssignedStudent!);
 
-        await SendNotification(new List<ApplicationUser>(){topic.AssignedStudent!}, topic, nStudent, null, callbackUrl);
-        await SendNotification(users.ToList(), topic, nOthers, null, callbackUrl);
+        SendNotification(new List<ApplicationUser>(){topic.AssignedStudent!}, topic, nStudent, null, callbackUrl);
+        SendNotification(users.ToList(), topic, nOthers, null, callbackUrl);
     }
 
     public async Task TopicAdopted(Topic topic, string callbackUrl)
@@ -83,7 +83,7 @@ public class NotificationManager : INotificationManager
         //Prepare users to notify
         var users = new HashSet<ApplicationUser> {topic.Creator};
 
-        await SendNotification(users, topic, notification, null, callbackUrl);
+        SendNotification(users, topic, notification, null, callbackUrl);
     }
 
     public async Task NewInterest(Topic topic, ApplicationUser user, string callbackUrl)
@@ -95,7 +95,7 @@ public class NotificationManager : INotificationManager
             users.Add(topic.Supervisor);
         users.Add(topic.Creator);
 
-        await SendNotification(users, topic, notification, null, callbackUrl);
+        SendNotification(users, topic, notification, null, callbackUrl);
     }
 
     public async Task NewExternalUser(ApplicationUser user)
@@ -104,7 +104,7 @@ public class NotificationManager : INotificationManager
         
         var users = await _context.UserSubscribedNotifications.Where(x=>x.NotificationId == notification.NotificationId).Select(x=>x.User).ToListAsync();
 
-        await SendNotification(users, null, notification, null, null);
+        SendNotification(users, null, notification, null, null);
     }
 
     private async Task<Notification> GetNotification(string name)
@@ -115,13 +115,21 @@ public class NotificationManager : INotificationManager
         return notification;
     }
 
-    private async Task SendNotification(IEnumerable<ApplicationUser> users, Topic? topic, Notification notification, Comment? comment, string? callbackUrl)
+    private void SendNotification(IEnumerable<ApplicationUser> users, Topic? topic, Notification notification, Comment? comment, string? callbackUrl)
     {
         var subject = $"{Parameterize(topic, notification.Subject, callbackUrl, comment)} - {Parameterize(topic, notification.SubjectEng, callbackUrl, comment)}";
         var body = $"{Parameterize(topic, notification.Text, callbackUrl, comment)}\n---\n{Parameterize(topic, notification.TextEng, callbackUrl, comment)}";
+
+        users = users
+            .Where(x => x.UserSubscribedNotifications.Any(y => y.NotificationId == notification.NotificationId))
+            .ToList();
         
-        //Foreach each user that is subscribed to this notification
-        foreach (var u in users.Where(x => x.UserSubscribedNotifications.Any(y => y.NotificationId == notification.NotificationId)))
+        Task.Factory.StartNew(() => SendNotificationBulk(users, subject, body));
+    }
+
+    private async Task SendNotificationBulk(IEnumerable<ApplicationUser> users, string subject, string body)
+    {
+        foreach (var u in users)
         {
             await _emailSender.SendEmailAsync(u.Email!, subject, body);
         }

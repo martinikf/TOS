@@ -70,7 +70,7 @@ namespace TOS.Areas.Identity.Pages.Account
                 protocol: Request.Scheme);
             await _emailSender.SendEmailAsync(Input.Email, _sharedLocalizer["Confirmation_Email_Subject"].Value,
                 _sharedLocalizer["Confirmation_Email_Body"].Value +
-                $"<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>" +
+                $" <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>" +
                 _sharedLocalizer["Confirmation_Email_Link"] + "</a>.");
             
             return Page();
