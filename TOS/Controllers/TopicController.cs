@@ -334,8 +334,9 @@ namespace TOS.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,Visible,CreatorId,SupervisorId,AssignedId,GroupId,Type,Proposed")] Topic topic, int[] programmes, List<IFormFile> files, int oldAssigned)
         {
             var user = await GetUser();
-            
-            var canEdit = User.IsInRole("AnyTopic");
+
+            var canEdit = User.IsInRole("AnyTopic") ||
+                          await _context.Groups.AnyAsync(x => x.GroupId == topic.GroupId && x.CreatorId == user.Id);
             //User can edit topics he created or supervise
             if (User.IsInRole("Topic") && (topic.CreatorId == user.Id || topic.SupervisorId == user.Id || topic.Proposed || topic.SupervisorId == null))
                 canEdit = true;
@@ -431,7 +432,8 @@ namespace TOS.Controllers
 
             var user = await GetUser();
 
-            var canEdit = User.IsInRole("AnyTopic");
+            var canEdit = User.IsInRole("AnyTopic") ||
+                          await _context.Groups.AnyAsync(x => x.GroupId == topic.GroupId && x.CreatorId == user.Id);
             //User can edit topics he created or supervise
             if (User.IsInRole("Topic") && topic.CreatorId == user.Id || topic.SupervisorId == user.Id || topic.Proposed)
                 canEdit = true;
