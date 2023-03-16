@@ -95,6 +95,15 @@ public static class Seed
             await RoleHelper.AssignRoles(student, Role.Student, ctx);
             students.Add(student);
         }
+
+        var notification = ctx.Notifications.First(x => x.Name == "CommentNew");
+        var notification2 = ctx.Notifications.First(x => x.Name == "TopicEdit");
+
+        foreach (var st in students)
+        {
+            CreateSubscribe(st, notification, ctx);
+            CreateSubscribe(st, notification2, ctx);
+        }
         
         //Create programmes
         List<Programme> programmesBc = new();
@@ -436,4 +445,18 @@ public static class Seed
         return userInterestedTopic;
     }
 
+    public static void CreateSubscribe(ApplicationUser user, Notification notification,
+        ApplicationDbContext ctx)
+    {
+        if (!ctx.UserSubscribedNotifications.Any(x =>
+                x.UserId == user.Id && x.NotificationId == notification.NotificationId))
+        {
+            ctx.UserSubscribedNotifications.Add(new()
+            {
+                UserId = user.Id,
+                NotificationId = notification.NotificationId
+            });
+            ctx.SaveChanges();
+        }
+    }
 }
