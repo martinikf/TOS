@@ -154,11 +154,19 @@
             @foreach (var attachment in Model.Attachments)
             {
                 <div class="border rounded p-2 m-2 col-auto" id="attachment@(attachment.AttachmentId)">
-                    <h4>@attachment.Name</h4>
-                    @attachment.Creator.Email
-                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#DeleteConfirmation@(attachment.AttachmentId)">
-                        @SharedLocalizer["Topic_Edit_Attachment_Delete"]
-                    </button>
+                    
+                    <div class="d-flex gap-3">
+                        <div>
+                            @attachment.Name <br/>
+                            @attachment.Creator.Email
+                        </div>
+                        <div class="ms-auto">
+                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#DeleteConfirmation@(attachment.AttachmentId)">
+                                @SharedLocalizer["Topic_Edit_Attachment_Delete"]
+                            </button>
+                            </div>
+                    </div>
+                  
                     <div class="modal" id="DeleteConfirmation@(attachment.AttachmentId)" tabindex="-1">
                         <div class="modal-dialog">
                             <div class="modal-content">

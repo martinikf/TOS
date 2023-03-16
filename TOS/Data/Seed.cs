@@ -56,93 +56,113 @@ public static class Seed
         using var scope = app.Services.CreateScope();
         var ctx = scope.ServiceProvider.GetService<ApplicationDbContext>();
         if (ctx is null) return;
-        
-        //Create Roles: Administrator, Teacher, Student, External
-        CreateRole("Administrator", ctx);
-        CreateRole("Teacher", ctx);
-        CreateRole("Student", ctx);
-        CreateRole("External", ctx);
-        CreateRole("Topic", ctx);
-        CreateRole("ProposeTopic", ctx);
-        CreateRole("AnyTopic", ctx);
 
-        CreateRole("Group", ctx);
-        CreateRole("AnyGroup", ctx);
-        
-        CreateRole("Comment", ctx);
-        CreateRole("AnonymousComment", ctx);
-        CreateRole("AnyComment", ctx);
+        InitSeed(app);
 
-        CreateRole("Attachment", ctx);
-        CreateRole("AnyAttachment", ctx);
-
-        CreateRole("InterestTopic", ctx);
-        CreateRole("AssignedTopic", ctx);
-        CreateRole("SuperviseTopic", ctx);
-
-        var adminUser = CreateUser("Admin", "User", "ADMIN", "admin@tos.tos", "admin@tos.tos", true, "password",
-            ctx);
-        await RoleHelper.AssignRoles(adminUser, Role.Administrator, ctx);
-        await RoleHelper.AssignRoles(
-            CreateUser("Eduard", "Bartl", "RNDr. Eduard Bartl, Ph.D.", "eduard.bartl@upol.c", "eduard.bartl@upol.c",
-                true, "password", ctx), Role.Teacher, ctx);
-        await RoleHelper.AssignRoles(
-            CreateUser("Jan", "Outrata", "doc. Mgr. Jan Outrata, Ph.D.", "jan.outrata@upol.c", "jan.outrata@upol.c",
-                true, "password", ctx), Role.Teacher, ctx);
-        await RoleHelper.AssignRoles(
-            CreateUser("Martin", "Trnečka", "RNDr. Martin Trnečka, Ph.D.", "martin.trnecka@upol.c",
-                "martin.trnecka@upol.c", true, "password", ctx), Role.Teacher, ctx);
-        await RoleHelper.AssignRoles(
-            CreateUser("Radim", "Bělohlávek", "prof. RNDr. Radim Bělohlávek, DSc.", "radim.belohlavek@upol.c",
-                "radim.belohlavek@upol.c", true, "passowrd", ctx), Role.Teacher, ctx);
-        await RoleHelper.AssignRoles(
-            CreateUser("Michal", "Krupka", "doc. RNDr. Michal Krupka, Ph.D.", "michal.krupka@upol.c",
-                "michal.krupka@upol.c", true, "password", ctx), Role.Teacher, ctx);
-        await RoleHelper.AssignRoles(
-            CreateUser("Petr", "Jančar", "prof. RNDr. Petr Jančar, CSc.", "petr.jancar@upol.c",
-                "petr.jancar@upol.c", true, "password", ctx), Role.Teacher, ctx);
-        await RoleHelper.AssignRoles(
-            CreateUser("Miroslav", "Kolařík", "doc. RNDr. Miroslav Kolařík, Ph.D.", "miroslova.kolarik@upol.c",
-                "miroslova.kolarik@upol.c", true, "password", ctx), Role.Teacher, ctx);
-
-        //create random students
-        for (var i = 0; i < 50; i++)
+        List<ApplicationUser> teachers = new();
+        teachers.Add(CreateUser("Eduard", "Bartl", "RNDr. Eduard Bartl, Ph.D.", "eduard.bartl@upol.c", "bartl", true, "password", ctx));
+        teachers.Add(CreateUser("Jan", "Outrata", "doc. Mgr. Jan Outrata, Ph.D.", "jan.outrata@upol.c", "outrata", true, "password", ctx));
+        teachers.Add(CreateUser("Martin", "Trnečka", "RNDr. Martin Trnečka, Ph.D.", "martin.trnecka@upol.c", "trnecka", true, "password", ctx));
+        teachers.Add(CreateUser("Radim", "Bělohlávek", "prof. RNDr. Radim Bělohlávek, DSc.", "radim.belohlavek@upol.c", "belohlavek", true, "password", ctx));
+        teachers.Add(CreateUser("Michal", "Krupka", "doc. RNDr. Michal Krupka, Ph.D.", "michal.krupka@upol.c", "krupka", true, "password", ctx));
+        teachers.Add(CreateUser("Petr", "Jančar", "prof. RNDr. Petr Jančar, CSc.", "petr.jancar@upol.c", "jancar", true, "password", ctx));
+        teachers.Add(CreateUser("Miroslav", "Kolařík", "doc. RNDr. Miroslav Kolařík, Ph.D.", "miroslav.kolarik@upol.c", "kolarik", true, "password", ctx));
+        teachers.Add(CreateUser("Jan", "Konečný", "doc. RNDr. Jan Konečný, Ph.D.", "jan.konecny@upol.c", "konecny", true, "password", ctx));
+        teachers.Add(CreateUser("Tomáš", "Masopust", "doc. RNDr. Tomáš Masopust, Ph.D., DSc.", "tomas.masopust@upol.c", "masopust", true, "password", ctx));
+        teachers.Add(CreateUser("Radek", "Janoštík", "Mgr. Radek Janoštík, Ph.D.", "radek.janostik@upol.c", "janostik", true, "password", ctx));
+        teachers.Add(CreateUser("Petr", "Krajča", "Mgr. Petr Krajča, Ph.D.", "petr.krajca@upol.c", "krajca", true, "password", ctx));
+        teachers.Add(CreateUser("Petr", "Osička", "Mgr. Petr Osička, Ph.D.", "petr.osicka@upol.c", "osicka", true, "password", ctx));
+        teachers.Add(CreateUser("Jan", "Laštovička", "Mgr. Jan Laštovička, Ph.D.", "jan.lastovicka@upol.c", "lastovicka", true, "password", ctx));
+        teachers.Add(CreateUser("Arnošt", "Večerka", "RNDr. Arnošt Večerka", "arnost.vecerka@upol.c", "vecerka", true, "password", ctx));
+        teachers.Add(CreateUser("Markéta", "Trnečková", "Mgr. Markéta Trnečková, Ph.D.", "markt.trneckova@upol.c", "trneckova", true, "password", ctx));
+        teachers.Add(CreateUser("Jiří", "Zacpal", "Mgr. Jiří Zacpal, Ph.D.", "jiri.zacpal@upol.c", "zacpal", true, "password", ctx));
+        teachers.Add(CreateUser("Jiří", "Balun", "Mgr. Jiří Balun", "jiri.balun@upol.c", "balun", true, "password", ctx));
+        teachers.Add(CreateUser("Tomáš", "Urbanec", "Mgr. Tomáš Urbanec", "tomas.urbanec@upol.c", "urbanec", true, "password", ctx));
+        teachers.Add(CreateUser("Jakub", "Juračka", "Mgr. Jakub Juračka", "jakub.juracka@upol.c", "juracka", true, "password", ctx));
+        teachers.Add(CreateUser("Tomáš", "Mikula", "Mgr. Tomáš Mikula", "tomas.mikula@upol.c", "mikula", true, "password", ctx));
+        teachers.Add(CreateUser("Roman", "Vyjídáček", "Mgr. Roman Vyjídáček", "roman.vyjidacek@upol.c", "vyjidacek", true, "password", ctx));
+        foreach (var tea in teachers)
         {
-            var student = CreateUser("Student" + i, "Student" + i, null, "student" + i + "@student.tos",
+            await RoleHelper.AssignRoles(tea, Role.Teacher, ctx);
+        }
+        
+        List<ApplicationUser> students = new();
+        //create random students
+        for (var i = 0; i < 512; i++)
+        {
+            var student = CreateUser("Student" + i, "Student" + i, null, "student" + i + "@upol.c",
                 "student" + i + "@student.tos", true, "password", ctx);
             await RoleHelper.AssignRoles(student, Role.Student, ctx);
+            students.Add(student);
+        }
+        
+        //Create programmes
+        List<Programme> programmesBc = new();
+        List<Programme> programmesMs = new();
+        //Bachelor
+        programmesBc.Add(CreateProgramme("Informační technologie", "Information Technology", true, ProgramType.Bachelor, ctx));
+        programmesBc.Add(CreateProgramme("Informatika", "Informatics", true, ProgramType.Bachelor, ctx));
+        programmesBc.Add(CreateProgramme("Informatika - Vývoj software", "Informatics - Software Development", true, ProgramType.Bachelor, ctx));
+        programmesBc.Add(CreateProgramme("Informatika - Obecná informatika", "Informatics - General Informatics", true, ProgramType.Bachelor, ctx));
+        programmesBc.Add(CreateProgramme("Informatika pro vzdělávání", "Informatics for education", true, ProgramType.Bachelor, ctx));
+        programmesBc.Add(CreateProgramme("Bioinformatika", "Bioinformatics", true, ProgramType.Bachelor, ctx));
+        //Master
+        programmesMs.Add(CreateProgramme("Obecná informatika", "General informatics", true, ProgramType.Master, ctx));
+        programmesMs.Add(CreateProgramme("Vývoj software", "Software Development", true, ProgramType.Master, ctx));
+        programmesMs.Add(CreateProgramme("Úmělá inteligence", "Artificial intelligence", true, ProgramType.Master, ctx));
+        programmesMs.Add(CreateProgramme("Počítačové systémy a technologie", "Computer systems and technologies", true, ProgramType.Master, ctx));
+        programmesMs.Add(CreateProgramme("Učitelství informatiky pro střední školy", "Teaching informatics for high schools", true, ProgramType.Master, ctx));
+
+        var groups = new List<Group>()
+        {
+            ctx.Groups.First(x=>x.NameEng!.Equals("Bachelor")),
+            ctx.Groups.First(x=>x.NameEng!.Equals("Master"))
+        };
+        
+        List<Topic> theses = new();
+        for(int i = 0; i < 50; i++)
+        {
+            theses.Add(CreateTopic("Téma " + i, "Topic " + i,
+                "CZ: lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem",
+                "EN: lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem",
+                "CZ: lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem CZ: lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem CZ: lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem",
+                "EN: lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem EN: lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem EN: lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem lorem ipsum dolor sit  amet lorem",
+                true,
+                teachers[Random.Shared.Next(0, teachers.Count)],
+                teachers[Random.Shared.Next(0, teachers.Count)],
+                null,
+                groups[Random.Shared.Next(0, groups.Count)],
+                ctx));
         }
 
-        CreateGroup("Nezařazeno", "Unassigned", adminUser, false, false, ctx);
-        CreateGroup("Bakalářská", "Bachelor", adminUser, true, true, ctx);
-        CreateGroup("Magisterská", "Master", adminUser, true, true, ctx);
+        foreach (var t in theses)
+        {
+            int rProgrammes = Random.Shared.Next(0, 3);
+            int rInterest = Random.Shared.Next(0, 8);
+            int rTaken = Random.Shared.Next(0, 10);
+            var g = programmesBc;
+            if (t.Group.NameEng == "Master")
+            {
+                g = programmesMs;
+            }
 
-        //Create programmees
-        //Bachelor
-        CreateProgramme("Informační technologie", "Information Technology", true, ProgramType.Bachelor, ctx);
-        CreateProgramme("Informatika", "Informatics", true, ProgramType.Bachelor, ctx);
-        CreateProgramme("Informatika - Vývoj software", "Informatics - Software Development", true,
-            ProgramType.Bachelor, ctx);
-        CreateProgramme("Informatika - Obecná informatika", "Informatics - General Informatics", true,
-            ProgramType.Bachelor, ctx);
-        CreateProgramme("Informatika pro vzdělávání", "Informatics for education", true, ProgramType.Bachelor, ctx);
-        //Master
-        CreateProgramme("Obecná informatika", "General informatics", true, ProgramType.Master, ctx);
-        CreateProgramme("Vývoj software", "Software Development", true, ProgramType.Master, ctx);
-        CreateProgramme("Úmělá inteligence", "Artificial intelligence", true, ProgramType.Master, ctx);
-        CreateProgramme("Počítačové systémy a technologie", "Computer systems and technologies", true,
-            ProgramType.Master, ctx);
-        CreateProgramme("Učitelství informatiky pro střední školy", "Teaching informatics for high schools", true,
-            ProgramType.Master, ctx);
-
-        
-        CreateNotification("TopicEdit", "Změna tématu", "Topic Change", "Téma bylo změněno.", "Topic was edited.", ctx);
-        CreateNotification("TopicAssigned-Student", "Téma bylo přiřazeno Vám", "Topic was assigned to You", "TODO", "TODO", ctx);
-        CreateNotification("TopicAssigned-Others", "Téma bylo přiřazeno", "Topic was assigned", "TODO", "TODO", ctx);
-        CreateNotification("TopicAdopted", "Téma bylo přijato", "Topic was accepted", "TODO", "TODO", ctx);
-        CreateNotification("CommentNew", "Nový komentář", "New comment", "[COMMENT]", "[COMMENT]", ctx);
-        CreateNotification("NewInterest", "Někdo projevil zájem", "Someone is interested", "TODO", "TODO", ctx);
-        CreateNotification("NewExternalUser", "TODO", "TODO", "TODO", "TODO", ctx);
+            if (rTaken > 7)
+            {
+                t.AssignedId = students[Random.Shared.Next(0, students.Count - 1)].Id;
+            }
+            
+            for(int p = 0; p < rProgrammes; p++)
+            {
+                CreateTopicRecommendedProgramme(g[Random.Shared.Next(0, g.Count - 1)], t, ctx);
+            }
+            
+            for(int interest = 0; interest < rInterest; interest++)
+            {
+                CreateUserInterestedTopic(students[Random.Shared.Next(0, students.Count - 1)], t, DateTime.Now, ctx);
+            }
+            
+        }
+        await ctx.SaveChangesAsync();
     }
 
     public static Notification CreateNotification(string name, string subject, string subjectEng, string text, string textEng, ApplicationDbContext ctx)
