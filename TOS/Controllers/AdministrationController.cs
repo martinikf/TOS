@@ -67,10 +67,23 @@ public class AdministrationController : Controller
         {
             return RedirectToAction("CreateProgramme", new{error="ALREADY_EXISTS"});
         }
-        
+
         _context.Update(programme);
         await _context.SaveChangesAsync();
-        
+
+        //If programme type is changed, remove it from all topics
+        var newProgramme = await _context.Programmes.Include(x=>x.TopicRecommendedPrograms).FirstAsync(x => x.ProgrammeId == programme.ProgrammeId);
+        if (newProgramme.TopicRecommendedPrograms.Count > 0)
+        {
+            if ((newProgramme.TopicRecommendedPrograms.First().Topic.Group.NameEng == "Bachelor" &&
+                 newProgramme.Type == ProgramType.Master) ||
+                newProgramme.TopicRecommendedPrograms.First().Topic.Group.NameEng == "Master" &&
+                newProgramme.Type == ProgramType.Bachelor)
+            {
+                _context.TopicRecommendedProgrammes.RemoveRange(newProgramme.TopicRecommendedPrograms);
+                await _context.SaveChangesAsync();
+            }
+        }
         return RedirectToAction(nameof(Programmes));
     }
     

@@ -10,20 +10,19 @@
         <textarea asp-for="Text" class="form-control" rows="3"></textarea>
         <span asp-validation-for="Text" class="text-danger"></span>
     </div>
-
-    @if (User.IsInRole("AnonymousComment"))
-    {
+    <div class="d-flex justify-content-end align-items-center m-1">
+        @if (User.IsInRole("AnonymousComment"))
         {
-            var uniqueId = Guid.NewGuid().ToString();
-        
-            <div class="form-check">
-                <label class="form-check-label" for="Anonymous@(uniqueId)">@SharedLocalizer["Anonymous"]</label>
-                <input type="checkbox" class="form-check-input" id="Anonymous@(uniqueId)" asp-for="Anonymous" value="true"/>
-            </div>
+            {
+                var uniqueId = Guid.NewGuid().ToString();
+            
+                <div class="form-check m-1">
+                    <label class="form-check-label" for="Anonymous@(uniqueId)">@SharedLocalizer["Anonymous"]</label>
+                    <input type="checkbox" class="form-check-input" id="Anonymous@(uniqueId)" asp-for="Anonymous" value="true"/>
+                </div>
+            }
         }
-    }
-    <div class="d-flex justify-content-end">
         <!--<a href="javascript:;" class="ReplyButton" value="" onclick="ReplyButtonClick('@Model.ParentCommentId')">@SharedLocalizer["Cancel"]</a>-->
-        <input type="submit" value="@SharedLocalizer["Comments_Submit"]" class="btn btn-primary mt-1"/>
+        <input type="submit" value="@SharedLocalizer["Comments_Submit"]" class="btn btn-primary m-1"/>
     </div>
 </form>

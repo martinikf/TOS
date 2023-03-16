@@ -849,4 +849,7 @@
     <data name="ChangePassword_Success" xml:space="preserve">
         <value>Password was changed</value>
     </data>
+    <data name="Manage_Profile_Updated" xml:space="preserve">
+        <value>Profile was updated</value>
+    </data>
 </root>

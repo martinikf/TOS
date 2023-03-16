@@ -63,7 +63,7 @@ namespace TOS.Controllers
                 SearchString = searchString,
                 OrderBy = orderBy,
                 Group = group,
-                Programmes = await _context.Programmes.Where(x => x.Type == (ProgramType) Enum.Parse(typeof(ProgramType), groupName)).ToListAsync()
+                Programmes = await _context.Programmes.Where(x => x.Active && x.Type == (ProgramType) Enum.Parse(typeof(ProgramType), groupName)).ToListAsync()
             };
 
             var topicsToShow = _context.Topics.Where(x => x.Group.Equals(group) && x.Type == TopicType.Thesis);
@@ -504,13 +504,20 @@ namespace TOS.Controllers
                     fileInfo.Delete();
                 }
 
-                //Create missing directories
-                Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? string.Empty);
-
-                //Create file
-                await using (var stream = new FileStream(filePath, FileMode.Create))
+                try
                 {
-                    await file.CopyToAsync(stream);
+                    //Create missing directories
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? string.Empty);
+
+                    //Create file
+                    await using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
                 }
 
                 //Add record to database

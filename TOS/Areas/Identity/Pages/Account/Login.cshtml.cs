@@ -73,27 +73,6 @@ namespace TOS.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
-        private void PrepareInputUsername()
-        {
-            if (Input.Username.ToLower().EndsWith("@upol.cz"))
-            {
-                //User used his email
-                var userFromEmailInput = _context.Users.FirstOrDefault(x => x.Email.ToLower().Equals(Input.Username));
-                if (userFromEmailInput != null)
-                {
-                    if(userFromEmailInput.UserName is null) throw new Exception("User has no username");
-                    Input.Username = userFromEmailInput.UserName;
-                }
-                else
-                {
-                    //User used portalID + @upol.cz
-                    Input.Username = Input.Username.Replace("@upol.cz", "");
-                }
-            }
-
-            Input.Username = Input.Username.ToLower();
-        }
-
         //For first login user has to use portalID or portalID + upol.cz. For logins after that user can also use full email
         //Teacher must use their external login, TODO: not sure how they look like, but it probably works now..
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)

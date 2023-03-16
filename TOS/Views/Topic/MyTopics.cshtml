@@ -104,7 +104,7 @@
                 <div class="accordion-body">
                     @if (group.Topics.Any(x => x.Type == TopicType.Homework))
                     {
-                        <h3>@SharedLocalizer["Homeworks"]</h3>
+                        <h3>@SharedLocalizer["Group_Homework"]</h3>
                         @foreach (var topic in Model.Topics.Where(x => x.Group == group && x.Type == TopicType.Homework))
                         {
                             <partial name="HomeworkPreview" model="topic"/>
@@ -112,7 +112,7 @@
                     }
                     @if (group.Topics.Any(x => x.Type == TopicType.Project))
                     {
-                        <h3>@SharedLocalizer["Projects"]</h3>
+                        <h3>@SharedLocalizer["Group_Projects"]</h3>
                         @foreach (var topic in Model.Topics.Where(x => x.Group == group && x.Type == TopicType.Project))
                         {
                             <partial name="ProjectPreview" model="topic"/>

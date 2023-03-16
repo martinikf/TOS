@@ -33,7 +33,7 @@ public class UpolAuthentication : IAuthentication
     {
         username = NormalizeUsername(username);
 
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName!.Equals(username));
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName!.ToLower().Equals(username));
 
         //User has signed in the past
         if (user is not null)

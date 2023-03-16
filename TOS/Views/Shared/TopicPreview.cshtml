@@ -42,7 +42,7 @@
             <span class="badge bg-success">@SharedLocalizer["Student topic"]</span>
         }
 
-        @foreach (var programme in Model.TopicRecommendedPrograms.Select(x => x.Programme))
+        @foreach (var programme in Model.TopicRecommendedPrograms.Select(x => x.Programme).Where(x=>x.Active))
         {
             <span class="badge bg-secondary">@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</span>
         }

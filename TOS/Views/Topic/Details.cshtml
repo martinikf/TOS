@@ -85,7 +85,7 @@
             {
                 <span class="badge bg-success p-2">@SharedLocalizer["Proposed topic"]</span>
             }
-            @foreach (var programme in Model.TopicRecommendedPrograms.Select(x => x.Programme))
+            @foreach (var programme in Model.TopicRecommendedPrograms.Select(x => x.Programme).Where(x=>x.Active))
             {
                 <span class="badge bg-secondary p-2">@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</span>
             }
@@ -144,7 +144,7 @@
                         <div class="border rounded p-2 m-2">
                             @if (!comment.Anonymous || User.IsInRole("Teacher") || User.IsInRole("Administrator") || User.Identity!.Name!.Equals(comment.Author.UserName))
                             {
-                                <h5 class="h6">@comment.Author.FirstName @comment.Author.LastName - @comment.Author.Email @Html.Raw(comment.Anonymous ? " - " + SharedLocalizer["Anonymous"].Value : "")</h5>
+                                <h5 class="h6">@comment.Author.GetDisplayName() - @comment.Author.Email @Html.Raw(comment.Anonymous ? " - " + SharedLocalizer["Anonymous"].Value : "")</h5>
                             }
                             else
                             {

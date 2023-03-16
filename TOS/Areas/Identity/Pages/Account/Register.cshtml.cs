@@ -83,10 +83,11 @@ namespace TOS.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-
-            if (Input.Email.ToLower().EndsWith("@upol.cz"))
+            var email = Input.Email.Trim().ToLower();
+            
+            if (email.EndsWith("@upol.cz"))
             {
-                if (await _authentication.Authenticate(Input.Email, Input.Password, false))
+                if (await _authentication.Authenticate(email, Input.Password, false))
                 {
                     return LocalRedirect(returnUrl);
                 }
@@ -99,8 +100,8 @@ namespace TOS.Areas.Identity.Pages.Account
             user.LastName = Input.Lastname;
             user.DisplayName = Input.DisplayName;
             
-            await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-            await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+            await _userStore.SetUserNameAsync(user, email, CancellationToken.None);
+            await _emailStore.SetEmailAsync(user, email, CancellationToken.None);
             var result = await _userManager.CreateAsync(user, Input.Password);
 
             if (result.Succeeded)

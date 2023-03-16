@@ -36,22 +36,22 @@
     <input type="hidden" asp-for="Name"/>
     
     <div class="mb-3">
-        <label asp-for="Subject" class="form-label">@SharedLocalizer["Administration_EditNotification_Subject"]</label>
+        <label asp-for="Subject" class="form-label">@SharedLocalizer["Administration_EditNotification_Subject"]*</label>
         <input asp-for="Subject" class="form-control" autocomplete="off"/>
         <span asp-validation-for="Subject" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="SubjectEng" class="form-label">@SharedLocalizer["Administration_EditNotification_SubjectEng"]</label>
+        <label asp-for="SubjectEng" class="form-label">@SharedLocalizer["Administration_EditNotification_SubjectEng"]*</label>
         <input asp-for="SubjectEng" class="form-control" autocomplete="off"/>
         <span asp-validation-for="SubjectEng" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Text" class="form-label">@SharedLocalizer["Administration_EditNotification_Text"]</label>
+        <label asp-for="Text" class="form-label">@SharedLocalizer["Administration_EditNotification_Text"]*</label>
         <textarea asp-for="Text" class="form-control" style="height: 125px"></textarea>
         <span asp-validation-for="Text" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="TextEng" class="form-label">@SharedLocalizer["Administration_EditNotification_TextEng"]</label>
+        <label asp-for="TextEng" class="form-label">@SharedLocalizer["Administration_EditNotification_TextEng"]*</label>
         <textarea asp-for="TextEng" class="form-control" style="height: 125px"></textarea>
         <span asp-validation-for="TextEng" class="text-danger"></span>
     </div>

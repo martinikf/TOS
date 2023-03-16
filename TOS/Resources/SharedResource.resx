@@ -447,7 +447,7 @@
         <value>Odebírání notifikací</value>
     </data>
     <data name="Manage_Notification_TopicEdit" xml:space="preserve">
-        <value>Změna vašeho tématu</value>
+        <value>Změna tématu</value>
     </data>
     <data name="Manage_Notification_TopicAssigned-Student" xml:space="preserve">
         <value>Téma přiřazeno vám</value>
@@ -732,7 +732,7 @@
         <value>Notifikace: Zájem o téma</value>
     </data>
     <data name="Manage_Notification_NewInterest" xml:space="preserve">
-        <value>Při projevení zájmu někým u vašeho tématu</value>
+        <value>Při projevení zájmu u tématu</value>
     </data>
     <data name="Administration_Users_EmailConfirmed" xml:space="preserve">
         <value>Potvrzený email</value>
@@ -841,5 +841,8 @@
     </data>
     <data name="ChangePassword_Success" xml:space="preserve">
         <value>Heslo bylo změněno</value>
+    </data>
+    <data name="Manage_Profile_Updated" xml:space="preserve">
+        <value>Profil aktualizován</value>
     </data>
 </root>
