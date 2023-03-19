@@ -1,13 +1,13 @@
 ﻿@model TOS.Models.Comment
 
 <form asp-action="AddComment">
-    <input type="hidden" asp-for="TopicId" value="@Model.TopicId"/>
+    <input type="hidden" name="TopicId" value="@Model.TopicId"/>
     @if (Model.ParentCommentId != null)
     {
-         <input type="hidden" asp-for="ParentCommentId" value="@Model.ParentCommentId"/>
+         <input type="hidden" name="ParentCommentId" value="@Model.ParentCommentId"/>
     }
     <div class="md-3">
-        <textarea asp-for="Text" class="form-control" rows="3"></textarea>
+        <textarea name="Text" class="form-control" rows="3"></textarea>
         <span asp-validation-for="Text" class="text-danger"></span>
     </div>
     <div class="d-flex justify-content-end align-items-center mt-1">

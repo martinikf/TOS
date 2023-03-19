@@ -19,18 +19,18 @@
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
             <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder=""/>
+                <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" placeholder=""/>
                 <label asp-for="Input.Email">@SharedLocalizer["Email"]*</label>
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
             <div class="row g-0">
                 <div class="form-floating mb-3 col-lg">
-                    <input asp-for="Input.Firstname" class="form-control" autocomplete="firstname" aria-required="false" placeholder=""/>
+                    <input asp-for="Input.Firstname" class="form-control" autocomplete="given-name" aria-required="false" placeholder=""/>
                     <label asp-for="Input.Firstname">@SharedLocalizer["Firstname"]*</label>
                     <span asp-validation-for="Input.Firstname" class="text-danger"></span>
                 </div>
                 <div class="form-floating mb-3 col-lg">
-                    <input asp-for="Input.Lastname" class="form-control" autocomplete="lastname" aria-required="false" placeholder=""/>
+                    <input asp-for="Input.Lastname" class="form-control" autocomplete="family-name" aria-required="false" placeholder=""/>
                     <label asp-for="Input.Lastname">@SharedLocalizer["Lastname"]*</label>
                     <span asp-validation-for="Input.Lastname" class="text-danger"></span>
                 </div>
