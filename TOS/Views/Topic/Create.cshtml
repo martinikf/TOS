@@ -46,7 +46,7 @@
     </div>
     <div class="row g-3 align-items-center mb-3">
         <div class="col-xl">
-            <label asp-for="SupervisorId" class="form-label">@SharedLocalizer["Topic_Create_Supervisor"]</label>
+            <label class="form-label">@SharedLocalizer["Topic_Create_Supervisor"]</label>
             <select class="form-select" id="dSupervisor" asp-for="SupervisorId">
                 <option value="null">@SharedLocalizer["Unassigned option"]</option>
                 @foreach (var user in (IEnumerable<ApplicationUser>)ViewData["UsersToSupervise"]!)
@@ -66,7 +66,7 @@
         @if ((TopicType) ViewData["TopicType"]! != TopicType.Homework)
         {
             <div class="col-xl">
-                <label asp-for="AssignedId" class="form-label">@SharedLocalizer["Topic_Create_Assigned"]</label>
+                <label class="form-label">@SharedLocalizer["Topic_Create_Assigned"]</label>
                 <select class="form-select" id="dAssigned" asp-for="AssignedId">
                     <option value="null">@SharedLocalizer["Unassigned option"]</option>
                     @foreach (var user in (IEnumerable<ApplicationUser>)ViewData["UsersToAssign"]!)
@@ -145,7 +145,7 @@
        
            function RefreshProgrammes(skip = false){
                var programmes = document.getElementsByClassName("Programme");
-               //Hide all programmmes and unselect all checkboxes
+               //Hide all programmes and unselect all checkboxes
                for (var i = 0; i < programmes.length; i++) {
                    programmes[i].style.display = "none";
                    if (!skip)
@@ -177,14 +177,23 @@
     <script type="text/javascript" src="~/lib/dselect/js/dselect.js"></script>
     <script type="text/javascript">
          $(function () {
-            const config={
+            const configAssigned={
                 search: true,
                 placeholder: "@SharedLocalizer["Topic_Create_Placeholder"]",
                 noResults: "@SharedLocalizer["Topic_Create_NoResults"]",
-                maxHeight: '200px'
+                maxHeight: '200px',
+                inputId: 'Assigned'
             }
-            dselect(document.querySelector('#dAssigned'), config)
-            dselect(document.querySelector('#dSupervisor'), config)
+            const configSupervisor={
+                search: true,
+                placeholder: "@SharedLocalizer["Topic_Create_Placeholder"]",
+                noResults: "@SharedLocalizer["Topic_Create_NoResults"]",
+                maxHeight: '200px',
+                inputId: 'Supervisor'
+            }
+            
+            dselect(document.querySelector('#dAssigned'), configAssigned)
+            dselect(document.querySelector('#dSupervisor'), configSupervisor)
          });
     </script>
 }

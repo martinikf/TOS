@@ -98,6 +98,7 @@ function dselect(el, option = {}) {
   const search = attrBool('search') || option.search || defaultSearch
   const placeholder = option.placeholder || "Search"
   const noResults = option.noResults || "No results found"
+  const inputId = option.inputId || "dselect-input"
   const creatable = attrBool('creatable') || option.creatable || defaultCreatable
   const clearable = attrBool('clearable') || option.clearable || defaultClearable
   const maxHeight = el.dataset.dselectMaxHeight || option.maxHeight || defaultMaxHeight
@@ -105,7 +106,7 @@ function dselect(el, option = {}) {
   size = size !== '' ? ` form-select-${size}` : ''
   const classToggler = `form-select${size}`
 
-  const searchInput = search ? `<input onkeydown="return event.key !== 'Enter'" onkeyup="dselectSearch(event, this, '${classElement}', '${classToggler}', ${creatable})" type="text" class="form-control" placeholder="${placeholder}">` : ''
+  const searchInput = search ? `<input onkeydown="return event.key !== 'Enter'" onkeyup="dselectSearch(event, this, '${classElement}', '${classToggler}', ${creatable})" type="text" class="form-control" id="${inputId}" placeholder="${placeholder}">` : ''
 
   function attrBool(attr) {
     const attribute = `data-dselect-${attr}`
@@ -192,7 +193,7 @@ function dselect(el, option = {}) {
     ` : ''
     const template = `
     <div class="dropdown ${classElement} ${additionalClass}">
-      <button class="${classToggler} ${!el.multiple && clearable ? classTogglerClearable : ''}" data-dselect-text="${!el.multiple && selectedText(el.options)}" type="button" data-bs-toggle="dropdown" aria-expanded="false"${autoclose}>
+      <button class="${classToggler} ${!el.multiple && clearable ? classTogglerClearable : ''}" onclick="changeFocus(${inputId})" data-dselect-text="${!el.multiple && selectedText(el.options)}" type="button" data-bs-toggle="dropdown" aria-expanded="false"${autoclose}>
         ${selectedTag(el.options, el.multiple)}
       </button>
       <div class="dropdown-menu">
@@ -222,6 +223,11 @@ function dselect(el, option = {}) {
       toggler.dataset.dselectText = selectedText(el.options)
     }
   }
-
+  
+ 
   el.addEventListener('change', updateDom)
+}
+
+function changeFocus(inputElement){
+  document.getElementById(inputElement.id).focus()
 }
