@@ -14,14 +14,13 @@
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/lib/dselect/css/dselect.css">
-        <script src="https://kit.fontawesome.com/4afee75a5b.js" crossorigin="anonymous"></script>
     </head>
     <body>
         <header>
             <nav class="navbar navbar-expand-lg navbar-toggleable-lg border-bottom box-shadow mb-3">
                 <div class="container-fluid" style="max-width: 1920px;">
                     <a class="navbar-brand" asp-action="Index" asp-controller="Home">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="704.000000pt" height="715.000000pt" viewBox="0 0 704.000000 715.000000" preserveAspectRatio="xMidYMid meet" id="logo" style="width: 2rem; height: 2rem;" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 704.000000 715.000000" preserveAspectRatio="xMidYMid meet" id="logo" style="width: 2rem; height: 2rem;" aria-hidden="true">
                             <g transform="translate(0.000000,715.000000) scale(0.100000,-0.100000)" fill="#026bac" stroke="none">
                                 <path d="M6875 7094 c-977 -275 -2577 -368 -4120 -239 -491 41 -1048 116
                                                                                       -1454 196 -84 16 -154 28 -155 27 -1 -2 -14 -47 -29 -101 -53 -189 -158 -359
@@ -47,7 +46,7 @@
                         </svg>
                     </a>
                     
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="navbar-collapse collapse">
@@ -114,9 +113,7 @@
             </main>
         </div>
 
-        <footer></footer>
-
-        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
         @await RenderSectionAsync("Scripts", required: false)

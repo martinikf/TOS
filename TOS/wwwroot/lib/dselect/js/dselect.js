@@ -105,7 +105,7 @@ function dselect(el, option = {}) {
   size = size !== '' ? ` form-select-${size}` : ''
   const classToggler = `form-select${size}`
 
-  const searchInput = search ? `<input onkeydown="return event.key !== 'Enter'" onkeyup="dselectSearch(event, this, '${classElement}', '${classToggler}', ${creatable})" type="text" class="form-control" placeholder="${placeholder}" autofocus>` : ''
+  const searchInput = search ? `<input onkeydown="return event.key !== 'Enter'" onkeyup="dselectSearch(event, this, '${classElement}', '${classToggler}', ${creatable})" type="text" class="form-control" placeholder="${placeholder}">` : ''
 
   function attrBool(attr) {
     const attribute = `data-dselect-${attr}`

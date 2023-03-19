@@ -40,7 +40,7 @@ public static class Seed
         
         CreateGroup("Nezařazeno", "Unassigned", adminUser, false, false, ctx);
         CreateGroup("Bakalářská", "Bachelor", adminUser, true, true, ctx);
-        CreateGroup("Magisterská", "Master", adminUser, true, true, ctx);
+        CreateGroup("Diplomová", "Master", adminUser, true, true, ctx);
         
         CreateNotification("TopicEdit", "Změna tématu", "Topic Change", "Téma bylo změněno.", "Topic was edited.", ctx);
         CreateNotification("TopicAssigned-Student", "Téma bylo přiřazeno Vám", "Topic was assigned to You", "TODO", "TODO", ctx);

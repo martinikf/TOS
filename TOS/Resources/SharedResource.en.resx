@@ -852,4 +852,10 @@
     <data name="Manage_Profile_Updated" xml:space="preserve">
         <value>Profile was updated</value>
     </data>
+    <data name="Comment_Reply" xml:space="preserve">
+        <value>Reply</value>
+    </data>
+    <data name="Comment_Delete" xml:space="preserve">
+        <value>Delete</value>
+    </data>
 </root>

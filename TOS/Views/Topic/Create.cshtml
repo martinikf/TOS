@@ -105,8 +105,8 @@
                 @foreach (var programme in (IEnumerable<Programme>) ViewData["Programmes"]!)
                 {
                     <div class="Programme @programme.Type">
-                        <input class="form-check-input" id="@programme.NameEng" type="checkbox" name="programmes" value="@programme.ProgrammeId"/>
-                        <label for="@programme.NameEng">@Html.SelectStringByLanguage(programme.NameEng!, programme.Name)</label>
+                        <input class="form-check-input" id="@programme.ProgrammeId" type="checkbox" name="programmes" value="@programme.ProgrammeId"/>
+                        <label for="@programme.ProgrammeId">@Html.SelectStringByLanguage(programme.NameEng!, programme.Name)</label>
                     </div>
                 }
             </div>
@@ -164,7 +164,7 @@
                 if (groupName === "Bachelor" || groupName === "Bakalářská"){
                     toShow = bachelorProgrammes;
                 }
-                else if (groupName === "Master" || groupName === "Magisterská"){
+                else if (groupName === "Master" || groupName === "Diplomová"){
                      toShow = masterProgrammes;
                 }
                 

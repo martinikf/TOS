@@ -24,7 +24,7 @@
         <value>Bakalářské práce</value>
     </data>
     <data name="Index heading for: Master" xml:space="preserve">
-        <value>Magisterské práce</value>
+        <value>Diplomové práce</value>
     </data>
     <data name="Group of topics for:" xml:space="preserve">
         <value>Skupina témat pro: </value>
@@ -48,7 +48,7 @@
         <value>Bakalářské práce</value>
     </data>
     <data name="NavMaster" xml:space="preserve">
-        <value>Magisterské práce</value>
+        <value>Diplomové práce</value>
     </data>
     <data name="NavGroups" xml:space="preserve">
         <value>Skupiny</value>
@@ -99,7 +99,7 @@
         <value>Všechny programy</value>
     </data>
     <data name="Master theses" xml:space="preserve">
-        <value>Magisterské práce</value>
+        <value>Diplomové práce</value>
     </data>
     <data name="orderByName" xml:space="preserve">
         <value>Názvu</value>
@@ -234,7 +234,7 @@
         <value>Bakalářské</value>
     </data>
     <data name="Topics_Master" xml:space="preserve">
-        <value>Magisterské</value>
+        <value>Diplomové</value>
     </data>
     <data name="Topics_Unassigned" xml:space="preserve">
         <value>Navrhnuté externisty</value>
@@ -294,7 +294,7 @@
         <value>Bakalářské závěrečné práce</value>
     </data>
     <data name="Topic_Index_Heading_Master" xml:space="preserve">
-        <value>Magisterské zavěrečné práce</value>
+        <value>Diplomové zavěrečné práce</value>
     </data>
     <data name="Topic_Index_OrderBy" xml:space="preserve">
         <value>Řazení</value>
@@ -844,5 +844,11 @@
     </data>
     <data name="Manage_Profile_Updated" xml:space="preserve">
         <value>Profil aktualizován</value>
+    </data>
+    <data name="Comment_Reply" xml:space="preserve">
+        <value>Odpovědět</value>
+    </data>
+    <data name="Comment_Delete" xml:space="preserve">
+        <value>Smazat</value>
     </data>
 </root>
