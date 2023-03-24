@@ -126,7 +126,7 @@ namespace TOS.Data
                 .HasForeignKey(uk => uk.TopicId);
 
             //M:N relation
-            builder.Entity<TopicRecommendedProgramme>().HasKey(tf => new { tf.TopicId, tf.ProgramId });
+            builder.Entity<TopicRecommendedProgramme>().HasKey(tf => new { tf.TopicId, tf.ProgrammeId });
 
             builder.Entity<TopicRecommendedProgramme>()
                 .HasOne(tf => tf.Topic)
@@ -136,7 +136,7 @@ namespace TOS.Data
             builder.Entity<TopicRecommendedProgramme>()
                 .HasOne(tf => tf.Programme)
                 .WithMany(x => x.TopicRecommendedPrograms)
-                .HasForeignKey(tf => tf.ProgramId);
+                .HasForeignKey(tf => tf.ProgrammeId);
             
             //M:N relation for notifications
             builder.Entity<UserSubscribedNotification>().HasKey(s => new { s.UserId, s.NotificationId });

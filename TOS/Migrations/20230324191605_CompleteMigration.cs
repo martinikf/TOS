@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace TOS.Migrations
 {
     /// <inheritdoc />
-    public partial class CompleteRework : Migration
+    public partial class CompleteMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -52,8 +52,7 @@ namespace TOS.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
+                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -352,15 +351,15 @@ namespace TOS.Migrations
                 name: "TopicRecommendedProgram",
                 columns: table => new
                 {
-                    ProgramId = table.Column<int>(type: "integer", nullable: false),
+                    ProgrammeId = table.Column<int>(type: "integer", nullable: false),
                     TopicId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TopicRecommendedProgram", x => new { x.TopicId, x.ProgramId });
+                    table.PrimaryKey("PK_TopicRecommendedProgram", x => new { x.TopicId, x.ProgrammeId });
                     table.ForeignKey(
-                        name: "FK_TopicRecommendedProgram_Programme_ProgramId",
-                        column: x => x.ProgramId,
+                        name: "FK_TopicRecommendedProgram_Programme_ProgrammeId",
+                        column: x => x.ProgrammeId,
                         principalTable: "Programme",
                         principalColumn: "ProgrammeId",
                         onDelete: ReferentialAction.Cascade);
@@ -469,9 +468,9 @@ namespace TOS.Migrations
                 column: "SupervisorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TopicRecommendedProgram_ProgramId",
+                name: "IX_TopicRecommendedProgram_ProgrammeId",
                 table: "TopicRecommendedProgram",
-                column: "ProgramId");
+                column: "ProgrammeId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",

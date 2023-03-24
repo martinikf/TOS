@@ -459,12 +459,12 @@ namespace TOS.Migrations
                     b.Property<int>("TopicId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ProgramId")
+                    b.Property<int>("ProgrammeId")
                         .HasColumnType("integer");
 
-                    b.HasKey("TopicId", "ProgramId");
+                    b.HasKey("TopicId", "ProgrammeId");
 
-                    b.HasIndex("ProgramId");
+                    b.HasIndex("ProgrammeId");
 
                     b.ToTable("TopicRecommendedProgram", (string)null);
                 });
@@ -647,7 +647,7 @@ namespace TOS.Migrations
                 {
                     b.HasOne("TOS.Models.Programme", "Programme")
                         .WithMany("TopicRecommendedPrograms")
-                        .HasForeignKey("ProgramId")
+                        .HasForeignKey("ProgrammeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

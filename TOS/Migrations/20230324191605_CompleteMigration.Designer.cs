@@ -12,8 +12,8 @@ using TOS.Data;
 namespace TOS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230313121553_length")]
-    partial class RoleConc
+    [Migration("20230324191605_CompleteMigration")]
+    partial class CompleteMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -462,12 +462,12 @@ namespace TOS.Migrations
                     b.Property<int>("TopicId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ProgramId")
+                    b.Property<int>("ProgrammeId")
                         .HasColumnType("integer");
 
-                    b.HasKey("TopicId", "ProgramId");
+                    b.HasKey("TopicId", "ProgrammeId");
 
-                    b.HasIndex("ProgramId");
+                    b.HasIndex("ProgrammeId");
 
                     b.ToTable("TopicRecommendedProgram", (string)null);
                 });
@@ -650,7 +650,7 @@ namespace TOS.Migrations
                 {
                     b.HasOne("TOS.Models.Programme", "Programme")
                         .WithMany("TopicRecommendedPrograms")
-                        .HasForeignKey("ProgramId")
+                        .HasForeignKey("ProgrammeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

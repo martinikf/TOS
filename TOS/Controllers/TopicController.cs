@@ -315,7 +315,7 @@ namespace TOS.Controllers
             var programmes = new HashSet<Programme>();
             foreach (var programme in await _context.Programmes.Where(x => x.Active).ToListAsync())
             {
-                if (topic.TopicRecommendedPrograms.Any(x => x.ProgramId.Equals(programme.ProgrammeId)))
+                if (topic.TopicRecommendedPrograms.Any(x => x.ProgrammeId.Equals(programme.ProgrammeId)))
                 {
                     programme.Selected = true;
                 }
@@ -411,7 +411,7 @@ namespace TOS.Controllers
                 _context.TopicRecommendedProgrammes.Add(new TopicRecommendedProgramme
                 {
                     TopicId = topic.TopicId,
-                    ProgramId = programme
+                    ProgrammeId = programme
                 });
             }
 
