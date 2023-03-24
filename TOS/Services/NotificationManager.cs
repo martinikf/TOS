@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging;
@@ -166,14 +167,15 @@ public class NotificationManager : INotificationManager
         }
 
         if (callbackUrl != null)
-            sb.Replace("[URL]", callbackUrl);
+            sb.Replace("[URL]", $"<a href={callbackUrl}>{callbackUrl}</a>");
                 
         
         if (comment != null)
         {
+            //Danger: Simple regex to prevent xss to email
             sb.Replace("[COMMENT_AUTHOR]", comment.Author.GetDisplayName())
                 .Replace("[COMMENT_AUTHOR_EMAIL]", comment.Author.Email)
-                .Replace("[COMMENT_TEXT]", comment.Text)
+                .Replace("[COMMENT_TEXT]", Regex.Replace(comment.Text, "<.*?>", string.Empty))
                 .Replace("[COMMENT_DATE]", comment.CreatedAt.ToString(CultureInfo.GetCultureInfo("cs-CZ")));
         }
 
