@@ -484,7 +484,7 @@ namespace TOS.Controllers
             return Json(true);
         }
 
-        [Authorize(Roles = "Attachment,AnyAttachment")]
+        [Authorize(Roles = "Attachment")]
         public async Task CreateFiles(Topic topic, ApplicationUser user, List<IFormFile> files)
         {
             foreach (var file in files)
@@ -532,7 +532,7 @@ namespace TOS.Controllers
             await _context.SaveChangesAsync();
         }
 
-        [Authorize(Roles = "Attachment,AnyAttachment")]
+        [Authorize(Roles = "Attachment")]
         public async Task<JsonResult> DeleteAttachment(int id)
         {
             var attachment = await _context.Attachments.FirstAsync(x => x.AttachmentId.Equals(id));

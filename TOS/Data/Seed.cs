@@ -16,6 +16,7 @@ public static class Seed
         CreateRole("Teacher", ctx);
         CreateRole("Student", ctx);
         CreateRole("External", ctx);
+        
         CreateRole("Topic", ctx);
         CreateRole("ProposeTopic", ctx);
         CreateRole("AnyTopic", ctx);
@@ -28,7 +29,6 @@ public static class Seed
         CreateRole("AnyComment", ctx);
 
         CreateRole("Attachment", ctx);
-        CreateRole("AnyAttachment", ctx);
 
         CreateRole("InterestTopic", ctx);
         CreateRole("AssignedTopic", ctx);

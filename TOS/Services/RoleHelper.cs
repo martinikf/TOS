@@ -12,7 +12,7 @@ public static class RoleHelper
         switch (role)
         {
             case Role.Administrator:
-                roles.AddRange(new [] {"Administrator", "Topic", "AnyTopic", "Comment", "AnyComment", "Attachment","AnyAttachment", "Group", "AnyGroup"});
+                roles.AddRange(new [] {"Administrator", "Topic", "AnyTopic", "Comment", "AnyComment", "Attachment", "Group", "AnyGroup"});
                 break;
             case Role.Teacher:
                 roles.AddRange(new[] {"Teacher", "Topic", "Comment", "AnyComment", "Attachment", "Group", "SuperviseTopic"});

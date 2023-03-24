@@ -84,7 +84,7 @@ namespace TOS.Areas.Identity.Pages.Account
                 return LocalRedirect(returnUrl);
             }
             return InvalidLoginAttempt();
-            }
+        }
 
         private IActionResult InvalidLoginAttempt()
         {
