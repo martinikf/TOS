@@ -103,8 +103,9 @@ public class NotificationManager : INotificationManager
     {
         var notification = await GetNotification("NewExternalUser");
         
+        //Users can also equal to all admin users, but for this simple case we can simplify it
         var users = await _context.UserSubscribedNotifications.Where(x=>x.NotificationId == notification.NotificationId).Select(x=>x.User).ToListAsync();
-
+        //TODO: Add key word to substitute -> update tutorial
         SendNotification(users, null, notification, null, null);
     }
 
@@ -118,8 +119,8 @@ public class NotificationManager : INotificationManager
 
     private void SendNotification(IEnumerable<ApplicationUser> users, Topic? topic, Notification notification, Comment? comment, string? callbackUrl)
     {
-        var subject = $"{Parameterize(topic, notification.Subject, callbackUrl, comment)} - {Parameterize(topic, notification.SubjectEng, callbackUrl, comment)}";
-        var body = $"{Parameterize(topic, notification.Text, callbackUrl, comment)}\n---\n{Parameterize(topic, notification.TextEng, callbackUrl, comment)}";
+        var subject = $"{NotificationSubstitution(topic, notification.Subject, callbackUrl, comment)} - {NotificationSubstitution(topic, notification.SubjectEng, callbackUrl, comment)}";
+        var body = $"{NotificationSubstitution(topic, notification.Text, callbackUrl, comment)}\n---\n{NotificationSubstitution(topic, notification.TextEng, callbackUrl, comment)}";
 
         users = users
             .Where(x => x.UserSubscribedNotifications.Any(y => y.NotificationId == notification.NotificationId))
@@ -136,7 +137,7 @@ public class NotificationManager : INotificationManager
         }
     }
     
-    private static string Parameterize(Topic? topic, string text, string? callbackUrl, Comment? comment)
+    private static string NotificationSubstitution(Topic? topic, string text, string? callbackUrl, Comment? comment)
     {
         var sb = new StringBuilder(text);
         
