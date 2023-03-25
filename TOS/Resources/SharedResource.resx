@@ -189,7 +189,7 @@
         <value>Administrace - editace</value>
     </data>
     <data name="Administration_EditNotification_Tutorial" xml:space="preserve">
-        <value>Při vytváření notifikace můžete využít parametrů v hranatých závorkách: tak že je umístíte to textového pole jako text. Výsledkem bude, že se ve finální notifikaci zobrazí daná hodnota objektu, kterého se daná notifikace týka. Parametry ohledně komentáře lze využít jen u notifikace nového komentáře</value>
+        <value>Při vytváření notifikace můžete využít klíčových slov v hranatých závorkách: tak že je umístíte to textového pole jako text. Výsledkem bude, že se ve finální notifikaci zobrazí daná hodnota objektu, kterého se daná notifikace týka. Klíčová slova ohledně komentáře lze využít jen u notifikace nového komentáře.</value>
     </data>
     <data name="Administration_EditNotification_Subject" xml:space="preserve">
         <value>Předmět</value>
@@ -850,5 +850,41 @@
     </data>
     <data name="Comment_Delete" xml:space="preserve">
         <value>Smazat</value>
+    </data>
+    <data name="Home_Index_Heading" xml:space="preserve">
+        <value>Portál pro nabídku závěrečných prací</value>
+    </data>
+    <data name="Home_Index_Text" xml:space="preserve">
+        <value>Portál pro nabídku závěrečných prací a správu úkolů a projektů konkrétních předmětů vyučovaných na katedře informatiky Univerzity Palackého</value>
+    </data>
+    <data name="Home_Index_All_Heading" xml:space="preserve">
+        <value>Zpráva pro všechny</value>
+    </data>
+    <data name="Home_Index_All_Text" xml:space="preserve">
+        <value>Aplikace je pouze v testovacím režimu, neslouží k reálnému výběru závěrečných prací, nebo ke správě úkolů v předmětech!</value>
+    </data>
+    <data name="Home_Index_Login_Heading" xml:space="preserve">
+        <value>Přihlášení</value>
+    </data>
+    <data name="Home_Index_Login_Upol_Heading" xml:space="preserve">
+        <value>Pro studenty a vyučující na katedře informatiky</value>
+    </data>
+    <data name="Home_Index_Login_External_Heading" xml:space="preserve">
+        <value>Pro externí uživatele</value>
+    </data>
+    <data name="Home_Index_Login_Upol_Text" xml:space="preserve">
+        <value>Aplikace je napojena na služby Univerzity Palackého a umožňuje vám přihlášení pomocí přihlašovacích údajů k AD/Stagu.
+            Z tohoto důvodu nevyužívejte registrace, ale rovnou se přihlašujte pomocí stejných přihlašovacích údajů jako ke službám Univerzity Palackého.</value>
+    </data>
+    <data name="Home_Index_Login_External_Text" xml:space="preserve">
+        <value>Externí uživatelé mají možnost navrhnout témata závěrečných prací.
+            Pro pokračování se přihlaste nebo zaregistrujte.
+            Vaše registrace bude muset být potvrzena vedením katedry.</value>
+    </data>
+    <data name="Home_Index_Notification_Heading" xml:space="preserve">
+        <value>Notifikace</value>
+    </data>
+    <data name="Home_Index_Notification_Text" xml:space="preserve">
+        <value>Aplikace podporuje odesílání notifikací, proto abyste se k notfikacím přihlásili musíte v nastavení zvolit, které chcete dostávat.</value>
     </data>
 </root>
