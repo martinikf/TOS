@@ -153,6 +153,8 @@ public class NotificationManager : INotificationManager
                 TopicType.Project => "Projekt",
                 _ => string.Empty
             };
+
+            sb.Replace("\n", "<br/>");
             
             sb.Replace("[TOPIC_NAME]", topic.Name)
                 .Replace("[TOPIC_NAME_ENG]", topic.NameEng)
