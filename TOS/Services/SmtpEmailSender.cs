@@ -29,7 +29,7 @@ public class SmtpEmailSender : IEmailSender
     {
         try
         {
-            var msg = new MailMessage(_fromAddress, email.Split("@")[0] + "@nhgumblx.mailosaur.net", subject, htmlMessage);
+            var msg = new MailMessage(_fromAddress, email, subject, htmlMessage);
             msg.IsBodyHtml = true;
             
             await _client.SendMailAsync(msg);
