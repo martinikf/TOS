@@ -15,18 +15,24 @@ public class UpolAuthentication : IAuthentication
     private readonly ApplicationDbContext _context;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IConfiguration _configuration;
-    
-    private const string StagServicesUrl = "https://stagservices.upol.cz/ws/services/rest2/";
-    private const string StagServicesStudentOsCisloByExternal = "users/getOsobniCislaByExternalLogin?login=";
-    private const string StagServicesTeacherIdnoByExternal = "users/getUcitIdnoByExternalLogin?externalLogin=";
-    private const string StagServicesStudentInfoByOsCislo = "student/getStudentInfo?osCislo=";
-    private const string StagServicesTeacherInfoByIdno = "ucitel/getUcitelInfo?ucitIdno=";
 
+    private readonly string _stagServicesUrl;
+    private readonly string _stagServicesStudentOsCisloByExternal;
+    private readonly string _stagServicesTeacherIdnoByExternal;
+    private readonly string _stagServicesStudentInfoByOsCislo;
+    private readonly string _stagServicesTeacherInfoByIdno;
+    
     public UpolAuthentication(ApplicationDbContext context, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
     {
         _context = context;
         _signInManager = signInManager;
         _configuration = configuration;
+        
+        _stagServicesUrl = _configuration["StagServices:URL"] ?? string.Empty;
+        _stagServicesStudentOsCisloByExternal = _configuration["StagServices:StudentOsCisloByExternal"] ?? string.Empty;
+        _stagServicesTeacherIdnoByExternal = _configuration["StagServices:TeacherIdnoByExternal"] ?? string.Empty;
+        _stagServicesStudentInfoByOsCislo = _configuration["StagServices:StudentInfoByOsCislo"] ?? string.Empty;
+        _stagServicesTeacherInfoByIdno = _configuration["StagServices:TeacherInfoByIdno"] ?? string.Empty;
     }
 
     public async Task<bool> Authenticate(string username, string password, bool rememberMe)
@@ -156,7 +162,7 @@ public class UpolAuthentication : IAuthentication
     
     private async Task<ApplicationUser> CreateStudent(string username, string password, string stagId)
     {
-        var request = StagServicesStudentInfoByOsCislo + stagId;
+        var request = _stagServicesStudentInfoByOsCislo + stagId;
         var user = await CreateUser(request, username, password);
         await RoleHelper.AssignRoles(user, Role.Student, _context);
         return user;
@@ -164,7 +170,7 @@ public class UpolAuthentication : IAuthentication
     
     private async Task<ApplicationUser> CreateTeacher(string username, string password, string stagId)
     {
-        var request = StagServicesTeacherInfoByIdno + stagId;
+        var request = _stagServicesTeacherInfoByIdno + stagId;
         var user = await CreateUser(request, username, password);
         await RoleHelper.AssignRoles(user, Role.Teacher, _context);
         return user;
@@ -225,7 +231,7 @@ public class UpolAuthentication : IAuthentication
     {
         try
         {
-            var request = StagServicesStudentOsCisloByExternal + username;
+            var request = _stagServicesStudentOsCisloByExternal + username;
             var response = StagRequest(request, null, null);
             var xml = XDocument.Parse(response);
        
@@ -240,13 +246,13 @@ public class UpolAuthentication : IAuthentication
     
     private string GetTeacherStagId(string username)
     {
-        var request = StagServicesTeacherIdnoByExternal + username;
+        var request = _stagServicesTeacherIdnoByExternal + username;
         return StagRequest(request, null, null);
     }
 
     private string StagRequest(string request, string? username, string? password)
     {
-        request = StagServicesUrl + request;
+        request = _stagServicesUrl + request;
         try
         {
             var client = new HttpClient();
