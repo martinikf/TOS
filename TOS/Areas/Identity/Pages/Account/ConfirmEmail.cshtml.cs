@@ -54,7 +54,8 @@ namespace TOS.Areas.Identity.Pages.Account
             
             if (result.Succeeded)
             {
-                await _notificationManager.NewExternalUser(user);
+                var c = "https://" + HttpContext.Request.Host + $"/Administration/Users?searchString={user.Email}";
+                await _notificationManager.NewExternalUser(user, c);
             }
             return Page();
         }

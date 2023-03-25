@@ -43,12 +43,12 @@ public static class Seed
         CreateGroup("Diplomová", "Master", adminUser, true, true, ctx);
         
         CreateNotification("TopicEdit", "Změna tématu", "Topic Change", "Téma bylo změněno.", "Topic was edited.", ctx);
-        CreateNotification("TopicAssigned-Student", "Téma bylo přiřazeno Vám", "Topic was assigned to You", "TODO", "TODO", ctx);
-        CreateNotification("TopicAssigned-Others", "Téma bylo přiřazeno", "Topic was assigned", "TODO", "TODO", ctx);
-        CreateNotification("TopicAdopted", "Téma bylo přijato", "Topic was accepted", "TODO", "TODO", ctx);
-        CreateNotification("CommentNew", "Nový komentář", "New comment", "[COMMENT]", "[COMMENT]", ctx);
-        CreateNotification("NewInterest", "Někdo projevil zájem", "Someone is interested", "TODO", "TODO", ctx);
-        CreateNotification("NewExternalUser", "TODO", "TODO", "TODO", "TODO", ctx);
+        CreateNotification("TopicAssigned-Student", "Téma bylo přiřazeno Vám", "Topic was assigned to You", "Téma ... bylo přiřazeno vám.", "Topic ... was assigned to you.", ctx);
+        CreateNotification("TopicAssigned-Others", "Téma bylo přiřazeno", "Topic was assigned", "Téma bylo přiřazeno někomu jinému.", "Topic ... was assigned to someone else.", ctx);
+        CreateNotification("TopicAdopted", "Téma bylo přijato", "Topic was accepted", "Vaše navrhnuté téma bylo přijato.", "Your proposed topic was accepted.", ctx);
+        CreateNotification("CommentNew", "Nový komentář", "New comment", "Nový komentář u téma ... - [COMMENT_TEXT]", "New comment ... [COMMENT_TEXT]", ctx);
+        CreateNotification("NewInterest", "Někdo projevil zájem", "Someone is interested", "Někdo projevil zájem o téma ...", "Some is interested in topic ... ", ctx);
+        CreateNotification("NewExternalUser", "Nová registrace", "New registration", "Právě se někdo zaregistroval.", "Someone has just registered.", ctx);
     }
 
     public static async void DevSeed(WebApplication app)

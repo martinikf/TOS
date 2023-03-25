@@ -99,14 +99,17 @@ public class NotificationManager : INotificationManager
         SendNotification(users, topic, notification, null, callbackUrl);
     }
 
-    public async Task NewExternalUser(ApplicationUser user)
+    public async Task NewExternalUser(ApplicationUser user, string callbackUrl)
     {
         var notification = await GetNotification("NewExternalUser");
         
-        //Users can also equal to all admin users, but for this simple case we can simplify it
-        var users = await _context.UserSubscribedNotifications.Where(x=>x.NotificationId == notification.NotificationId).Select(x=>x.User).ToListAsync();
-        //TODO: Add key word to substitute -> update tutorial
-        SendNotification(users, null, notification, null, null);
+        var users = await _context.UserSubscribedNotifications.Where(x=>x.NotificationId == notification.NotificationId)
+            .Select(x=>x.User).ToListAsync();
+
+        string subject = $"{notification.Subject} - {notification.SubjectEng}";
+        string body = $"{notification.Text}<br/><br/> <a href={callbackUrl}>{callbackUrl.Split("?")[0]}</a> <br/>{user.GetDisplayName()} - {user.Email}<br/><br/>{notification.TextEng}";
+        
+        await SendNotificationBulk(users, subject, body);
     }
 
     private async Task<Notification> GetNotification(string name)
@@ -120,7 +123,7 @@ public class NotificationManager : INotificationManager
     private void SendNotification(IEnumerable<ApplicationUser> users, Topic? topic, Notification notification, Comment? comment, string? callbackUrl)
     {
         var subject = $"{NotificationSubstitution(topic, notification.Subject, callbackUrl, comment)} - {NotificationSubstitution(topic, notification.SubjectEng, callbackUrl, comment)}";
-        var body = $"{NotificationSubstitution(topic, notification.Text, callbackUrl, comment)}\n---\n{NotificationSubstitution(topic, notification.TextEng, callbackUrl, comment)}";
+        var body = $"{NotificationSubstitution(topic, notification.Text, callbackUrl, comment)}<br/>---<br/>{NotificationSubstitution(topic, notification.TextEng, callbackUrl, comment)}";
 
         users = users
             .Where(x => x.UserSubscribedNotifications.Any(y => y.NotificationId == notification.NotificationId))
@@ -196,5 +199,5 @@ public interface INotificationManager
 
     Task NewInterest(Topic topic, ApplicationUser user, string callbackUrl);
 
-    Task NewExternalUser(ApplicationUser user);
+    Task NewExternalUser(ApplicationUser user, string callbackUrl);
 }
