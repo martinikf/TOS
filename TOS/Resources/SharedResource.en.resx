@@ -858,4 +858,7 @@
     <data name="Comment_Delete" xml:space="preserve">
         <value>Delete</value>
     </data>
+    <data name="Home_Index_Login_Heading" xml:space="preserve">
+        <value>Login</value>
+    </data>
 </root>
