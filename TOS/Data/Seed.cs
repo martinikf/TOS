@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using TOS.Models;
 using TOS.Services;
 
@@ -11,6 +12,8 @@ public static class Seed
         using var scope = app.Services.CreateScope();
         var ctx = scope.ServiceProvider.GetService<ApplicationDbContext>();
         if (ctx is null) return;
+
+        await ctx.Database.MigrateAsync();
         
         CreateRole("Administrator", ctx);
         CreateRole("Teacher", ctx);

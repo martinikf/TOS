@@ -105,7 +105,7 @@ public class UpolAuthentication : IAuthentication
     {
         try
         {
-            //Work only under windows, ssl 
+            //Works only under windows, ssl 
             var endpoint = new LdapDirectoryIdentifier(_configuration["UpolActiveDirectory:IP"] ?? string.Empty,  int.Parse(_configuration["UpolActiveDirectory:Port"] ?? string.Empty), true, false);
             using var ldap = new LdapConnection(endpoint, new NetworkCredential(_configuration["UpolActiveDirectory:Dn"] + "\\" + username, password))
             {
