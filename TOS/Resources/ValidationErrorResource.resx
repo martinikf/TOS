@@ -70,7 +70,7 @@
         <value>Komentář je příliš dlouhý</value>
     </data>
     <data name="ERROR_GroupNameMaxLength" xml:space="preserve">
-        <value>Název skupiny je moc dlouhý</value>
+        <value>Název skupiny je příliš dlouhý</value>
     </data>
     <data name="ERROR_GroupNameMinLength" xml:space="preserve">
         <value>Název skupiny je příliš krátký</value>
@@ -89,5 +89,29 @@
     </data>
     <data name="ERROR_EmailInvalid" xml:space="preserve">
         <value>Tohle není validní email</value>
+    </data>
+    <data name="ERROR_FirstNameMaxLength" xml:space="preserve">
+        <value>Křestní jméno je příliš dlouhé</value>
+    </data>
+    <data name="ERROR_LastNameMaxLength" xml:space="preserve">
+        <value>Přijmení je příliš dlouhé</value>
+    </data>
+    <data name="ERROR_DisplayNameMaxLength" xml:space="preserve">
+        <value>Zobrazovací jméno je příliš dlouhé</value>
+    </data>
+    <data name="ERROR_AttachmentNameMaxLength" xml:space="preserve">
+        <value>Název souboru je příliš dlouhý</value>
+    </data>
+    <data name="ERROR_NotificationNameMaxLength" xml:space="preserve">
+        <value>Název notifikace je příliš dlouhý</value>
+    </data>
+    <data name="ERROR_SubjectMaxLength" xml:space="preserve">
+        <value>Předmět je příliš dlouhý</value>
+    </data>
+    <data name="ERROR_TextMaxLength" xml:space="preserve">
+        <value>Text je příliš dlouhý</value>
+    </data>
+    <data name="ERROR_ProgrammeNameMaxLength" xml:space="preserve">
+        <value>Název programu je příliš dlouhý</value>
     </data>
 </root>

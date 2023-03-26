@@ -83,4 +83,28 @@
     <data name="ERROR_EmailInvalid" xml:space="preserve">
         <value>This is not a valid email address</value>
     </data>
+    <data name="ERROR_FirstNameMaxLength" xml:space="preserve">
+        <value>Firstname is too long</value>
+    </data>
+    <data name="ERROR_LastNameMaxLength" xml:space="preserve">
+        <value>Lastname is too long</value>
+    </data>
+    <data name="ERROR_DisplayNameMaxLength" xml:space="preserve">
+        <value>Display name is too long</value>
+    </data>
+    <data name="ERROR_AttachmentNameMaxLength" xml:space="preserve">
+        <value>Filename is too long</value>
+    </data>
+    <data name="ERROR_NotificationNameMaxLength" xml:space="preserve">
+        <value>Notification name is too long</value>
+    </data>
+    <data name="ERROR_SubjectMaxLength" xml:space="preserve">
+        <value>Subject is too long</value>
+    </data>
+    <data name="ERROR_TextMaxLength" xml:space="preserve">
+        <value>Text is too long</value>
+    </data>
+    <data name="ERROR_ProgrammeNameMaxLength" xml:space="preserve">
+        <value>Programme name is too long</value>
+    </data>
 </root>

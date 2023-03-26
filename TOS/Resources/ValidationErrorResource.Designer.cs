@@ -60,6 +60,15 @@ namespace TOS.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Název souboru je příliš dlouhý.
+        /// </summary>
+        internal static string ERROR_AttachmentNameMaxLength {
+            get {
+                return ResourceManager.GetString("ERROR_AttachmentNameMaxLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Komentář je příliš dlouhý.
         /// </summary>
         internal static string ERROR_CommentTextMaxLength {
@@ -87,6 +96,15 @@ namespace TOS.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Zobrazovací jméno je příliš dlouhé.
+        /// </summary>
+        internal static string ERROR_DisplayNameMaxLength {
+            get {
+                return ResourceManager.GetString("ERROR_DisplayNameMaxLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tohle není validní email.
         /// </summary>
         internal static string ERROR_EmailInvalid {
@@ -101,6 +119,15 @@ namespace TOS.Resources {
         internal static string ERROR_EmailRequired {
             get {
                 return ResourceManager.GetString("ERROR_EmailRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Křestní jméno je příliš dlouhé.
+        /// </summary>
+        internal static string ERROR_FirstNameMaxLength {
+            get {
+                return ResourceManager.GetString("ERROR_FirstNameMaxLength", resourceCulture);
             }
         }
         
@@ -132,7 +159,7 @@ namespace TOS.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Název skupiny je moc dlouhý.
+        ///   Looks up a localized string similar to Název skupiny je příliš dlouhý.
         /// </summary>
         internal static string ERROR_GroupNameMaxLength {
             get {
@@ -159,6 +186,15 @@ namespace TOS.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Přijmení je příliš dlouhé.
+        /// </summary>
+        internal static string ERROR_LastNameMaxLength {
+            get {
+                return ResourceManager.GetString("ERROR_LastNameMaxLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Přijmení je povinné.
         /// </summary>
         internal static string ERROR_LastNameRequired {
@@ -173,6 +209,15 @@ namespace TOS.Resources {
         internal static string ERROR_LoginRequired {
             get {
                 return ResourceManager.GetString("ERROR_LoginRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Název notifikace je příliš dlouhý.
+        /// </summary>
+        internal static string ERROR_NotificationNameMaxLength {
+            get {
+                return ResourceManager.GetString("ERROR_NotificationNameMaxLength", resourceCulture);
             }
         }
         
@@ -222,11 +267,38 @@ namespace TOS.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Název programu je příliš dlouhý.
+        /// </summary>
+        internal static string ERROR_ProgrammeNameMaxLength {
+            get {
+                return ResourceManager.GetString("ERROR_ProgrammeNameMaxLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Jméno oboru je povinné.
         /// </summary>
         internal static string ERROR_ProgrammeNameRequired {
             get {
                 return ResourceManager.GetString("ERROR_ProgrammeNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Předmět je příliš dlouhý.
+        /// </summary>
+        internal static string ERROR_SubjectMaxLength {
+            get {
+                return ResourceManager.GetString("ERROR_SubjectMaxLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text je příliš dlouhý.
+        /// </summary>
+        internal static string ERROR_TextMaxLength {
+            get {
+                return ResourceManager.GetString("ERROR_TextMaxLength", resourceCulture);
             }
         }
         

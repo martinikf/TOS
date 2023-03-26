@@ -489,13 +489,19 @@ namespace TOS.Controllers
         {
             foreach (var file in files)
             {
-                var filePath = Path.Combine(_env.WebRootPath, "files", topic.TopicId.ToString(), file.FileName);
+                var filename = file.FileName;
+                if (filename.Length > 64)
+                {
+                    filename = filename.Substring(filename.Length - 64);
+                }
+                
+                var filePath = Path.Combine(_env.WebRootPath, "files", topic.TopicId.ToString(), filename);
                 var fileInfo = new FileInfo(filePath);
 
                 //If topic has attachment with same file name -> skip current file
                 if (fileInfo.Exists)
                 {
-                    if (await _context.Attachments.AnyAsync(x => x.TopicId.Equals(topic.TopicId) && x.Name.Equals(file.FileName)))
+                    if (await _context.Attachments.AnyAsync(x => x.TopicId.Equals(topic.TopicId) && x.Name.Equals(filename)))
                     {
                         //If file with same name already exists -> ignore and skip new file
                         continue;
@@ -525,7 +531,7 @@ namespace TOS.Controllers
                 {
                     CreatorId = user.Id,
                     TopicId = topic.TopicId,
-                    Name = file.FileName
+                    Name = filename
                 });
             }
 
@@ -661,8 +667,8 @@ namespace TOS.Controllers
                 topics = topics.Where(x =>
                     x.Name.ToLower().Contains(searchString) || 
                     x.NameEng!.ToLower().Contains(searchString) ||
-                    (x.Supervisor != null && (x.Supervisor.FirstName!.ToLower().Contains(searchString) ||
-                                              x.Supervisor.LastName!.ToLower().Contains(searchString))));
+                    (x.Supervisor != null && (x.Supervisor.FirstName.ToLower().Contains(searchString) ||
+                                              x.Supervisor.LastName.ToLower().Contains(searchString))));
             }
             return topics;
         }
