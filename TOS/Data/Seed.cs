@@ -37,7 +37,7 @@ public static class Seed
         CreateRole("AssignedTopic", ctx);
         CreateRole("SuperviseTopic", ctx);
 
-        var adminUser = CreateUser("Admin", "User", "ADMIN", "admin@tos.tos", "admin@tos.tos", true, "password",
+        var adminUser = CreateUser("Admin", "User", "ADMIN", "admin@upol.c", "admin@upol.c", true, "password",
             ctx);
         await RoleHelper.AssignRoles(adminUser, Role.Administrator, ctx);
         
@@ -64,7 +64,7 @@ public static class Seed
 
         List<ApplicationUser> teachers = new();
         teachers.Add(CreateUser("Eduard", "Bartl", "RNDr. Eduard Bartl, Ph.D.", "eduard.bartl@upol.c", "bartl", true, "password", ctx));
-        teachers.Add(CreateUser("Jan", "Outrata", "doc. Mgr. Jan Outrata, Ph.D.", "jan.outrata@upol.c", "outrata", true, "password", ctx));
+        //teachers.Add(CreateUser("Jan", "Outrata", "doc. Mgr. Jan Outrata, Ph.D.", "jan.outrata@upol.c", "outrata", true, "password", ctx));
         teachers.Add(CreateUser("Martin", "Trnečka", "RNDr. Martin Trnečka, Ph.D.", "martin.trnecka@upol.c", "trnecka", true, "password", ctx));
         teachers.Add(CreateUser("Radim", "Bělohlávek", "prof. RNDr. Radim Bělohlávek, DSc.", "radim.belohlavek@upol.c", "belohlavek", true, "password", ctx));
         teachers.Add(CreateUser("Michal", "Krupka", "doc. RNDr. Michal Krupka, Ph.D.", "michal.krupka@upol.c", "krupka", true, "password", ctx));
@@ -94,11 +94,11 @@ public static class Seed
         for (var i = 0; i < 512; i++)
         {
             var student = CreateUser("Student" + i, "Student" + i, null, "student" + i + "@upol.c",
-                "student" + i + "@student.tos", true, "password", ctx);
+                "student" + i + "@upol.c", true, "password", ctx);
             await RoleHelper.AssignRoles(student, Role.Student, ctx);
             students.Add(student);
         }
-
+/*
         var notification = ctx.Notifications.First(x => x.Name == "CommentNew");
         var notification2 = ctx.Notifications.First(x => x.Name == "TopicEdit");
 
@@ -107,7 +107,7 @@ public static class Seed
             CreateSubscribe(st, notification, ctx);
             CreateSubscribe(st, notification2, ctx);
         }
-        
+        */
         //Create programmes
         List<Programme> programmesBc = new();
         List<Programme> programmesMs = new();
@@ -150,7 +150,7 @@ public static class Seed
         foreach (var t in theses)
         {
             int rProgrammes = Random.Shared.Next(0, 3);
-            int rInterest = Random.Shared.Next(0, 8);
+            int rInterest = Random.Shared.Next(0, 3);
             int rTaken = Random.Shared.Next(0, 10);
             var g = programmesBc;
             if (t.Group.NameEng == "Master")
