@@ -107,8 +107,8 @@ public class AdministrationController : Controller
             searchString = searchString.Trim().ToLower();
 
             return View( await _context.Users
-                .Where(x=>x.FirstName!.ToLower().Contains(searchString) || 
-                          x.LastName!.ToLower().Contains(searchString) ||
+                .Where(x=>x.FirstName.ToLower().Contains(searchString) || 
+                          x.LastName.ToLower().Contains(searchString) ||
                           x.Email!.ToLower().Contains(searchString)).ToListAsync());
         }
 
@@ -131,6 +131,52 @@ public class AdministrationController : Controller
         return View(user);
     }
     
+    public async Task<IActionResult> DeleteUser(int id, string searchString = "")
+    {
+        var user = await _context.Users.FirstAsync(x => x.Id == id);
+        var admin = await _context.Users.FirstAsync(x => x.UserRoles.Any(y => y.Role.Name == "Administrator"));
+        foreach (var topic in user.CreatedTopics)
+        {
+            topic.CreatorId = admin.Id;
+            topic.Creator = admin;
+            _context.Topics.Update(topic);
+        }
+        foreach (var topic in user.AssignedTopics)
+        {
+            topic.AssignedId = null;
+            topic.AssignedStudent = null;
+            _context.Topics.Update(topic);
+        }
+        foreach (var topic in user.SupervisedTopics)
+        {
+            topic.SupervisorId = null;
+            topic.Supervisor = null;
+            _context.Topics.Update(topic);
+        }
+        foreach (var groups in user.CreatedGroups)
+        {
+            groups.CreatorId = admin.Id;
+            groups.Creator = admin;
+            _context.Groups.Update(groups);
+        }
+        var ch = new CommentHelper(_context);
+        foreach (var comment in user.Comments)
+        {
+            await ch.DeleteComment(comment, admin);
+        }
+        foreach (var at in user.Attachments)
+        {
+            at.CreatorId = admin.Id;
+            at.Creator = admin;
+            _context.Attachments.Update(at);
+        }
+        
+        _context.Users.Remove(user);
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Users), new {searchString});
+    }
+
     [HttpPost]
     public async Task<IActionResult> EditRoles(int id, string roleGroup)
     {
