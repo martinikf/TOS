@@ -41,8 +41,33 @@
             {
                 <td>-</td>
             }
-            <td><a asp-controller="Administration" asp-action="EditRoles" asp-route-id="@user.Id">@SharedLocalizer["Administration_Users_EditRoles"]</a></td>
+            <td>
+                <a asp-controller="Administration" asp-action="EditRoles" asp-route-id="@user.Id">@SharedLocalizer["Administration_Users_EditRoles"]</a> |
+                <a href="#" class="link-danger" data-bs-toggle="modal" data-bs-target="#DeleteConfirmation@(user.Id)">@SharedLocalizer["Administration_Users_Delete"]</a>
+            </td>
         </tr>
+        
+        <div class="modal" id="DeleteConfirmation@(user.Id)" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <span class="modal-title">@SharedLocalizer["Administration_Users_Delete_Title"]</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>@user.GetDisplayName()</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@SharedLocalizer["Administration_Users_Delete_Cancel"]</button>
+                        <a asp-action="DeleteUser" asp-route-id="@user.Id" asp-route-searchString="@ViewData["searchString"]" class="btn btn-primary">@SharedLocalizer["Administration_Users_Delete_Confirm"]</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
+    
+     
+   
+
     </tbody>
 </table>

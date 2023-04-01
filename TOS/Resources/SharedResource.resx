@@ -132,7 +132,7 @@
         <value>E-mail</value>
     </data>
     <data name="Administration_Users_EditRoles" xml:space="preserve">
-        <value>Editovat role</value>
+        <value>Role</value>
     </data>
     <data name="Administration_Users_Info" xml:space="preserve">
         <value>Pro vyhledání uživatele zadejte alspoň 3 znaky z jeho jména nebo e-mailu. </value>
@@ -207,7 +207,7 @@
         <value>Uložit</value>
     </data>
     <data name="Administration_Users" xml:space="preserve">
-        <value>Nastavení rolí</value>
+        <value>Uživatelé</value>
     </data>
     <data name="Administration_Programmes" xml:space="preserve">
         <value>Programy</value>
@@ -886,5 +886,17 @@
     </data>
     <data name="Home_Index_Notification_Text" xml:space="preserve">
         <value>Aplikace podporuje odesílání notifikací, proto abyste se k notfikacím přihlásili musíte v nastavení zvolit, které chcete dostávat.</value>
+    </data>
+    <data name="Administration_Users_Delete" xml:space="preserve">
+        <value>Smazat</value>
+    </data>
+    <data name="Administration_Users_Delete_Title" xml:space="preserve">
+        <value>Upozornění</value>
+    </data>
+    <data name="Administration_Users_Delete_Cancel" xml:space="preserve">
+        <value>Zrušit</value>
+    </data>
+    <data name="Administration_Users_Delete_Confirm" xml:space="preserve">
+        <value>Smazat</value>
     </data>
 </root>

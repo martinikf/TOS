@@ -279,8 +279,7 @@ namespace TOS.Controllers
 
             return RedirectToAction(nameof(Details), new {id = topic.TopicId});
         }
-
-
+        
         [Authorize(Roles = "Topic,AnyTopic,ProposeTopic")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -593,26 +592,9 @@ namespace TOS.Controllers
                     return Forbid();
             }
             
-            var parent = comment.ParentComment;
-            
-            if (comment.Replies.Count > 0)
-            {
-                comment.Text = "Deleted comment";
-                comment.Anonymous = true;
-                _context.Comments.Update(comment);
-            }
-            else
-            {
-                _context.Comments.Remove(comment);
-            }
-            
-            await _context.SaveChangesAsync();
-            
-            if (parent != null && parent.Text == "Deleted comment")
-            {
-                return await DeleteComment(parent.CommentId);
-            }
-            
+            var commentHelper = new CommentHelper(_context);
+            await commentHelper.DeleteComment(comment, comment.Author);
+
             return RedirectToAction("Details", new {id = topicId});
         }
 

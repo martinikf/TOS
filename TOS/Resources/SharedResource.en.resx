@@ -139,7 +139,7 @@
         <value>Email</value>
     </data>
     <data name="Administration_Users_EditRoles" xml:space="preserve">
-        <value>Edit roles</value>
+        <value>Roles</value>
     </data>
     <data name="Administration_Users_Info" xml:space="preserve">
         <value>To find a user, enter at least 3 characters from their name or email. </value>
@@ -214,7 +214,7 @@
         <value>Save</value>
     </data>
     <data name="Administration_Users" xml:space="preserve">
-        <value>Role settings</value>
+        <value>Users</value>
     </data>
     <data name="Administration_Programmes" xml:space="preserve">
         <value>Programmes</value>
@@ -860,5 +860,17 @@
     </data>
     <data name="Home_Index_Login_Heading" xml:space="preserve">
         <value>Login</value>
+    </data>
+    <data name="Administration_Users_Delete" xml:space="preserve">
+        <value>Delete</value>
+    </data>
+    <data name="Administration_Users_Delete_Title" xml:space="preserve">
+        <value>Warning</value>
+    </data>
+    <data name="Administration_Users_Delete_Cancel" xml:space="preserve">
+        <value>Cancel</value>
+    </data>
+    <data name="Administration_Users_Delete_Confirm" xml:space="preserve">
+        <value>Delete</value>
     </data>
 </root>
