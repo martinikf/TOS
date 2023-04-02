@@ -35,7 +35,6 @@ public static class HtmlHelperExtensions
         return false;
     }
     
-
     public static bool CanDeleteComment(this IHtmlHelper htmlHelper, Comment comment, string? username, bool commentRole, bool anyCommentRole)
     {
         if (username is null) return false;

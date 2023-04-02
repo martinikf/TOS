@@ -906,4 +906,13 @@
     <data name="Home_Index_Text" xml:space="preserve">
         <value>...</value>
     </data>
+    <data name="Unassigned theses" xml:space="preserve">
+        <value>Unassigned theses</value>
+    </data>
+    <data name="Topic_Propose_Heading_Thesis" xml:space="preserve">
+        <value>Propose thesis</value>
+    </data>
+    <data name="Topic_Propose_Heading_Project" xml:space="preserve">
+        <value>Propose project</value>
+    </data>
 </root>
