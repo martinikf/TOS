@@ -906,4 +906,7 @@
     <data name="Home_Index_Text" xml:space="preserve">
         <value>...</value>
     </data>
+    <data name="Unassigned theses" xml:space="preserve">
+        <value>Unassigned theses</value>
+    </data>
 </root>
