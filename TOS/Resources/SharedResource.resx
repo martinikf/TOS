@@ -899,4 +899,7 @@
     <data name="Administration_Users_Delete_Confirm" xml:space="preserve">
         <value>Smazat</value>
     </data>
+    <data name="Group_Create_Name_Unique" xml:space="preserve">
+        <value>Název musí být unikátní</value>
+    </data>
 </root>

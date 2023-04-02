@@ -32,7 +32,7 @@ namespace TOS.Controllers
                 ViewData["searchString"] = searchString;
                 searchString = searchString.ToLower();
                 groups = groups.Where(x =>
-                    x.Name.ToLower().Contains(searchString) || x.NameEng!.ToLower().Contains(searchString));
+                    x.Name.ToLower().Contains(searchString) || x.NameEng.ToLower().Contains(searchString));
             }
 
             //Highlight used groups
@@ -66,15 +66,25 @@ namespace TOS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Group,AnyGroup")]
-        public async Task<IActionResult> Create([Bind("GroupId,Name,NameEng,Description,DescriptionEng,CreatorId,Selectable,Visible")] Group group)
+        public async Task<IActionResult> Create([Bind("GroupId,Name,NameEngNotMapped,Description,DescriptionEng,CreatorId,Selectable,Visible")] Group group)
         {
-            if(string.IsNullOrEmpty(group.NameEng)) group.NameEng = group.Name;
-            
+            //Application uses group.NameEng as a key, so must be unique and not null
+            if(string.IsNullOrEmpty(group.NameEngNotMapped)) group.NameEng = group.Name;
+            else group.NameEng = group.NameEngNotMapped;
+
             group.CreatorId = _context.Users.First(x => User.Identity != null && x.UserName == User.Identity.Name).Id;
             
-            await _context.AddAsync(group);
-            await _context.SaveChangesAsync();
-            
+            try
+            {
+                await _context.AddAsync(group);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                ViewData["Error"] = "Group_Create_Name_Unique";
+                return View();
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -82,6 +92,9 @@ namespace TOS.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             var group = await _context.Groups.FindAsync(id);
+            if(group is null) throw new Exception();
+            
+            group.NameEngNotMapped = group.NameEng;
             
             return View(group);
         }
@@ -89,7 +102,7 @@ namespace TOS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Group,AnyGroup")]
-        public async Task<IActionResult> Edit(int id, [Bind("GroupId,Name,Selectable,NameEng,Description,DescriptionEng,CreatorId,Visible")] Group group)
+        public async Task<IActionResult> Edit(int id, [Bind("GroupId,Name,Selectable,NameEngNotMapped,Description,DescriptionEng,CreatorId,Visible")] Group group)
         {
             //If user has only Role EditGroup, check if he is the owner of the group
             if (User.IsInRole("Group") && !User.IsInRole("AnyGroup"))
@@ -100,24 +113,25 @@ namespace TOS.Controllers
                 }
             }
 
-            if(group.NameEng == "") group.NameEng = group.Name;
+            if(string.IsNullOrEmpty(group.NameEngNotMapped)) group.NameEng = group.Name;
+            else group.NameEng = group.NameEngNotMapped;
             
             //Why
             group.Creator = _context.Users.First(x => x.Id.Equals(group.CreatorId));
-            
-            _context.Update(group);
-            await _context.SaveChangesAsync();
 
-            switch (group.NameEng)
+            try
             {
-                case "Bachelor":
-                    case "Master":
-                    return RedirectToAction("Index", "Topic", new{ groupName = group.NameEng});
-                case "Unassigned":
-                    return RedirectToAction("Unassigned", "Topic");
-                default:
-                    return RedirectToAction("Group", "Topic", new {groupId = group.GroupId});
+                _context.Update(group);
+                await _context.SaveChangesAsync();
             }
+            catch
+            {
+                ViewData["Error"] = "Group_Create_Name_Unique";
+                group.NameEng = "";
+                return View(group);
+            }
+            
+            return RedirectToAction("Topics", "Topic", new {groupId = group.GroupId});
         }
         
         [Authorize(Roles ="Group,AnyGroup")]

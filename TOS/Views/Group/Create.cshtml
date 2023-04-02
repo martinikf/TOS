@@ -6,17 +6,22 @@
 
 <h1>@SharedLocalizer["Group_Create_Heading"]</h1>
 
+@if (ViewData["Error"] != null)
+{
+    <span class="text-danger">@(SharedLocalizer[(string)ViewData["Error"]!])</span>
+}
+
 <form asp-action="Create">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="mb-3">
         <label asp-for="Name" class="form-label">@SharedLocalizer["Group_Create_Name"]*</label>
-        <input asp-for="Name" class="form-control" autocomplete="off"/>
+        <input asp-for="Name" class="form-control" autocomplete="off" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="NameEng" class="form-label">@SharedLocalizer["Group_Create_NameEng"]</label>
-        <input asp-for="NameEng" class="form-control" autocomplete="off"/>
-        <span asp-validation-for="NameEng" class="text-danger"></span>
+        <label asp-for="NameEngNotMapped" class="form-label">@SharedLocalizer["Group_Create_NameEng"]</label>
+        <input asp-for="NameEngNotMapped" class="form-control" autocomplete="off" />
+        <span asp-validation-for="NameEngNotMapped" class="text-danger"></span>
     </div>
     <div class="mb-3 form-check">
         <label asp-for="Visible" class="form-check-label">@SharedLocalizer["Group_Create_Visible"]</label>

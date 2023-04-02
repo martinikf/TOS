@@ -15,7 +15,7 @@ public class Group
     
     [StringLength(64, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_GroupNameMaxLength")]
     [MinLength(3, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_GroupNameMinLength")]
-    public string? NameEng { get; set; } = string.Empty;
+    public string NameEng { get; set; } = string.Empty;
 
     [StringLength(8192, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_GroupDescriptionMaxLength")]
     public string? Description { get; set; } = string.Empty;
@@ -37,4 +37,10 @@ public class Group
     
     [NotMapped]
     public bool Highlight { get; set; }
+    
+    //NameEng is never null, but it is not required in create/edit forms; to skip validation forms uses this property
+    [NotMapped]
+    [StringLength(64, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_GroupNameMaxLength")]
+    [MinLength(3, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_GroupNameMinLength")]
+    public string? NameEngNotMapped { get; set; } = string.Empty;
 }

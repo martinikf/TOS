@@ -859,7 +859,7 @@
         <value>Delete</value>
     </data>
     <data name="Home_Index_Login_Heading" xml:space="preserve">
-        <value>Login</value>
+        <value>...</value>
     </data>
     <data name="Administration_Users_Delete" xml:space="preserve">
         <value>Delete</value>
@@ -872,5 +872,38 @@
     </data>
     <data name="Administration_Users_Delete_Confirm" xml:space="preserve">
         <value>Delete</value>
+    </data>
+    <data name="Group_Create_Name_Unique" xml:space="preserve">
+        <value>Name must be unique</value>
+    </data>
+    <data name="Home_Index_All_Heading" xml:space="preserve">
+        <value>...</value>
+    </data>
+    <data name="Home_Index_All_Text" xml:space="preserve">
+        <value>...</value>
+    </data>
+    <data name="Home_Index_Heading" xml:space="preserve">
+        <value>...</value>
+    </data>
+    <data name="Home_Index_Login_External_Text" xml:space="preserve">
+        <value>...</value>
+    </data>
+    <data name="Home_Index_Login_External_Heading" xml:space="preserve">
+        <value>...</value>
+    </data>
+    <data name="Home_Index_Login_Upol_Heading" xml:space="preserve">
+        <value>...</value>
+    </data>
+    <data name="Home_Index_Login_Upol_Text" xml:space="preserve">
+        <value>...</value>
+    </data>
+    <data name="Home_Index_Notification_Heading" xml:space="preserve">
+        <value>...</value>
+    </data>
+    <data name="Home_Index_Notification_Text" xml:space="preserve">
+        <value>...</value>
+    </data>
+    <data name="Home_Index_Text" xml:space="preserve">
+        <value>...</value>
     </data>
 </root>

@@ -27,10 +27,10 @@ namespace TOS.Controllers
             var group = await _context.Groups.FindAsync(groupId);
             if (group is null) return RedirectToAction("Index", "Home");
             
-            if(group.NameEng != null && (group.NameEng.Equals("Bachelor") || group.NameEng.Equals("Master")))
+            if(group.NameEng.Equals("Bachelor") || group.NameEng.Equals("Master"))
                 return RedirectToAction("Index", "Topic", new{ groupName = group.NameEng});
             
-            if(group.NameEng != null && group.NameEng.Equals("Unassigned") && (User.IsInRole("Topic") || User.IsInRole("AnyTopic")))
+            if(group.NameEng.Equals("Unassigned") && (User.IsInRole("Topic") || User.IsInRole("AnyTopic")))
                 return RedirectToAction("Unassigned", "Topic");
             
             return RedirectToAction("Group", "Topic", new {groupId = group.GroupId});
@@ -143,7 +143,7 @@ namespace TOS.Controllers
             if (searchString.Length > 2)
             {
                 topics = topics.Concat(_context.Groups
-                    .Where(x=> (x.NameEng != null && x.NameEng!.ToLower().Contains(searchString)) || x.Name.ToLower().Contains(searchString))
+                    .Where(x=> x.NameEng.ToLower().Contains(searchString) || x.Name.ToLower().Contains(searchString))
                      .Select(y=>y.Topics).SelectMany(z=>z));
             }
  
@@ -244,7 +244,7 @@ namespace TOS.Controllers
         {
             if (topic.GroupId == -1)
             {
-                topic.Group = await _context.Groups.FirstAsync(x => x.NameEng!.Equals("Unassigned"));
+                topic.Group = await _context.Groups.FirstAsync(x => x.NameEng.Equals("Unassigned"));
                 topic.GroupId = topic.Group.GroupId;
             }
 
@@ -278,7 +278,7 @@ namespace TOS.Controllers
                 return NotFound();
             }
 
-            if (topic.Group.NameEng!.Equals("Unassigned"))
+            if (topic.Group.NameEng.Equals("Unassigned"))
             {
                 ViewData["Groups"] = await _context.Groups.Where(x => x.Selectable).OrderBy(x=>x.Name).ToListAsync();
             }
@@ -588,7 +588,7 @@ namespace TOS.Controllers
         
         private async Task<Group> GetGroup(string groupName)
         {
-            var group = await _context.Groups.FirstOrDefaultAsync(x => x.NameEng!.Equals(groupName));
+            var group = await _context.Groups.FirstOrDefaultAsync(x => x.NameEng.Equals(groupName));
             
             return group ?? throw new Exception("Group not found");
         }

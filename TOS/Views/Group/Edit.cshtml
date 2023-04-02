@@ -19,6 +19,11 @@
     }
 }
 
+@if (ViewData["Error"] != null)
+{
+    <div class="text-danger">@(SharedLocalizer[(string)ViewData["Error"]!])</div>
+}
+
 <form asp-action="Edit">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="hidden" asp-for="GroupId" />
@@ -32,9 +37,9 @@
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <div class="mb-3">
-            <label asp-for="NameEng" class="form-label">@SharedLocalizer["Group_Create_NameEng"]</label>
-            <input asp-for="NameEng" class="form-control" autocomplete="off"/>
-            <span asp-validation-for="NameEng" class="text-danger"></span>
+            <label asp-for="NameEngNotMapped" class="form-label">@SharedLocalizer["Group_Create_NameEng"]</label>
+            <input asp-for="NameEngNotMapped" class="form-control" autocomplete="off"/>
+            <span asp-validation-for="NameEngNotMapped" class="text-danger"></span>
         </div>
         <div class="mb-3 form-check">
             <label class="form-check-label" asp-for="Visible">@SharedLocalizer["Group_Create_Visible"]</label>
@@ -44,7 +49,7 @@
     else
     {
         <input type="hidden" asp-for="Name"/>
-        <input type="hidden" asp-for="NameEng"/>
+        <input type="hidden" asp-for="NameEngNotMapped" value="@Model.NameEng"/>
         <input type="hidden" asp-for="Visible"/>
     }
     

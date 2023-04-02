@@ -112,6 +112,8 @@ namespace TOS.Data
                 b.ToTable("UserSubscribedNotification");
             });
 
+            builder.Entity<Group>().HasIndex(x => x.NameEng).IsUnique();
+
             //M:N relation
             builder.Entity<UserInterestedTopic>().HasKey(ut => new { ut.UserId, ut.TopicId });
 

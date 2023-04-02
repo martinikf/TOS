@@ -106,7 +106,7 @@
                 {
                     <div class="Programme @programme.Type">
                         <input class="form-check-input" id="@programme.ProgrammeId" type="checkbox" name="programmes" value="@programme.ProgrammeId"/>
-                        <label for="@programme.ProgrammeId">@Html.SelectStringByLanguage(programme.NameEng!, programme.Name)</label>
+                        <label for="@programme.ProgrammeId">@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</label>
                     </div>
                 }
             </div>
