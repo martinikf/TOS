@@ -249,10 +249,6 @@ namespace TOS.Controllers
         [Authorize(Roles = "ProposeTopic")]
         public async Task<IActionResult> Propose([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,CreatorId,GroupId,Type")] Topic topic, List<IFormFile> files)
         {
-            if (topic.NameEng is "" or null) topic.NameEng = topic.Name;
-            if (topic.DescriptionShortEng is "" or null) topic.DescriptionShortEng = topic.DescriptionShort;
-            if (topic.DescriptionLongEng is "" or null) topic.DescriptionLongEng = topic.DescriptionLong;
-
             if (topic.GroupId == -1)
             {
                 topic.Group = await _context.Groups.FirstAsync(x => x.NameEng!.Equals("Unassigned"));
@@ -354,11 +350,6 @@ namespace TOS.Controllers
         private async Task<bool> TopicChange(Topic topic, IEnumerable<int> programmesId, List<IFormFile> files, bool isNew = false, int oldAssigned = -1)
         {
             var user = await GetUser();
-
-            //Set eng fields to czech if not provided
-            if (topic.NameEng is "" or null) topic.NameEng = topic.Name;
-            if (topic.DescriptionShortEng is "" or null) topic.DescriptionShortEng = topic.DescriptionShort;
-            if (topic.DescriptionLongEng is "" or null) topic.DescriptionLongEng = topic.DescriptionLong;
 
             if (isNew)
             {
@@ -680,7 +671,7 @@ namespace TOS.Controllers
             if (programme.Length > 0)
             {
                 topics = topics.Where(x => x.TopicRecommendedPrograms
-                    .Any(y => y.Programme.NameEng!.Equals(programme)));
+                    .Any(y => y.Programme.NameEng.Equals(programme)));
             }
 
             return topics;

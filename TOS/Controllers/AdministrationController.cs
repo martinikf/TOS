@@ -1,5 +1,4 @@
-﻿using System.Runtime.Intrinsics.Arm;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -40,14 +39,11 @@ public class AdministrationController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateProgramme([Bind("ProgrammeId,Name,NameEng,Active,Type")] Programme programme)
     {
-        if (await _context.Programmes.AnyAsync(x => (x.Name.Equals(programme.Name) || x.NameEng!.Equals(programme.NameEng)) && x.Type.Equals(programme.Type)))
+        if (await _context.Programmes.AnyAsync(x => (x.Name.Equals(programme.Name) || x.NameEng.Equals(programme.NameEng)) && x.Type.Equals(programme.Type)))
         {
             return RedirectToAction("CreateProgramme", new{error=_localizer["Administration_CreateProgramme_Error_AlreadyExists"]});
         }
-        
-        if(string.IsNullOrEmpty(programme.NameEng))
-            programme.NameEng = programme.Name;
-        
+
         await _context.Programmes.AddAsync(programme);
         await _context.SaveChangesAsync();
 
@@ -64,7 +60,7 @@ public class AdministrationController : Controller
     [HttpPost]
     public async Task<IActionResult> EditProgramme([Bind("ProgrammeId,Name,NameEng,Active,Type")]Programme programme)
     {
-        if (await _context.Programmes.AnyAsync(x => x.ProgrammeId != programme.ProgrammeId && (x.Name.Equals(programme.Name) || x.NameEng!.Equals(programme.NameEng)) && x.Type.Equals(programme.Type)))
+        if (await _context.Programmes.AnyAsync(x => x.ProgrammeId != programme.ProgrammeId && (x.Name.Equals(programme.Name) || x.NameEng.Equals(programme.NameEng)) && x.Type.Equals(programme.Type)))
         {
             return RedirectToAction("CreateProgramme", new{error="ALREADY_EXISTS"});
         }

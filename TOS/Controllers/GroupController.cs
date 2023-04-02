@@ -35,7 +35,7 @@ namespace TOS.Controllers
                     x.Name.ToLower().Contains(searchString) || x.NameEng!.ToLower().Contains(searchString));
             }
 
-            //Higlight used groups
+            //Highlight used groups
             var user = _context.Users.FirstOrDefault(x => User.Identity != null && x.UserName == User.Identity.Name);
             var allGroups = await groups.ToListAsync();
             if (user is not null)

@@ -23,10 +23,10 @@ public class Topic
         [StringLength(512, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicDescriptionShortLength")]
         public string? DescriptionShortEng { get; set; } = string.Empty;
         
-        [StringLength(16384 , ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicDescriptionLongLength")]
+        [StringLength(16384, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicDescriptionLongLength")]
         public string? DescriptionLong { get; set; }
         
-        [StringLength(16384 , ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicDescriptionLongLength")]
+        [StringLength(16384, ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_TopicDescriptionLongLength")]
         public string? DescriptionLongEng { get; set; }
 
         public bool Visible { get; set; }

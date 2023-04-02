@@ -9,7 +9,7 @@ public static class HtmlHelperExtensions
 {
     public static string SelectStringByLanguage(this IHtmlHelper htmlHelper, string? en, string? cz)
     {
-        if(en is null ) return cz ?? "";
+        if (en is null) return cz ?? "";
         if (cz is null) return en;
 
         return CultureInfo.CurrentCulture.Name.Contains("cz") ? cz : en;
@@ -27,7 +27,7 @@ public static class HtmlHelperExtensions
     {
         if (username is null) return false;
         if (anyTopic) return true;
-        if(topicObj.Group.Creator.UserName == username) return true;
+        if (topicObj.Group.Creator.UserName == username) return true;
         if (topic && (topicObj.Proposed || topicObj.SupervisorId == null)) return true;
         if (topic && (topicObj.Creator.UserName == username || (topicObj.Supervisor != null && topicObj.Supervisor.UserName == username))) return true;
         if ( proposeTopic && topicObj.Proposed && topicObj.Creator.UserName == username) return true;
@@ -36,8 +36,7 @@ public static class HtmlHelperExtensions
     }
     
 
-    public static bool CanDeleteComment(this IHtmlHelper htmlHelper, Comment comment, string? username, bool commentRole,
-        bool anyCommentRole)
+    public static bool CanDeleteComment(this IHtmlHelper htmlHelper, Comment comment, string? username, bool commentRole, bool anyCommentRole)
     {
         if (username is null) return false;
         if (anyCommentRole) return true;
