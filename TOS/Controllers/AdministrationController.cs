@@ -156,10 +156,9 @@ public class AdministrationController : Controller
             groups.Creator = admin;
             _context.Groups.Update(groups);
         }
-        var ch = new CommentHelper(_context);
         foreach (var comment in user.Comments)
         {
-            await ch.DeleteComment(comment, admin);
+            await CommentHelper.DeleteComment(comment, admin, _context);
         }
         foreach (var at in user.Attachments)
         {

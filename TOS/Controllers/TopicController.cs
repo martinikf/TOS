@@ -27,20 +27,13 @@ namespace TOS.Controllers
             var group = await _context.Groups.FindAsync(groupId);
             if (group is null) return RedirectToAction("Index", "Home");
             
-            switch (group.NameEng)
-            {
-                case "Bachelor":
-                case "Master":
-                    return RedirectToAction("Index", "Topic", new{ groupName = group.NameEng});
-                case "Unassigned":
-                    if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
-                    {
-                        return RedirectToAction("Unassigned", "Topic");
-                    }
-                    return RedirectToAction("MyTopics");
-                default:
-                    return RedirectToAction("Group", "Topic", new {groupId = group.GroupId});
-            }
+            if(group.NameEng != null && (group.NameEng.Equals("Bachelor") || group.NameEng.Equals("Master")))
+                return RedirectToAction("Index", "Topic", new{ groupName = group.NameEng});
+            
+            if(group.NameEng != null && group.NameEng.Equals("Unassigned") && (User.IsInRole("Topic") || User.IsInRole("AnyTopic")))
+                return RedirectToAction("Unassigned", "Topic");
+            
+            return RedirectToAction("Group", "Topic", new {groupId = group.GroupId});
         }
         
         public async Task<IActionResult> Index(string groupName ="Bachelor", string programmeName = "",
@@ -150,7 +143,7 @@ namespace TOS.Controllers
             if (searchString.Length > 2)
             {
                 topics = topics.Concat(_context.Groups
-                    .Where(x=> x.NameEng!.ToLower().Contains(searchString) || x.Name.ToLower().Contains(searchString))
+                    .Where(x=> (x.NameEng != null && x.NameEng!.ToLower().Contains(searchString)) || x.Name.ToLower().Contains(searchString))
                      .Select(y=>y.Topics).SelectMany(z=>z));
             }
  
@@ -583,8 +576,7 @@ namespace TOS.Controllers
                     return Forbid();
             }
             
-            var commentHelper = new CommentHelper(_context);
-            await commentHelper.DeleteComment(comment, comment.Author);
+            await CommentHelper.DeleteComment(comment, comment.Author, _context);
 
             return RedirectToAction("Details", new {id = topicId});
         }

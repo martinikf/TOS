@@ -4,16 +4,9 @@ using TOS.Models;
 
 namespace TOS.Services;
 
-public class CommentHelper
+public static class CommentHelper
 {
-    private readonly ApplicationDbContext _context;
-    
-    public CommentHelper(ApplicationDbContext context)
-    {
-        _context = context;
-    }
-
-    public async Task<bool> DeleteComment(Comment comment, ApplicationUser newAuthor)
+    public static async Task<bool> DeleteComment(Comment comment, ApplicationUser newAuthor, ApplicationDbContext context)
     {
         var topicId = comment.TopicId;
         var parent = comment.ParentComment;
@@ -24,18 +17,18 @@ public class CommentHelper
             comment.Anonymous = true;
             comment.Author = newAuthor;
             comment.AuthorId = newAuthor.Id;
-            _context.Comments.Update(comment);
+            context.Comments.Update(comment);
         }
         else
         {
-            _context.Comments.Remove(comment);
+            context.Comments.Remove(comment);
         }
             
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
             
         if (parent != null && parent.Text == "Deleted comment")
         {
-            return await DeleteComment(parent, newAuthor);
+            return await DeleteComment(parent, newAuthor, context);
         }
 
         return true;
