@@ -241,52 +241,48 @@
     <partial name="_ValidationScriptsPartial"/>
 
     <script>
-    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
-    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
-
-    </script>
-    <script>
-    $(document).ready(function (){
-        $("#btn-interest").on("click", function (){
-            var topicId = @Model.TopicId;
-            var url = '@Url.Action("Interest", "Topic")' + "?topicId=" + topicId;
-            $.ajax({
-            type: 'GET',
-            url: url,
-            contentType: false,
-            processData: false,
-            cache: false,
-            success: function (response) {
-                var element = $("#btn-interest");
-                element = element[0];
-                
-                console.log(element);
-                if (element.classList.contains("interested")){
-                    element.innerHTML = "@SharedLocalizer["Add interest"]";
-                    element.classList.remove("interested");
-                    element.classList.add("not-interested");
-                    console.log("User removed interest from this topic");
-                }
-                else if (element.classList.contains("not-interested")){
-                    element.innerHTML = "@SharedLocalizer["Remove interest"]";
-                    element.classList.remove("not-interested");
-                    element.classList.add("interested");
-                    console.log("User interested in this topic");
-                }
-                else{
-                    console.log("Error");
-                }
-                 console.log(response);  
-            },
-             error: function (response){
-                console.log("Ajax failed");
-                }
+        const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+        const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+            
+        $(document).ready(function (){
+            $("#btn-interest").on("click", function (){
+                var topicId = @Model.TopicId;
+                var url = '@Url.Action("Interest", "Topic")' + "?topicId=" + topicId;
+                $.ajax({
+                type: 'GET',
+                url: url,
+                contentType: false,
+                processData: false,
+                cache: false,
+                success: function (response) {
+                    var element = $("#btn-interest");
+                    element = element[0];
+                    
+                    console.log(element);
+                    if (element.classList.contains("interested")){
+                        element.innerHTML = "@SharedLocalizer["Add interest"]";
+                        element.classList.remove("interested");
+                        element.classList.add("not-interested");
+                        console.log("User removed interest from this topic");
+                    }
+                    else if (element.classList.contains("not-interested")){
+                        element.innerHTML = "@SharedLocalizer["Remove interest"]";
+                        element.classList.remove("not-interested");
+                        element.classList.add("interested");
+                        console.log("User interested in this topic");
+                    }
+                    else{
+                        console.log("Error");
+                    }
+                     console.log(response);  
+                },
+                 error: function (response){
+                    console.log("Ajax failed");
+                    }
+                });
             });
         });
-    });
-    </script>
 
-    <script>
         function ReplyButtonClick(val){
             var replyForm = "ReplyForm"+val;
         
