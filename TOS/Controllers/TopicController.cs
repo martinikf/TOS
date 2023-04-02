@@ -36,7 +36,7 @@ namespace TOS.Controllers
             return RedirectToAction("Group", "Topic", new {groupId = group.GroupId});
         }
         
-        public async Task<IActionResult> Index(string groupName ="Bachelor", string programmeName = "",
+        public async Task<IActionResult> Index(string groupName ="Bachelor", int programmeName = -1,
             string searchString = "", bool showTakenTopics = false, string orderBy = "Supervisor",
             bool showHidden = false, bool showOnlyProposed = false)
         {
@@ -658,12 +658,12 @@ namespace TOS.Controllers
             return topics;
         }
         
-        private IQueryable<Topic> ApplyProgramme(IQueryable<Topic> topics, string programme)
+        private IQueryable<Topic> ApplyProgramme(IQueryable<Topic> topics, int programme)
         {
-            if (programme.Length > 0)
+            if (programme > 0)
             {
                 topics = topics.Where(x => x.TopicRecommendedPrograms
-                    .Any(y => y.Programme.NameEng.Equals(programme)));
+                    .Any(y => y.Programme.ProgrammeId.Equals(programme)));
             }
 
             return topics;

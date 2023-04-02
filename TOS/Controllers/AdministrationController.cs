@@ -39,9 +39,10 @@ public class AdministrationController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateProgramme([Bind("ProgrammeId,Name,NameEng,Active,Type")] Programme programme)
     {
-        if (await _context.Programmes.AnyAsync(x => (x.Name.Equals(programme.Name) || x.NameEng.Equals(programme.NameEng)) && x.Type.Equals(programme.Type)))
+        if (await _context.Programmes.AnyAsync(x => (x.Name.Equals(programme.Name) || (x.NameEng != null && x.NameEng.Equals(programme.NameEng))) && x.Type.Equals(programme.Type)))
         {
-            return RedirectToAction("CreateProgramme", new{error=_localizer["Administration_CreateProgramme_Error_AlreadyExists"]});
+            ViewData["Error"] = _localizer["Administration_CreateProgramme_Error_AlreadyExists"];
+            return View();
         }
 
         await _context.Programmes.AddAsync(programme);
@@ -60,9 +61,10 @@ public class AdministrationController : Controller
     [HttpPost]
     public async Task<IActionResult> EditProgramme([Bind("ProgrammeId,Name,NameEng,Active,Type")]Programme programme)
     {
-        if (await _context.Programmes.AnyAsync(x => x.ProgrammeId != programme.ProgrammeId && (x.Name.Equals(programme.Name) || x.NameEng.Equals(programme.NameEng)) && x.Type.Equals(programme.Type)))
+        if (await _context.Programmes.AnyAsync(x => x.ProgrammeId != programme.ProgrammeId && (x.Name.Equals(programme.Name) || (x.NameEng != null && x.NameEng.Equals(programme.NameEng))) && x.Type.Equals(programme.Type)))
         {
-            return RedirectToAction("CreateProgramme", new{error="ALREADY_EXISTS"});
+            ViewData["Error"] = _localizer["Administration_CreateProgramme_Error_AlreadyExists"];
+            return View(programme);
         }
 
         _context.Update(programme);

@@ -19,6 +19,11 @@
     <partial name="DeleteModal" model="@data"/>
 }
 
+@if (ViewData["Error"] != null)
+{
+    <span class="text-danger">@(SharedLocalizer[(string)ViewData["Error"]!])</span>
+}
+
 <form asp-action="EditProgramme">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="hidden" asp-for="ProgrammeId" />

@@ -10,7 +10,7 @@ public class IndexViewModel
     
     public IEnumerable<Programme> Programmes { get; set; } = null!;
 
-    public string SelectedProgramme { get; set; } = null!;
+    public int SelectedProgramme { get; set; }
     
     public string SearchString { get; set; } = null!;
     

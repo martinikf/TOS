@@ -8,6 +8,11 @@
 
 <h1>@SharedLocalizer["Administration_CreateProgramme_Heading"]</h1>
 
+@if (ViewData["Error"] != null)
+{
+    <span class="text-danger">@(SharedLocalizer[(string)ViewData["Error"]!])</span>
+}
+
 <form asp-action="CreateProgramme">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="mb-3">

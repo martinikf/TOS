@@ -50,7 +50,7 @@
                 <option value="">@SharedLocalizer["Topic_Index_AllProgrammes"]</option>
                 @foreach (var programme in Model.Programmes)
                 {
-                    @Html.SelectOption(programme.NameEng, @Html.SelectStringByLanguage(programme.NameEng, programme.Name), Model.SelectedProgramme)
+                    @Html.SelectOption(programme.ProgrammeId.ToString(), Html.SelectStringByLanguage(programme.NameEng, programme.Name), Model.SelectedProgramme.ToString())
                 }
             </select>
         </div>
