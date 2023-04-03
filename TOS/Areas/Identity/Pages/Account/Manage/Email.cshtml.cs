@@ -75,6 +75,11 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
+            if (user.PasswordHash == null)
+            {
+                return RedirectToPage(nameof(Index));
+            }
+
             await LoadAsync(user);
             return Page();
         }
