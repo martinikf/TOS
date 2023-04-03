@@ -614,8 +614,7 @@ namespace TOS.Controllers
 
         private IQueryable<Topic> ApplyShowHidden(IQueryable<Topic> topics, bool showHidden, bool showOnlyProposed)
         {
-            //Shows only topics with visible = true, based on parameter
-            if (!showHidden && !showOnlyProposed)
+            if (!showHidden && !showOnlyProposed || (!User.IsInRole("Topic") && !User.IsInRole("AnyTopic")))
             {
                 topics = topics.Where(x => x.Visible);
             }

@@ -12,9 +12,9 @@
     <div class="col-md-6 mx-auto">
         <p class="text-danger">@SharedLocalizer["Register_Info"]</p>
         <hr />
-        @if (ViewData["Register_Duplicate_Username"] != null)
+        @if (ViewData["Error"] != null)
         {
-            <p class="text-danger">@ViewData["Register_Duplicate_Username"]</p>
+            <p class="text-danger">@ViewData["Error"]</p>
         }
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
