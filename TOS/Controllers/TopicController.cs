@@ -626,7 +626,7 @@ namespace TOS.Controllers
         private IQueryable<Topic> ApplySearch(IQueryable<Topic> topics, string searchString)
         {
             searchString = searchString.Trim();
-            if (searchString.Length > 2)
+            if (searchString.Length > 1)
             {
                 searchString = searchString.ToLower();
                 topics = topics.Where(x =>
