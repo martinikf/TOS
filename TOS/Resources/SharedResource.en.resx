@@ -874,7 +874,7 @@
         <value>Delete</value>
     </data>
     <data name="Group_Create_Name_Unique" xml:space="preserve">
-        <value>Name must be unique</value>
+        <value>Name - english must be unique</value>
     </data>
     <data name="Home_Index_All_Heading" xml:space="preserve">
         <value>...</value>

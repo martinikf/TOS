@@ -900,7 +900,7 @@
         <value>Smazat</value>
     </data>
     <data name="Group_Create_Name_Unique" xml:space="preserve">
-        <value>Název musí být unikátní</value>
+        <value>Název - anglicky musí být unikátní</value>
     </data>
     <data name="Unassigned theses" xml:space="preserve">
         <value>Nezařazené závěrečné práce</value>
