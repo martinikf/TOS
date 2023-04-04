@@ -73,6 +73,8 @@ namespace TOS.Controllers
             else group.NameEng = group.NameEngNotMapped;
 
             group.CreatorId = _context.Users.First(x => User.Identity != null && x.UserName == User.Identity.Name).Id;
+
+            if (!IsValid()) return View(group);
             
             try
             {
@@ -82,7 +84,7 @@ namespace TOS.Controllers
             catch
             {
                 ViewData["Error"] = "Group_Create_Name_Unique";
-                return View();
+                return View(group);
             }
 
             return RedirectToAction(nameof(Index));
@@ -92,7 +94,7 @@ namespace TOS.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             var group = await _context.Groups.FindAsync(id);
-            if(group is null) throw new Exception();
+            if (id is null || group is null) return NotFound();
             
             group.NameEngNotMapped = group.NameEng;
             
@@ -116,18 +118,19 @@ namespace TOS.Controllers
             if(string.IsNullOrEmpty(group.NameEngNotMapped)) group.NameEng = group.Name;
             else group.NameEng = group.NameEngNotMapped;
             
-            //Why
-            group.Creator = _context.Users.First(x => x.Id.Equals(group.CreatorId));
-
             try
             {
-                _context.Update(group);
+                if (!IsValid()) throw new Exception();
+                
+                _context.Groups.Update(group);
                 await _context.SaveChangesAsync();
             }
             catch
             {
                 ViewData["Error"] = "Group_Create_Name_Unique";
                 group.NameEng = "";
+                group.Creator = _context.Groups.Include(x=>x.Creator)
+                    .FirstAsync(x=>x.GroupId == group.GroupId).Result.Creator;
                 return View(group);
             }
             
@@ -137,8 +140,9 @@ namespace TOS.Controllers
         [Authorize(Roles ="Group,AnyGroup")]
         public async Task<IActionResult> Delete(int? id)
         {
-            var group = await _context.Groups.FirstAsync(m => m.GroupId == id);
-
+            var group = await _context.Groups.FindAsync(id);
+            if (id is null || group is null) return NotFound();
+                
             //If use has only Role DeleteGroup, check if he is the owner of the group
             if (User.IsInRole("Group") && !User.IsInRole("AnyGroup"))
             {
@@ -158,5 +162,14 @@ namespace TOS.Controllers
             
             return RedirectToAction(nameof(Index));
         }
+        
+        private bool IsValid()
+        {
+            ModelState.ClearValidationState("NameEng");
+            ModelState.Remove("Creator");
+           
+            return  TryValidateModel("Group");
+        }
+        
     }
 }
