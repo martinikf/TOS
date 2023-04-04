@@ -140,7 +140,7 @@
         {
             <section>
                 <h3>@SharedLocalizer["Topic_Details_Comments"]</h3>
-                @foreach (var comment in PrepareComments(Model.Comments))
+                @foreach (var comment in CommentsDepths(Model.Comments.Where(x=>x.ParentCommentId == null), 0))
                 {
                     <div style="margin-left: @(comment.Depth * 40)px">
                         <div class="border rounded p-2 m-2 position-relative">
@@ -207,33 +207,17 @@
 </article>
 
 @functions{
-
-    private static IEnumerable<Comment> PrepareComments(IEnumerable<Comment> comments)
+    private static IEnumerable<Comment> CommentsDepths(IEnumerable<Comment> rootComments, int depth)
     {
-        List<Comment> returnComments = new();
-
-    //Foreach root comment
-        foreach (var comment in comments.Where(x => x.ParentComment == null))
-        {
-            returnComments.Add(comment);
-            returnComments.AddRange(PrepareReplies(comment.Replies, 1));
-        }
-
-        return returnComments;
-    }
-
-    private static IEnumerable<Comment> PrepareReplies(IEnumerable<Comment> comments, int depth)
-    {
-        List<Comment> returnComments = new();
-
-        foreach (var comment in comments)
+        foreach (var comment in rootComments)
         {
             comment.Depth = depth;
-            returnComments.Add(comment);
-            returnComments.AddRange(PrepareReplies(comment.Replies, depth + 1));
+            yield return comment;
+            foreach (var reply in CommentsDepths(comment.Replies, depth + 1))
+            {
+                yield return reply;
+            }
         }
-
-        return returnComments;
     }
 }
 
