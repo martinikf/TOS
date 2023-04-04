@@ -1,5 +1,7 @@
 @using TOS.Extensions
 @using System.Text
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using TOS.Data
 @model TOS.Models.Topic
 
 @{
@@ -16,7 +18,7 @@
         <div class="d-flex">
             <h1 class="h2">@Html.SelectStringByLanguage(Model.NameEng, Model.Name)</h1>
             <div class="ms-auto ps-3">
-                @if (User.IsInRole("InterestTopic"))
+                @if (User.IsInRole("InterestTopic") && Model.Type != TopicType.Homework)
                 {
                     @if (Model.UserInterestedTopics.Any(x => x.User.UserName == User.Identity!.Name))
                     {
@@ -89,7 +91,7 @@
             {
                 <span class="badge bg-secondary p-2">@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</span>
             }
-            @if (User.Identity!.IsAuthenticated)
+            @if (User.Identity!.IsAuthenticated && Model.Type != TopicType.Homework)
             {
                 <div style="cursor: pointer;" class="badge bg-secondary p-2 ms-auto" data-bs-toggle="popover" data-bs-html="true" data-bs-placement="bottom" data-bs-title="@SharedLocalizer["Topic_Details_Interested_Heading"]"
                       data-bs-content="
