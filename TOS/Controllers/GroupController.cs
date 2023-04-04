@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using TOS.Data;
 using TOS.Models;
 
@@ -105,7 +104,7 @@ namespace TOS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles ="Group,AnyGroup")]
-        public async Task<IActionResult> Edit(int id, [Bind("GroupId,Name,Selectable,NameEngNotMapped,Description,DescriptionEng,CreatorId,Visible")] Group group)
+        public async Task<IActionResult> Edit([Bind("GroupId,Name,Selectable,NameEngNotMapped,Description,DescriptionEng,CreatorId,Visible")] Group group)
         {
             //If user has only Role EditGroup, check if he is the owner of the group
             if (User.IsInRole("Group") && !User.IsInRole("AnyGroup"))
@@ -126,7 +125,7 @@ namespace TOS.Controllers
                 _context.Groups.Update(group);
                 await _context.SaveChangesAsync();
             }
-            catch(Exception ex)
+            catch
             {
                 ViewData["Error"] = "Group_Create_Name_Unique";
                 group.NameEng = "";
