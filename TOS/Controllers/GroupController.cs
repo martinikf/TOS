@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using TOS.Data;
 using TOS.Models;
 
@@ -125,7 +126,7 @@ namespace TOS.Controllers
                 _context.Groups.Update(group);
                 await _context.SaveChangesAsync();
             }
-            catch
+            catch(Exception ex)
             {
                 ViewData["Error"] = "Group_Create_Name_Unique";
                 group.NameEng = "";
