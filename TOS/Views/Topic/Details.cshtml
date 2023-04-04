@@ -146,15 +146,15 @@
                         <div class="border rounded p-2 m-2 position-relative">
                             @if (!comment.Anonymous || User.IsInRole("Teacher") || User.IsInRole("Administrator") || User.Identity!.Name!.Equals(comment.Author.UserName))
                             {
-                                <h5 class="h6">@comment.Author.GetDisplayName() - @comment.Author.Email @Html.Raw(comment.Anonymous ? " - " + SharedLocalizer["Anonymous"].Value : "")</h5>
+                                <span class="text-secondary">@Html.Raw(comment.Anonymous ? SharedLocalizer["Anonymous"].Value + " - ": "") @comment.Author.GetDisplayName() - </span>
                             }
                             else
                             {
-                                <h5 class="h6">@SharedLocalizer["Anonymous"]</h5>
+                                <span class="text-secondary">@SharedLocalizer["Anonymous"]</span>
                             }
-                            <span>@comment.CreatedAt</span>
+                            <span class="text-secondary">@comment.CreatedAt.ToString("HH:mm")</span>
                             <p>
-                                @if (comment.Text == "Deleted comment")
+                                @if (string.IsNullOrEmpty(comment.Text))
                                 {
                                     @SharedLocalizer["Deleted comment"]
                                 }

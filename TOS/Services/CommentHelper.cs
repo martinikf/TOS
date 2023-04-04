@@ -13,7 +13,7 @@ public static class CommentHelper
             
         if (comment.Replies.Count > 0)
         {
-            comment.Text = "Deleted comment";
+            comment.Text = "";
             comment.Anonymous = true;
             comment.Author = newAuthor;
             comment.AuthorId = newAuthor.Id;
@@ -26,7 +26,7 @@ public static class CommentHelper
             
         await context.SaveChangesAsync();
             
-        if (parent != null && parent.Text == "Deleted comment")
+        if (parent != null && parent.Text == "")
         {
             return await DeleteComment(parent, newAuthor, context);
         }
