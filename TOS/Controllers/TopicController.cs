@@ -22,10 +22,10 @@ namespace TOS.Controllers
             _notificationManager = notificationManager;
         }
 
-        public async Task<IActionResult> Topics(int groupId)
+        public async Task<IActionResult> Topics(int? groupId)
         {
             var group = await _context.Groups.FindAsync(groupId);
-            if (group is null) return RedirectToAction("Index", "Home");
+            if (groupId is null || group is null) return RedirectToAction("Index", "Home");
             
             if(group.NameEng.Equals("Bachelor") || group.NameEng.Equals("Master"))
                 return RedirectToAction("Index", "Topic", new{ groupName = group.NameEng});
@@ -36,7 +36,7 @@ namespace TOS.Controllers
             return RedirectToAction("Group", "Topic", new {groupId = group.GroupId});
         }
         
-        public async Task<IActionResult> Index(string groupName ="Bachelor", int programmeName = -1,
+        public async Task<IActionResult> Index(string groupName = "Bachelor", int programmeName = -1,
             string searchString = "", bool showTakenTopics = false, string orderBy = "Supervisor",
             bool showHidden = false, bool showOnlyProposed = false)
         {
@@ -44,6 +44,8 @@ namespace TOS.Controllers
                 return Forbid();
 
             var group = await GetGroup(groupName);
+            if (group is null) return NotFound();
+            
             if (showOnlyProposed)
                 orderBy = "Name";
             
@@ -72,9 +74,13 @@ namespace TOS.Controllers
             return View(vm);
         }
         
-        public async Task<IActionResult> Group(int groupId, string searchString = "", bool showTakenTopics = false, bool showHidden = false, bool showProposed = false)
+        public async Task<IActionResult> Group(int? groupId, string searchString = "", bool showTakenTopics = false, bool showHidden = false, bool showProposed = false)
         {
+            if (groupId is null) return NotFound();
+
             var group = await GetGroup(groupId);
+            if (group is null) return NotFound();
+            
             if (group.NameEng == "Bachelor" || group.NameEng == "Master" || group.NameEng == "Unassigned")
                 return Forbid();
 
@@ -153,16 +159,17 @@ namespace TOS.Controllers
         
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-                return NotFound();
+            if (id is null) return NotFound();
             
             var topic = await _context.Topics
                 .Include(t => t.AssignedStudent)
                 .Include(t => t.Creator)
                 .Include(t => t.Group)
                 .Include(t => t.Supervisor)
-                .FirstAsync(m => m.TopicId == id);
+                .FirstOrDefaultAsync(m => m.TopicId == id);
 
+            if (topic is null) return NotFound();
+            
             var user = await GetUserOrNull();
 
             if (User.IsInRole("AnyTopic") || User.IsInRole("Topic") || topic.Visible || (user != null && (topic.SupervisorId == user.Id || topic.CreatorId == user.Id || topic.AssignedId == user.Id)))
@@ -175,6 +182,7 @@ namespace TOS.Controllers
         public async Task<IActionResult> Create(string groupName = "Unassigned", TopicType type = TopicType.Thesis)
         {
             var groupProvided = await GetGroup(groupName);
+            if (groupProvided is null) return NotFound();
             
             //For custom groups, allow only the group provided
             if (!groupProvided.Selectable && groupName != "Unassigned")
@@ -208,14 +216,19 @@ namespace TOS.Controllers
         [Authorize(Roles = "Topic,AnyTopic")]
         public async Task<IActionResult> Create([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,Visible,CreatorId,SupervisorId,AssignedId,GroupId,Type")] Topic topic, int[] programmes, List<IFormFile> files)
         {
-            await TopicChange(topic, programmes, files, true);
-            return RedirectToAction(nameof(Details), new {id = topic.TopicId});
+            if (await TopicChange(topic, programmes, files, true))
+            {
+                return RedirectToAction(nameof(Details), new {id = topic.TopicId});
+            }
+            return View(topic);
         }
 
         [Authorize(Roles = "ProposeTopic")]
         public async Task<IActionResult> Propose(string groupName = "Unassigned", TopicType type = TopicType.Thesis)
         {
             var group = await GetGroup(groupName);
+            if (group is null) return NotFound();
+            
             if (group.Selectable)
             {
                 var list = await _context.Groups.Where(x => x.Selectable).ToListAsync();
@@ -319,7 +332,7 @@ namespace TOS.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Topic,AnyTopic,ProposeTopic")]
-        public async Task<IActionResult> Edit(int id, [Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,Visible,CreatorId,SupervisorId,AssignedId,GroupId,Type,Proposed")] Topic topic, int[] programmes, List<IFormFile> files, int oldAssigned)
+        public async Task<IActionResult> Edit([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,Visible,CreatorId,SupervisorId,AssignedId,GroupId,Type,Proposed")] Topic topic, int[] programmes, List<IFormFile> files, int oldAssigned)
         {
             var user = await GetUser();
 
@@ -337,7 +350,8 @@ namespace TOS.Controllers
             {
                 return RedirectToAction(nameof(Details), new {id = topic.TopicId});
             }
-            return RedirectToAction("Edit", new {id = topic.TopicId});
+
+            return View(topic);
         }
 
         private async Task<bool> TopicChange(Topic topic, IEnumerable<int> programmesId, List<IFormFile> files, bool isNew = false, int oldAssigned = -1)
@@ -349,6 +363,7 @@ namespace TOS.Controllers
                 topic.CreatorId = user.Id;
                 topic.Creator = user;
                 //Create topic
+                if (!IsValid()) return false;
                 _context.Add(topic);
                 await _context.SaveChangesAsync();
             }
@@ -359,6 +374,7 @@ namespace TOS.Controllers
                 {
                     topic.Proposed = false;
                 }
+                if (!IsValid()) return false;
                 //Update topic
                 _context.Topics.Update(topic);
                 await _context.SaveChangesAsync();
@@ -410,9 +426,10 @@ namespace TOS.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             //TODO delete files
-            var topic = await _context.Topics.FirstAsync(x => x.TopicId.Equals(id));
+            var topic = await _context.Topics.FindAsync(id);
+            if (id is null || topic is null) return NotFound();
+            
             var group = topic.Group;
-
             var user = await GetUser();
 
             var canEdit = User.IsInRole("AnyTopic") ||
@@ -432,7 +449,7 @@ namespace TOS.Controllers
         }
 
         [Authorize(Roles = "InterestTopic")]
-        public async Task<JsonResult> Interest(int topicId)
+        public async Task<JsonResult> Interest(int? topicId)
         {
             //Current user
             var user = await GetUser();
@@ -442,8 +459,10 @@ namespace TOS.Controllers
                 .Include(x=>x.Supervisor)
                 .Include(x=>x.Creator)
                 .Include(x=>x.UserInterestedTopics)
-                .FirstAsync(x => x.TopicId.Equals(topicId));
+                .FirstOrDefaultAsync(x => x.TopicId.Equals(topicId));
 
+            if (topicId is null || topic is null) return Json(false);
+            
             if (await _context.UserInterestedTopics.AnyAsync(x => x.UserId.Equals(user.Id) && x.TopicId.Equals(topic.TopicId)))
             {
                 _context.UserInterestedTopics
@@ -466,9 +485,69 @@ namespace TOS.Controllers
 
             return Json(true);
         }
-
+        
         [Authorize(Roles = "Attachment")]
-        public async Task CreateFiles(Topic topic, ApplicationUser user, List<IFormFile> files)
+        public async Task<JsonResult> DeleteAttachment(int? id)
+        {
+            var attachment = await _context.Attachments.FindAsync(id);
+            if (id is null || attachment is null) return Json(false);
+            var topicId = attachment.TopicId;
+
+            //Delete the file from server
+            var a = await _context.Attachments.FirstAsync(x => x.AttachmentId.Equals(id));
+            var file = new FileInfo(Path.Combine(_env.WebRootPath, "files", topicId.ToString(), a.Name));
+            if (file.Exists)
+            {
+                file.Delete();
+            }
+
+            //Update database
+            _context.Attachments.Remove(_context.Attachments.First(x => x.AttachmentId.Equals(id)));
+            await _context.SaveChangesAsync();
+
+            return Json(true);
+        }
+        
+        [Authorize(Roles = "Comment,AnyComment")]
+        public async Task<IActionResult> AddComment([Bind("CommentId,Text,Anonymous,ParentCommentId,TopicId")] Comment comment)
+        {
+            var user = await GetUserOrNull();
+            if (user is null) return Forbid();
+            
+            comment.AuthorId = user.Id;
+            comment.Author = user;
+            comment.CreatedAt = DateTime.Now;
+            
+            _context.Comments.Add(comment);
+            await _context.SaveChangesAsync();
+
+            comment = await _context.Comments.Include("Topic").FirstAsync(x => x.CommentId == comment.CommentId);
+            await _notificationManager.NewComment(comment, CallbackDetailsUrl(comment.TopicId));
+
+            return RedirectToAction("Details", new { id = comment.TopicId });
+        }
+        
+        [Authorize(Roles = "Comment,AnyComment")]
+        public async Task<IActionResult> DeleteComment(int? commentId)
+        {
+            var comment = await _context.Comments.FirstOrDefaultAsync(x => x.CommentId.Equals(commentId));
+            if (commentId is null || comment is null) return NotFound();
+            var topicId = comment.TopicId;
+            
+            if (User.IsInRole("DeleteComment") && !User.IsInRole("DeleteAnyComment"))
+            {
+                var user = await GetUser();
+                if (comment.AuthorId != user.Id)
+                    return Forbid();
+            }
+            
+            await CommentHelper.DeleteComment(comment, comment.Author, _context);
+
+            return RedirectToAction("Details", new {id = topicId});
+        }
+        
+        [Authorize(Roles = "Attachment")]
+        private async Task CreateFiles(Topic topic, ApplicationUser user, List<IFormFile> files)
         {
             foreach (var file in files)
             {
@@ -521,83 +600,19 @@ namespace TOS.Controllers
             await _context.SaveChangesAsync();
         }
 
-        [Authorize(Roles = "Attachment")]
-        public async Task<JsonResult> DeleteAttachment(int id)
-        {
-            var attachment = await _context.Attachments.FirstAsync(x => x.AttachmentId.Equals(id));
-            var topicId = attachment.TopicId;
-
-            //Delete the file from server
-            var a = await _context.Attachments.FirstAsync(x => x.AttachmentId.Equals(id));
-            var file = new FileInfo(Path.Combine(_env.WebRootPath, "files", topicId.ToString(), a.Name));
-            if (file.Exists)
-            {
-                file.Delete();
-            }
-
-            //Update database
-            _context.Attachments.Remove(_context.Attachments.First(x => x.AttachmentId.Equals(id)));
-            await _context.SaveChangesAsync();
-
-            return Json(true);
-        }
-        
-        [Authorize(Roles = "Comment,AnyComment")]
-        public async Task<IActionResult> AddComment([Bind("CommentId,Text,Anonymous,ParentCommentId,TopicId")] Comment comment)
-        {
-            //get current user
-            var user = await GetUser();
-            comment.AuthorId = user.Id;
-            comment.Author = user;
-            comment.CreatedAt = DateTime.Now;
-            
-            _context.Comments.Add(comment);
-            
-            await _context.SaveChangesAsync();
-
-            comment = await _context.Comments.Include("Topic").FirstAsync(x => x.CommentId == comment.CommentId);
-
-            await _notificationManager.NewComment(comment, CallbackDetailsUrl(comment.TopicId));
-
-            return RedirectToAction("Details", new { id = comment.TopicId });
-        }
-        
-        [Authorize(Roles = "Comment,AnyComment")]
-        public async Task<IActionResult> DeleteComment(int commentId)
-        {
-            var comment = await _context.Comments.FirstOrDefaultAsync(x => x.CommentId.Equals(commentId));
-            if (comment is null) return RedirectToAction(nameof(Index));
-            var topicId = comment.TopicId;
-            
-            if (User.IsInRole("DeleteComment") && !User.IsInRole("DeleteAnyComment"))
-            {
-                var user = await GetUser();
-                if (comment.AuthorId != user.Id)
-                    return Forbid();
-            }
-            
-            await CommentHelper.DeleteComment(comment, comment.Author, _context);
-
-            return RedirectToAction("Details", new {id = topicId});
-        }
-
         private string CallbackDetailsUrl(int id)
         {
             return "https://" + HttpContext.Request.Host + $"/Topic/Details/{id}";
         }
         
-        private async Task<Group> GetGroup(string groupName)
+        private async Task<Group?> GetGroup(string groupName)
         {
-            var group = await _context.Groups.FirstOrDefaultAsync(x => x.NameEng.Equals(groupName));
-            
-            return group ?? throw new Exception("Group not found");
+            return await _context.Groups.FirstOrDefaultAsync(x => x.NameEng.Equals(groupName));
         }
 
-        private async Task<Group> GetGroup(int groupId)
+        private async Task<Group?> GetGroup(int? groupId)
         {
-            var group = await _context.Groups.FirstOrDefaultAsync(x => x.GroupId.Equals(groupId));
-            
-            return group ?? throw new Exception("Group not found");
+            return await _context.Groups.FindAsync(groupId);
         }
 
         private async Task<ApplicationUser?> GetUserOrNull()
@@ -681,6 +696,20 @@ namespace TOS.Controllers
             }
 
             return topics;
+        }
+
+        private bool IsValid()
+        {
+            ModelState.Remove("Creator");
+            ModelState.Remove("Assigned");
+            ModelState.Remove("AssignedId");
+            ModelState.Remove("Supervisor");
+            ModelState.Remove("SupervisorId");
+            ModelState.Remove("Group");
+            ModelState.Remove("oldAssigned");
+            
+
+            return TryValidateModel("Topic");
         }
         
     }
