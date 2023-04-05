@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
@@ -12,7 +13,6 @@ namespace TOS.Controllers;
 [Authorize(Roles ="Administrator")]
 public class AdministrationController : Controller
 {
-    
     private readonly ApplicationDbContext _context;
     private readonly IStringLocalizer<SharedResource> _localizer;
 
@@ -45,6 +45,8 @@ public class AdministrationController : Controller
             return View();
         }
 
+        if (!ModelState.IsValid) return View(programme);
+        
         await _context.Programmes.AddAsync(programme);
         await _context.SaveChangesAsync();
 
@@ -53,7 +55,9 @@ public class AdministrationController : Controller
     
     public async Task<IActionResult> EditProgramme(int? id)
     {
-        var p =  await _context.Programmes.FirstAsync(x => x.ProgrammeId == id);
+        var p =  await _context.Programmes.FindAsync(id);
+
+        if (id is null || p is null) return NotFound();
 
         return View(p);
     }
@@ -66,6 +70,8 @@ public class AdministrationController : Controller
             ViewData["Error"] = _localizer["Administration_CreateProgramme_Error_AlreadyExists"];
             return View(programme);
         }
+
+        if (!ModelState.IsValid) return View(programme);
 
         _context.Update(programme);
         await _context.SaveChangesAsync();
@@ -89,7 +95,9 @@ public class AdministrationController : Controller
     public async Task<IActionResult> DeleteProgramme(int? id)
     {
         //Find programme
-        var p = await _context.Programmes.FirstAsync(x => x.ProgrammeId.Equals(id));
+        var p = await _context.Programmes.FindAsync(id);
+        if (id is null || p is null) return NotFound();
+        
         //Delete programme
         _context.Programmes.Remove(p);
         //Save changes
@@ -117,7 +125,9 @@ public class AdministrationController : Controller
     
     public async Task<IActionResult> EditRoles(int? id, bool error = false)
     {
-        var user = await _context.Users.FirstAsync(x => x.Id.Equals(id));
+        var user = await _context.Users.FindAsync(id);
+        if (id is null || user is null) return NotFound();
+        
         ViewData["Roles"] = new List<string> {"Student", "Teacher", "Administrator", "External"};
         
         ViewData["Student"] = await _context.UserRoles.AnyAsync(x => x.UserId.Equals(user.Id) && x.RoleId.Equals(_context.Roles.First(y=>y.Name == "Student").Id));
@@ -130,9 +140,52 @@ public class AdministrationController : Controller
         return View(user);
     }
     
-    public async Task<IActionResult> DeleteUser(int id, string searchString = "")
+    [HttpPost]
+    public async Task<IActionResult> EditRoles(int id, string roleGroup)
     {
-        var user = await _context.Users.FirstAsync(x => x.Id == id);
+        var user = await _context.Users.FindAsync(id);
+        if (user is null) return NotFound();
+        
+        var adminRole = await _context.Roles.FirstAsync(x => x.Name == Role.Administrator.ToString());
+        var userIsAdmin = await _context.UserRoles.AnyAsync(x => x.UserId == user.Id && x.RoleId == adminRole.Id);
+        
+        if (userIsAdmin && roleGroup != Role.Administrator.ToString())
+        {
+            var administratorRole = await _context.Roles.FirstAsync(x=>x.Name == Role.Administrator.ToString());
+            if (await _context.UserRoles.CountAsync(x => x.RoleId == administratorRole.Id) <= 1)
+            {
+                return await EditRoles(id, true);
+            }
+
+            //If administrator role was removed from user, remove all notifications that are specific to administrator
+            var notificationToDelete = await _context.Notifications.FirstAsync(x => x.Name == "NewExternalUser");
+            UserSubscribedNotification? ur;
+            if ((ur = await _context.UserSubscribedNotifications.FirstOrDefaultAsync(x => x.UserId == user.Id && x.NotificationId == notificationToDelete.NotificationId)) != null)
+            {
+                _context.UserSubscribedNotifications.Remove(ur);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        var role = roleGroup switch
+        {
+            "Student" => Role.Student,
+            "Teacher" => Role.Teacher,
+            "Administrator" => Role.Administrator,
+            "External" => Role.External,
+            _ => throw new Exception()
+        };
+        
+        await RoleHelper.AssignRoles(user, role, _context);
+        
+        return RedirectToAction(nameof(Users));
+    }
+    
+    public async Task<IActionResult> DeleteUser(int? id, string searchString = "")
+    {
+        var user = await _context.Users.FindAsync(id);
+        if (id is null || user is null) return NotFound();
+        
         var admin = await _context.Users.FirstAsync(x => x.UserRoles.Any(y => y.Role.Name == "Administrator"));
         foreach (var topic in user.CreatedTopics)
         {
@@ -174,54 +227,16 @@ public class AdministrationController : Controller
 
         return RedirectToAction(nameof(Users), new {searchString});
     }
-
-    [HttpPost]
-    public async Task<IActionResult> EditRoles(int id, string roleGroup)
-    {
-        var user = await _context.Users.FirstAsync(x => x.Id.Equals(id));
-        var adminRole = await _context.Roles.FirstAsync(x => x.Name == Role.Administrator.ToString());
-        var userIsAdmin = await _context.UserRoles.AnyAsync(x => x.UserId == user.Id && x.RoleId == adminRole.Id);
-        
-        if (userIsAdmin && roleGroup != Role.Administrator.ToString())
-        {
-            var administratorRole = await _context.Roles.FirstAsync(x=>x.Name == Role.Administrator.ToString());
-            if (await _context.UserRoles.CountAsync(x => x.RoleId == administratorRole.Id) <= 1)
-            {
-                return await EditRoles(id, true);
-            }
-
-            //If administrator role was removed from user, remove all notifications that are specific to administrator
-            var notificationToDelete = await _context.Notifications.FirstAsync(x => x.Name == "NewExternalUser");
-            UserSubscribedNotification? ur;
-            if ((ur = await _context.UserSubscribedNotifications.FirstOrDefaultAsync(x => x.UserId == user.Id && x.NotificationId == notificationToDelete.NotificationId)) != null)
-            {
-                _context.UserSubscribedNotifications.Remove(ur);
-                await _context.SaveChangesAsync();
-            }
-        }
-
-        var role = roleGroup switch
-        {
-            "Student" => Role.Student,
-            "Teacher" => Role.Teacher,
-            "Administrator" => Role.Administrator,
-            "External" => Role.External,
-            _ => throw new Exception()
-        };
-        
-        await RoleHelper.AssignRoles(user, role, _context);
-        
-        return RedirectToAction(nameof(Users));
-    }
-
+    
     public async Task<IActionResult> Notifications()
     {
         return View(await _context.Notifications.ToListAsync());
     }
 
-    public async Task<IActionResult> EditNotification(int id)
+    public async Task<IActionResult> EditNotification(int? id)
     {
-        var not = await _context.Notifications.FirstAsync(x => x.NotificationId == id);
+        var not = await _context.Notifications.FindAsync(id);
+        if (id is null || not is null) return NotFound();
 
         return View(not);
     }
@@ -229,8 +244,9 @@ public class AdministrationController : Controller
     [HttpPost]
     public async Task<IActionResult> EditNotification([Bind("Name,Subject,SubjectEng,Text,TextEng,NotificationId")]Notification notification)
     {
+        //Ensure that there is no other notification with the same name, and prevent user from changing name to one that already exists
         if (await _context.Notifications.AnyAsync(x =>
-                x.NotificationId != notification.NotificationId && x.Name == notification.Name))
+                (x.NotificationId != notification.NotificationId && x.Name == notification.Name) || (x.NotificationId == notification.NotificationId && x.Name != notification.Name)))
         {
             return RedirectToAction(nameof(EditNotification), new {notification.NotificationId});
         }
@@ -239,6 +255,12 @@ public class AdministrationController : Controller
             notification.SubjectEng = notification.Subject;
         if (string.IsNullOrEmpty(notification.Text))
             notification.TextEng = notification.Text;
+        
+        ModelState.Clear();
+        if (!TryValidateModel(notification))
+        {
+            return View(notification);
+        }
         
         _context.Notifications.Update(notification);
         await _context.SaveChangesAsync();
