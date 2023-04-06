@@ -425,7 +425,6 @@ namespace TOS.Controllers
         [Authorize(Roles = "Topic,AnyTopic,ProposeTopic")]
         public async Task<IActionResult> Delete(int? id)
         {
-            //TODO delete files
             var topic = await _context.Topics.FindAsync(id);
             if (id is null || topic is null) return NotFound();
             
@@ -442,6 +441,14 @@ namespace TOS.Controllers
             if (!canEdit)
                 return Forbid();
             
+           
+            foreach (var at in topic.Attachments)
+            {
+                await DeleteAttachment(at);
+            }
+            _context.Comments.RemoveRange(topic.Comments);
+            _context.UserInterestedTopics.RemoveRange(topic.UserInterestedTopics);
+            _context.TopicRecommendedProgrammes.RemoveRange(topic.TopicRecommendedPrograms);
             _context.Topics.Remove(topic);
             await _context.SaveChangesAsync();
 
@@ -480,27 +487,34 @@ namespace TOS.Controllers
 
             return Json(true);
         }
-        
-        [Authorize(Roles = "Attachment")]
-        public async Task<JsonResult> DeleteAttachment(int? id)
-        {
-            var attachment = await _context.Attachments.FindAsync(id);
-            if (id is null || attachment is null) return Json(false);
-            var topicId = attachment.TopicId;
 
-            //Delete the file from server
-            var a = await _context.Attachments.FirstAsync(x => x.AttachmentId.Equals(id));
-            var file = new FileInfo(Path.Combine(_env.WebRootPath, "files", topicId.ToString(), a.Name));
+        [Authorize(Roles = "Attachment")]
+        private async Task<JsonResult> DeleteAttachment(Attachment? attachment)
+        {
+            if(attachment is null) return Json(false);
+            
+            var topicId = attachment.TopicId;
+            
+            var file = new FileInfo(Path.Combine(_env.WebRootPath, "files", topicId.ToString(), attachment.Name));
             if (file.Exists)
             {
                 file.Delete();
             }
 
             //Update database
-            _context.Attachments.Remove(_context.Attachments.First(x => x.AttachmentId.Equals(id)));
+            _context.Attachments.Remove(attachment);
             await _context.SaveChangesAsync();
 
             return Json(true);
+        }
+        
+        [Authorize(Roles = "Attachment")]
+        public async Task<JsonResult> DeleteAttachment(int? id)
+        {
+            var attachment = await _context.Attachments.FindAsync(id);
+            if (id is null || attachment is null) return Json(false);
+            
+            return await DeleteAttachment(attachment);
         }
         
         [Authorize(Roles = "Comment,AnyComment")]
