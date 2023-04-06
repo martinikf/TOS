@@ -451,10 +451,7 @@ namespace TOS.Controllers
         [Authorize(Roles = "InterestTopic")]
         public async Task<JsonResult> Interest(int? topicId)
         {
-            //Current user
             var user = await GetUser();
-
-            //Topic
             var topic = await _context.Topics
                 .Include(x=>x.Supervisor)
                 .Include(x=>x.Creator)
@@ -463,11 +460,10 @@ namespace TOS.Controllers
 
             if (topicId is null || topic is null) return Json(false);
             
-            if (await _context.UserInterestedTopics.AnyAsync(x => x.UserId.Equals(user.Id) && x.TopicId.Equals(topic.TopicId)))
+            var interested = topic.UserInterestedTopics.FirstOrDefault(x=>x.UserId.Equals(user.Id));
+            if (interested != null)
             {
-                _context.UserInterestedTopics
-                    .Remove(await _context.UserInterestedTopics
-                        .FirstAsync(x => x.UserId.Equals(user.Id) && x.TopicId.Equals(topic.TopicId)));
+                _context.UserInterestedTopics.Remove(interested);
             }
             else
             {
@@ -479,8 +475,7 @@ namespace TOS.Controllers
                 });
             }
             await _context.SaveChangesAsync();
-
-            //TODO remove await?
+            
             await _notificationManager.NewInterest(topic, user, CallbackDetailsUrl(topic.TopicId));
 
             return Json(true);
