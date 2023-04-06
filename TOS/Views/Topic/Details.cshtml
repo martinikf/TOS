@@ -166,7 +166,7 @@
                             <a href="javascript:;" class="ReplyButton text-decoration-none link-secondary" onclick="ReplyButtonClick('@comment.CommentId')">
                                     @SharedLocalizer["Comment_Reply"]
                                 </a>
-                                @if (Html.CanDeleteComment(comment, User.Identity?.Name, User.IsInRole("Comment"), User.IsInRole("AnyComment")))
+                                @if (comment.Text != "" && Html.CanDeleteComment(comment, User.Identity?.Name, User.IsInRole("Comment"), User.IsInRole("AnyComment")))
                                 {
                                     <div class="position-absolute top-0 end-0">
                                         <a href="#" class="text-decoration-none link-secondary pe-2" data-bs-toggle="modal" data-bs-target="#DeleteConfirmation@(comment.CommentId)">

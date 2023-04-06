@@ -18,19 +18,20 @@ public static class CommentHelper
             comment.Author = newAuthor;
             comment.AuthorId = newAuthor.Id;
             context.Comments.Update(comment);
+            
+            await context.SaveChangesAsync();
         }
         else
         {
             context.Comments.Remove(comment);
-        }
+            await context.SaveChangesAsync();
             
-        await context.SaveChangesAsync();
-            
-        if (parent != null && parent.Text == "")
-        {
-            return await DeleteComment(parent, newAuthor, context);
+            if (parent != null && parent.Text == "")
+            {
+                return await DeleteComment(parent, newAuthor, context);
+            }
         }
-
+        
         return true;
     }
 }
