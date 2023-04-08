@@ -95,6 +95,7 @@ public class NotificationManager : INotificationManager
         if(topic.Supervisor != null)
             users.Add(topic.Supervisor);
         users.Add(topic.Creator);
+        users.Remove(user);
 
         SendNotification(users, topic, notification, null, callbackUrl);
     }
