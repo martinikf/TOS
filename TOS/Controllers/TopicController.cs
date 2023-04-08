@@ -366,6 +366,9 @@ namespace TOS.Controllers
                 if (!IsValid()) return false;
                 _context.Add(topic);
                 await _context.SaveChangesAsync();
+                
+                if(topic.AssignedId != null)
+                    await _notificationManager.TopicAssigned(topic, user, CallbackDetailsUrl(topic.TopicId));
             }
             else
             {
