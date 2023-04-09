@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -34,10 +35,12 @@ namespace TOS.Controllers
                 groups = groups.Where(x =>
                     x.Name.ToLower().Contains(searchString) || x.NameEng.ToLower().Contains(searchString));
             }
-
-            //Highlight used groups
+            
             var user = _context.Users.FirstOrDefault(x => User.Identity != null && x.UserName == User.Identity.Name);
-            var allGroups = await groups.ToListAsync();
+            var allGroups = CultureInfo.CurrentCulture.Name.Contains("cz") ? 
+                await groups.OrderBy(x => x.Name.ToLower()).ToListAsync() : 
+                await groups.OrderBy(x => x.NameEng.ToLower()).ToListAsync();
+            
             if (user is not null)
             {
                 foreach (var group in allGroups

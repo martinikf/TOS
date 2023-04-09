@@ -636,7 +636,7 @@
         <value>Notifikace: Nový komentář</value>
     </data>
     <data name="Group_Index_HighlightGroups" xml:space="preserve">
-        <value>Použivané skupiny</value>
+        <value>Používané skupiny</value>
     </data>
     <data name="Topic_Propose_Heading" xml:space="preserve">
         <value>Navrhnout téma</value>
