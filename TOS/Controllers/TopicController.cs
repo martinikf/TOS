@@ -178,7 +178,7 @@ namespace TOS.Controllers
             return Forbid();
         }
 
-        [Authorize(Roles = "Topic,AnyTopic")]
+        [Authorize(Roles = "Topic,AnyTopic,Group,AnyGroup")]
         public async Task<IActionResult> Create(string groupName = "Unassigned", TopicType type = TopicType.Thesis)
         {
             var groupProvided = await GetGroup(groupName);
@@ -213,9 +213,18 @@ namespace TOS.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Topic,AnyTopic")]
+        [Authorize(Roles = "Topic,AnyTopic,Group,AnyGroup")]
         public async Task<IActionResult> Create([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,Visible,CreatorId,SupervisorId,AssignedId,GroupId,Type")] Topic topic, int[] programmes, List<IFormFile> files)
         {
+            if (User.IsInRole("Group") && (!User.IsInRole("Topic") || !User.IsInRole("AnyTopic") || !User.IsInRole("AnyGroup")))
+            {
+                var user = await GetUser();
+                if (!user.CreatedGroups.Any(x => x.GroupId == topic.GroupId))
+                {
+                    return Forbid();
+                }
+            }
+            
             if (await TopicChange(topic, programmes, files, true))
             {
                 return RedirectToAction(nameof(Details), new {id = topic.TopicId});
@@ -282,7 +291,7 @@ namespace TOS.Controllers
             return RedirectToAction(nameof(Details), new {id = topic.TopicId});
         }
         
-        [Authorize(Roles = "Topic,AnyTopic,ProposeTopic")]
+        [Authorize(Roles = "Topic,AnyTopic,ProposeTopic,Group,AnyGroup")]
         public async Task<IActionResult> Edit(int? id)
         {
             var topic = await _context.Topics.FindAsync(id);
@@ -331,7 +340,7 @@ namespace TOS.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Topic,AnyTopic,ProposeTopic")]
+        [Authorize(Roles = "Topic,AnyTopic,ProposeTopic,Group,AnyGroup")]
         public async Task<IActionResult> Edit([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,Visible,CreatorId,SupervisorId,AssignedId,GroupId,Type,Proposed")] Topic topic, int[] programmes, List<IFormFile> files, int oldAssigned)
         {
             var user = await GetUser();
@@ -341,8 +350,12 @@ namespace TOS.Controllers
             //User can edit topics he created or supervise
             if (User.IsInRole("Topic") && (topic.CreatorId == user.Id || topic.SupervisorId == user.Id || topic.Proposed || topic.SupervisorId == null))
                 canEdit = true;
-            if(User.IsInRole("ProposeTopic") && topic.Proposed && topic.CreatorId == user.Id)
+            else if(User.IsInRole("ProposeTopic") && topic.Proposed && topic.CreatorId == user.Id)
                 canEdit = true;
+            else if (User.IsInRole("Group") && (!User.IsInRole("Topic") || !User.IsInRole("AnyTopic") || !User.IsInRole("AnyGroup")))
+                if (user.CreatedGroups.Any(x => x.GroupId == topic.GroupId))
+                    canEdit = true;
+            
             if (!canEdit)
                 return Forbid();
 

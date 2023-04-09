@@ -14,7 +14,7 @@
     {
         <a class="btn btn-primary" asp-controller="Group" asp-action="Edit" asp-route-id="@Model.Group.GroupId">@SharedLocalizer["Topic_Group_Edit"]</a>
     }
-    @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
+    @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic") || (User.IsInRole("Group") && User.Identity!.Name == Model.Group.Creator.UserName) || User.IsInRole("AnyGroup"))
     {
         <a class="btn btn-primary" asp-action="Create" asp-route-groupName="@Model.Group.NameEng" asp-route-type="Homework">@SharedLocalizer["Topic_Group_CreateHomework"]</a>
         <a class="btn btn-primary" asp-action="Create" asp-route-groupName="@Model.Group.NameEng" asp-route-type="Project">@SharedLocalizer["Topic_Group_CreateProject"]</a>
