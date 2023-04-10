@@ -487,6 +487,7 @@ namespace TOS.Controllers
             if (interested != null)
             {
                 _context.UserInterestedTopics.Remove(interested);
+                await _context.SaveChangesAsync();
             }
             else
             {
@@ -496,10 +497,9 @@ namespace TOS.Controllers
                     Topic = topic,
                     DateTime = DateTime.Now
                 });
+                await _context.SaveChangesAsync();
+                await _notificationManager.NewInterest(topic, user, CallbackDetailsUrl(topic.TopicId));
             }
-            await _context.SaveChangesAsync();
-            
-            await _notificationManager.NewInterest(topic, user, CallbackDetailsUrl(topic.TopicId));
 
             return Json(true);
         }
