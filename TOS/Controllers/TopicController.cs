@@ -282,6 +282,8 @@ namespace TOS.Controllers
             topic.Visible = false;
             topic.Proposed = true;
 
+            if(!IsValid()) return View(topic);
+                
             _context.Add(topic);
             await _context.SaveChangesAsync();
 
@@ -441,7 +443,11 @@ namespace TOS.Controllers
         [Authorize(Roles = "Topic,AnyTopic,ProposeTopic")]
         public async Task<IActionResult> Delete(int? id)
         {
-            var topic = await _context.Topics.FindAsync(id);
+            var topic = await _context.Topics.Include(x=>x.Attachments)
+                .Include(x=>x.Comments)
+                .Include(x=>x.UserInterestedTopics).Include(x=>x.TopicRecommendedPrograms)
+                .FirstOrDefaultAsync(x=>x.TopicId == id);
+            
             if (id is null || topic is null) return NotFound();
             
             var group = topic.Group;
