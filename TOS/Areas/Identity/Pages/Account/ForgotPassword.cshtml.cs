@@ -2,12 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -37,8 +34,8 @@ namespace TOS.Areas.Identity.Pages.Account
         
         public class InputModel
         {
-            [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_EmailRequired")]
-            [EmailAddress(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_EmailInvalid")]
+            [Required(ErrorMessageResourceType = typeof(ValidationErrorResource), ErrorMessageResourceName = "ERROR_EmailRequired")]
+            [EmailAddress(ErrorMessageResourceType = typeof(ValidationErrorResource), ErrorMessageResourceName = "ERROR_EmailInvalid")]
             public string Email { get; set; }
         }
 
@@ -71,7 +68,7 @@ namespace TOS.Areas.Identity.Pages.Account
                 await _emailSender.SendEmailAsync(
                     Input.Email,
                     _localizer["ForgotPassword_Email_Subject"],
-                    _localizer["ForgotPassword_Email_Body"] + $" <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>" + _localizer["ForgotPassword_Email_Link"] + "</a>.");
+                    _localizer["ForgotPassword_Email_Body"] + $" <a href='{HtmlEncoder.Default.Encode(callbackUrl ?? string.Empty)}'>" + _localizer["ForgotPassword_Email_Link"] + "</a>.");
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }

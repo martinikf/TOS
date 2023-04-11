@@ -2,11 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -49,7 +47,7 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
         
         public class InputModel
         {
-            [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_EmailRequired")]
+            [Required(ErrorMessageResourceType = typeof(ValidationErrorResource), ErrorMessageResourceName = "ERROR_EmailRequired")]
             [EmailAddress]
             public string NewEmail { get; set; }
         }
@@ -107,11 +105,11 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
                 var callbackUrl = Url.Page(
                     "/Account/ConfirmEmailChange",
                     pageHandler: null,
-                    values: new { area = "Identity", userId = userId, email = Input.NewEmail, code = code },
+                    values: new { area = "Identity", userId, email = Input.NewEmail, code },
                     protocol: Request.Scheme);
                 await _emailSender.SendEmailAsync(Input.NewEmail, _localizer["Confirmation_Email_Subject"].Value,
                     _localizer["Confirmation_Email_Body"].Value +
-                    $" <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>" +
+                    $" <a href='{HtmlEncoder.Default.Encode(callbackUrl ?? string.Empty)}'>" +
                     _localizer["Confirmation_Email_Link"] + "</a>.");
 
                 StatusMessage = _localizer["Confirmation_Email_Sent"];
@@ -137,25 +135,20 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
             }
 
             var userId = await _userManager.GetUserIdAsync(user);
-            var email = await _userManager.GetEmailAsync(user);
+            //var email = await _userManager.GetEmailAsync(user);
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             var callbackUrl = Url.Page(
                 "/Account/ConfirmEmail",
                 pageHandler: null,
-                values: new { area = "Identity", userId = userId, code = code },
+                values: new { area = "Identity", userId, code },
                 protocol: Request.Scheme);
-            try
-            {
-                await _emailSender.SendEmailAsync(Input.NewEmail, _localizer["Confirmation_Email_Subject"].Value,
-                    _localizer["Confirmation_Email_Body"].Value +
-                    $" <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>" +
-                    _localizer["Confirmation_Email_Link"] + "</a>.");
-            }
-            catch
-            {
-                Console.WriteLine("Error sending email");
-            }
+        
+            await _emailSender.SendEmailAsync(Input.NewEmail, _localizer["Confirmation_Email_Subject"].Value,
+                _localizer["Confirmation_Email_Body"].Value +
+                $" <a href='{HtmlEncoder.Default.Encode(callbackUrl ?? string.Empty)}'>" +
+                _localizer["Confirmation_Email_Link"] + "</a>.");
+
 
             StatusMessage = _localizer["Confirmation_Email_Sent"];
             return RedirectToPage();

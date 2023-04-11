@@ -46,10 +46,10 @@ namespace TOS.Areas.Identity.Pages.Account
         
         public class InputModel
         {
-            [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_LoginRequired")]
+            [Required(ErrorMessageResourceType = typeof(ValidationErrorResource), ErrorMessageResourceName = "ERROR_LoginRequired")]
             public string Username { get; set; }
             
-            [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_PasswordRequired")]
+            [Required(ErrorMessageResourceType = typeof(ValidationErrorResource), ErrorMessageResourceName = "ERROR_PasswordRequired")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
             

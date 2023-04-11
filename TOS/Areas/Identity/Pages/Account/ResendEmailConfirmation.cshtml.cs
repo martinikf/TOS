@@ -2,11 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -38,7 +36,7 @@ namespace TOS.Areas.Identity.Pages.Account
         
         public class InputModel
         {
-            [Required(ErrorMessageResourceType = typeof(Resources.ValidationErrorResource), ErrorMessageResourceName = "ERROR_EmailRequired")]
+            [Required(ErrorMessageResourceType = typeof(ValidationErrorResource), ErrorMessageResourceName = "ERROR_EmailRequired")]
             [EmailAddress]
             public string Email { get; set; }
         }
@@ -66,11 +64,11 @@ namespace TOS.Areas.Identity.Pages.Account
             var callbackUrl = Url.Page(
                 "/Account/ConfirmEmail",
                 pageHandler: null,
-                values: new { userId = userId, code = code },
+                values: new { userId, code },
                 protocol: Request.Scheme);
             await _emailSender.SendEmailAsync(Input.Email, _sharedLocalizer["Confirmation_Email_Subject"].Value,
                 _sharedLocalizer["Confirmation_Email_Body"].Value +
-                $" <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>" +
+                $" <a href='{HtmlEncoder.Default.Encode(callbackUrl ?? string.Empty)}'>" +
                 _sharedLocalizer["Confirmation_Email_Link"] + "</a>.");
             
             return Page();

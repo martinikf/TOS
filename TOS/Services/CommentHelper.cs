@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TOS.Data;
+﻿using TOS.Data;
 using TOS.Models;
 
 namespace TOS.Services;
@@ -8,7 +7,6 @@ public static class CommentHelper
 {
     public static async Task<bool> DeleteComment(Comment comment, ApplicationUser newAuthor, ApplicationDbContext context)
     {
-        var topicId = comment.TopicId;
         var parent = comment.ParentComment;
             
         if (comment.Replies.Count > 0)

@@ -4,7 +4,6 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -118,18 +117,12 @@ namespace TOS.Areas.Identity.Pages.Account
                 if (callbackUrl == null)
                     throw new NullReferenceException("Call back URL is null");
 
-                try
-                {
-                    await _emailSender.SendEmailAsync(Input.Email, _sharedLocalizer["Confirmation_Email_Subject"].Value,
-                        _sharedLocalizer["Confirmation_Email_Body"].Value +
-                        $" <a href='{callbackUrl}'>" +
-                        _sharedLocalizer["Confirmation_Email_Link"].Value + "</a>.");
-                }
-                catch
-                {
-                    Console.WriteLine("Email sending failed");
-                }
-                
+             
+                await _emailSender.SendEmailAsync(Input.Email, _sharedLocalizer["Confirmation_Email_Subject"].Value,
+                    _sharedLocalizer["Confirmation_Email_Body"].Value +
+                    $" <a href='{callbackUrl}'>" +
+                    _sharedLocalizer["Confirmation_Email_Link"].Value + "</a>.");
+
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return LocalRedirect(returnUrl);
             }
