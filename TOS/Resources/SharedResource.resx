@@ -513,7 +513,7 @@
         <value>Odeslat</value>
     </data>
     <data name="ForgotPassword_Confirmation" xml:space="preserve">
-        <value>Na Vaši emailovou adresu byl zaslán email pro restratování hesla.</value>
+        <value>Na Vaši emailovou adresu byl zaslán email pro obnovení hesla.</value>
     </data>
     <data name="Confirmation_Email_Subject" xml:space="preserve">
         <value>Potvrzení emailu</value>
@@ -660,7 +660,7 @@
         <value>Upozornění</value>
     </data>
     <data name="Group_Edit_Delete_Body" xml:space="preserve">
-        <value>Opravdu chcete smazat tuto skupinu? Smažete tím i všechny témata, které obashuje.</value>
+        <value>Opravdu chcete smazat tuto skupinu? Smažete tím i všechny témata, které obsahuje.</value>
     </data>
     <data name="Group_Edit_Delete_Cancel" xml:space="preserve">
         <value>Zrušit</value>
