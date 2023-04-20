@@ -45,12 +45,12 @@ public static class Seed
         CreateGroup("Bakalářská", "Bachelor", adminUser, true, true, ctx);
         CreateGroup("Diplomová", "Master", adminUser, true, true, ctx);
         
-        CreateNotification("TopicEdit", "Změna tématu", "Topic Change", "Téma bylo změněno.", "Topic was edited.", ctx);
-        CreateNotification("TopicAssigned-Student", "Téma bylo přiřazeno Vám", "Topic was assigned to You", "Téma ... bylo přiřazeno vám.", "Topic ... was assigned to you.", ctx);
-        CreateNotification("TopicAssigned-Others", "Téma bylo přiřazeno", "Topic was assigned", "Téma bylo přiřazeno někomu jinému.", "Topic ... was assigned to someone else.", ctx);
-        CreateNotification("TopicAdopted", "Téma bylo přijato", "Topic was accepted", "Vaše navrhnuté téma bylo přijato.", "Your proposed topic was accepted.", ctx);
-        CreateNotification("CommentNew", "Nový komentář", "New comment", "Nový komentář u téma ... - [COMMENT_TEXT]", "New comment ... [COMMENT_TEXT]", ctx);
-        CreateNotification("NewInterest", "Někdo projevil zájem", "Someone is interested", "Někdo projevil zájem o téma ...", "Some is interested in topic ... ", ctx);
+        CreateNotification("TopicEdit", "Změna tématu", "Topic Change", "Téma, [TOPIC_NAME], bylo změněno.", "Topic, [TOPIC_NAME_ENG], was edited.", ctx);
+        CreateNotification("TopicAssigned-Student", "Téma bylo přiřazeno Vám", "Topic was assigned to You", "Téma, [TOPIC_NAME], bylo přiřazeno Vám.", "Topic, [TOPIC_NAME_ENG], was assigned to You.", ctx);
+        CreateNotification("TopicAssigned-Others", "Téma bylo přiřazeno", "Topic was assigned", "Téma bylo přiřazeno někomu jinému.", "Topic, [TOPIC_NAME_ENG], was assigned to someone else.", ctx);
+        CreateNotification("TopicAdopted", "Téma bylo přijato", "Topic was accepted", "Vaše navrhnuté téma bylo přijato.", "Your proposed topic, [TOPIC_NAME_ENG], was accepted.", ctx);
+        CreateNotification("CommentNew", "Nový komentář", "New comment", "Nový komentář u tématu, [TOPIC_NAME], - [COMMENT_TEXT]", "New comment, [TOPIC_NAME_ENG], - [COMMENT_TEXT]", ctx);
+        CreateNotification("NewInterest", "Někdo projevil zájem", "Someone is interested", "Někdo projevil zájem o téma, [TOPIC_NAME].", "Some is interested in topic, [TOPIC_NAME_ENG].", ctx);
         CreateNotification("NewExternalUser", "Nová registrace", "New registration", "Právě se někdo zaregistroval.", "Someone has just registered.", ctx);
     }
 
@@ -127,8 +127,8 @@ public static class Seed
 
         var groups = new List<Group>()
         {
-            ctx.Groups.First(x=>x.NameEng!.Equals("Bachelor")),
-            ctx.Groups.First(x=>x.NameEng!.Equals("Master"))
+            ctx.Groups.First(x=>x.NameEng.Equals("Bachelor")),
+            ctx.Groups.First(x=>x.NameEng.Equals("Master"))
         };
         
         List<Topic> theses = new();
