@@ -9,6 +9,18 @@
 
 <h1>@SharedLocalizer["Topic_Propose_Heading_" + ViewData["TopicType"]]</h1>
 
+
+<p>
+    @if (User.IsInRole("External"))
+    {
+        @SharedLocalizer["Propose_Tutorial_External"]
+    }
+    else
+    {
+        @SharedLocalizer["Propose_Tutorial_Student"]
+    }
+</p>
+
 <form asp-action="Propose" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="hidden" asp-for="Type" value="@ViewData["TopicType"]"/>

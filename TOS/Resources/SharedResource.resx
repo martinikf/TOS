@@ -237,7 +237,7 @@
         <value>Diplomové</value>
     </data>
     <data name="Topics_Unassigned" xml:space="preserve">
-        <value>Navrhnuté externisty</value>
+        <value>Navrhnuté</value>
     </data>
     <data name="Administration_EditProgramme_DeleteProgramme" xml:space="preserve">
         <value>Smazat program</value>
@@ -357,7 +357,7 @@
         <value>Diskuze</value>
     </data>
     <data name="Topic_Index_Heading_Unassigned" xml:space="preserve">
-        <value>Návrhy závěrečných prací od externistů</value>
+        <value>Návrhy všech závěrečných prací</value>
     </data>
     <data name="Topic_Details_InterestedStudents" xml:space="preserve">
         <value>Zájem</value>
@@ -922,5 +922,29 @@
     </data>
     <data name="Manage_Notification_NewInterest_Tooltip" xml:space="preserve">
         <value>Tato notifikace se zašle, pokud někdo projeví zájem o téma, ke kterému máte nějaký vztah. (Autor, Vedoucí, Student, Zájem)</value>
+    </data>
+    <data name="Propose_Tutorial_Student" xml:space="preserve">
+        <value>Po navrhnutí tématu nebude téma veřejně zobrazeno. Nejdříve jej musí potvrdit a případně i upravit jakýkoliv vyučující. Téma můžete upravovat pouze do doby jeho prvního posouzení vyučujícím.
+            Pokud bude téma přijato bude viditelné v příslušné skupině témat a bude označeno jako "Studentská práce".</value>
+    </data>
+    <data name="Propose_Tutorial_External" xml:space="preserve">
+        <value>Při vytváření můžete navrhnout zda závěrečná práce bude bakalářská (3 semestry), či diplomová (4 semestry). Tento návrh je pouze orientační a až při posouzení tématu vyučujícím bude potvrzen.
+            Téma po vytvoření nebude veřejně přístupné, nejdříve jej musí potvrdit a případně i upravit jakýkoliv vyučující. Téma můžete upravovat pouze do doby jeho prvního posouzení vyučujícím.
+            Pokud téma bude přijato bude viditelné v příslušné skupině témat a bude uvedeno jako "Externí práce".</value>
+    </data>
+    <data name="Proposed_External" xml:space="preserve">
+        <value>Návrhy externistů</value>
+    </data>
+    <data name="Proposed_Student" xml:space="preserve">
+        <value>Návrhy studentů</value>
+    </data>
+    <data name="Bachelor topic" xml:space="preserve">
+        <value>Bakalářská</value>
+    </data>
+    <data name="Master topic" xml:space="preserve">
+        <value>Diplomová</value>
+    </data>
+    <data name="Unassigned topic" xml:space="preserve">
+        <value>Nezařazená</value>
     </data>
 </root>

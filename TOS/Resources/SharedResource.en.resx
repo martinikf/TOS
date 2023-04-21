@@ -244,7 +244,7 @@
         <value>Master</value>
     </data>
     <data name="Topics_Unassigned" xml:space="preserve">
-        <value>Proposed by externists</value>
+        <value>Proposed</value>
     </data>
     <data name="Administration_EditProgramme_DeleteProgramme" xml:space="preserve">
         <value>Delete programme</value>
@@ -364,7 +364,7 @@
         <value>Discussion</value>
     </data>
     <data name="Topic_Index_Heading_Unassigned" xml:space="preserve">
-        <value>Proposed thesis by externists</value>
+        <value>Proposed theses</value>
     </data>
     <data name="Topic_Details_InterestedStudents" xml:space="preserve">
         <value>Interested</value>
@@ -926,5 +926,20 @@
     </data>
     <data name="Manage_Notification_TopicEdit_Tooltip" xml:space="preserve">
         <value>This notification will be sent when you change a topic to which you have a relation. (Author, Supervisor, Student, Interest)</value>
+    </data>
+    <data name="Proposed_External" xml:space="preserve">
+        <value>Proposed by externists</value>
+    </data>
+    <data name="Proposed_Student" xml:space="preserve">
+        <value>Proposed by students</value>
+    </data>
+    <data name="Bachelor topic" xml:space="preserve">
+        <value>Bachelor</value>
+    </data>
+    <data name="Master topic" xml:space="preserve">
+        <value>Master</value>
+    </data>
+    <data name="Unassigned topic" xml:space="preserve">
+        <value>Unassigned</value>
     </data>
 </root>
