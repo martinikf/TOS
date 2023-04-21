@@ -11,9 +11,9 @@
 
 <article>
     <header>
-        <span class="text-secondary">
+        <a class="text-secondary text-decoration-none" asp-action="Topics" asp-route-groupId="@Model.Group.GroupId">
             @Html.SelectStringByLanguage(Model.Group.NameEng, Model.Group.Name) - @SharedLocalizer[Model.Type.ToString()]
-        </span>
+        </a>
 
         <div class="d-flex">
             <h1 class="h2">@Html.SelectStringByLanguage(Model.NameEng, Model.Name)</h1>
@@ -44,63 +44,66 @@
             <h2 class="h5">@Model.Supervisor.GetDisplayName() (@Model.Supervisor.Email)</h2>
         }
         <p>
-            @if (Model.AssignedId != null && (User.IsInRole("Topic") || User.IsInRole("AnyTopic")))
+            @if (Model.AssignedId != null && User.Identity!.IsAuthenticated)
             {
                 <span>@SharedLocalizer["Topic_Details_AssignedStudent"] - @Model.AssignedStudent!.GetDisplayName() (@Model.AssignedStudent.Email)</span> <br/>
             }
-            @if ((Model.Proposed || Model.Creator.UserRoles.Any(x => x.Role.Name!.Equals("External"))) && (User.IsInRole("Topic") || User.IsInRole("AnyTopic")))
+            @if (Model.Proposed || Model.Creator.UserRoles.Any(x => x.Role.Name!.Equals("External") || x.Role.Name!.Equals("Student")) && User.Identity!.IsAuthenticated)
             {
                 <span>@SharedLocalizer["Topic_Details_ProposedBy"] - @Model.Creator.GetDisplayName() (@Model.Creator.Email)</span>
             }
         </p>
 
-        <!-- Badges -->
-        <div class="d-flex flex-wrap mb-3 gap-2">
-            @if (Model.Visible == false)
-            {
-                <span class="badge bg-danger p-2">@SharedLocalizer["Hidden topic"]</span>
-            }
-            @if (Model.AssignedId == null)
-            {
-                <span class="badge bg-success p-2">@SharedLocalizer["Free topic"]</span>
-            }
-            else
-            {
-                if (Model.AssignedStudent?.UserName == User.Identity!.Name)
+        <!-- Badges, do not show for homeworks-->
+        @if (Model.Type != TopicType.Homework)
+        {
+            <div class="d-flex flex-wrap mb-3 gap-2">
+                @if (Model.Visible == false)
                 {
-                    <span class="badge bg-success p-2">@SharedLocalizer["Your topic"]</span>
+                    <span class="badge bg-danger p-2">@SharedLocalizer["Hidden topic"]</span>
+                }
+                @if (Model.AssignedId == null)
+                {
+                    <span class="badge bg-success p-2">@SharedLocalizer["Free topic"]</span>
                 }
                 else
                 {
-                    <span class="badge bg-danger p-2">@SharedLocalizer["Taken topic"]</span>
+                    if (Model.AssignedStudent?.UserName == User.Identity!.Name)
+                    {
+                        <span class="badge bg-success p-2">@SharedLocalizer["Your topic"]</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger p-2">@SharedLocalizer["Taken topic"]</span>
+                    }
                 }
-            }
-            @if (Model.Creator.UserRoles.Any(x => x.Role.Name!.Equals("External")))
-            {
-                <span class="badge bg-success p-2">@SharedLocalizer["External topic"]</span>
-            }
-            else if (Model.Creator.UserRoles.Any(x => x.Role.Name!.Equals("Student")))
-            {
-                <span class="badge bg-success p-2">@SharedLocalizer["Student topic"]</span>
-            }
-            @if (Model.Proposed)
-            {
-                <span class="badge bg-success p-2">@SharedLocalizer["Proposed topic"]</span>
-            }
-            @foreach (var programme in Model.TopicRecommendedPrograms.Select(x => x.Programme).Where(x=>x.Active))
-            {
-                <span class="badge bg-secondary p-2">@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</span>
-            }
-            @if (User.Identity!.IsAuthenticated && Model.Type != TopicType.Homework)
-            {
-                <div style="cursor: pointer;" class="badge bg-secondary p-2 ms-auto" data-bs-toggle="popover" data-bs-html="true" data-bs-placement="bottom" data-bs-title="@SharedLocalizer["Topic_Details_Interested_Heading"]"
-                      data-bs-content="
+                @if (Model.Creator.UserRoles.Any(x => x.Role.Name!.Equals("External")))
+                {
+                    <span class="badge bg-success p-2">@SharedLocalizer["External topic"]</span>
+                }
+                else if (Model.Creator.UserRoles.Any(x => x.Role.Name!.Equals("Student")))
+                {
+                    <span class="badge bg-success p-2">@SharedLocalizer["Student topic"]</span>
+                }
+                @if (Model.Proposed)
+                {
+                    <span class="badge bg-success p-2">@SharedLocalizer["Proposed topic"]</span>
+                }
+                @foreach (var programme in Model.TopicRecommendedPrograms.Select(x => x.Programme).Where(x => x.Active))
+                {
+                    <span class="badge bg-secondary p-2">@Html.SelectStringByLanguage(programme.NameEng, programme.Name)</span>
+                }
+                @if (User.Identity!.IsAuthenticated)
+                {
+                    <div style="cursor: pointer;" class="badge bg-secondary p-2 ms-auto" data-bs-toggle="popover" data-bs-html="true" data-bs-placement="bottom" data-bs-title="@SharedLocalizer["Topic_Details_Interested_Heading"]"
+                         data-bs-content="
                     @{ var sb = new StringBuilder(); sb.Append("<ul class=\"list-group list-group-flush\">");foreach (var user in Model.UserInterestedTopics.OrderBy(x => x.DateTime).Select(x => x.User)) { sb.Append("<li class=\"list-group-item\">" + user.Email + "</li>"); } sb.Append("</ul>"); }
                     @sb.ToString()">
-                    @SharedLocalizer["Topic_Details_InterestedStudents"]: @Model.UserInterestedTopics.Count
-                </div>
-            }
-        </div>
+                        @SharedLocalizer["Topic_Details_InterestedStudents"]: @Model.UserInterestedTopics.Count
+                    </div>
+                }
+            </div>
+        }
         <hr/>
     </header>
     

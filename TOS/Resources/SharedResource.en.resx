@@ -46,7 +46,7 @@
         <value>Taken</value>
     </data>
     <data name="Free topic" xml:space="preserve">
-        <value>Available topic</value>
+        <value>Available</value>
     </data>
     <data name="NavGroups" xml:space="preserve">
         <value>Groups</value>
@@ -388,7 +388,7 @@
         <value>Hidden</value>
     </data>
     <data name="Topic_Details_AssignedStudent" xml:space="preserve">
-        <value>Assigned student:</value>
+        <value>Assigned student</value>
     </data>
     <data name="Topic_Details_Supervisor" xml:space="preserve">
         <value>Supervisor</value>
