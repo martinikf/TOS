@@ -268,7 +268,7 @@
         <value>Name of group..</value>
     </data>
     <data name="Group_Index_Search_HiddenGroups" xml:space="preserve">
-        <value>Hidden groups</value>
+        <value>Include hidden groups</value>
     </data>
     <data name="Group_Index_Search_Submit" xml:space="preserve">
         <value>Search</value>
@@ -310,13 +310,13 @@
         <value>All programmes</value>
     </data>
     <data name="Topic_Index_ShowTaken" xml:space="preserve">
-        <value>Show taken</value>
+        <value>Include taken</value>
     </data>
     <data name="Topic_Index_ShowProposedOnly" xml:space="preserve">
         <value>Proposed only</value>
     </data>
     <data name="Topic_Index_ShowHidden" xml:space="preserve">
-        <value>Show hidden</value>
+        <value>Include hidden</value>
     </data>
     <data name="Topic_Index_Create" xml:space="preserve">
         <value>New thesis</value>
@@ -378,11 +378,8 @@
     <data name="Topic_MyTopics_Heading" xml:space="preserve">
         <value>My topics</value>
     </data>
-    <data name="Topic_MyTopics_ShowProposed" xml:space="preserve">
-        <value>Show proposed</value>
-    </data>
     <data name="Topic_MyTopics_ShowHidden" xml:space="preserve">
-        <value>Show hidden</value>
+        <value>Include hidden</value>
     </data>
     <data name="Hidden topic" xml:space="preserve">
         <value>Hidden</value>
@@ -550,7 +547,7 @@
         <value>Confirmation email was sent</value>
     </data>
     <data name="Topic_Index_Search_Placeholder" xml:space="preserve">
-        <value>Search string..</value>
+        <value>Search string</value>
     </data>
     <data name="Group_Index_OtherGroups" xml:space="preserve">
         <value>Other groups</value>

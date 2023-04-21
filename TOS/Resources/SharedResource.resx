@@ -261,7 +261,7 @@
         <value>Název skupiny...</value>
     </data>
     <data name="Group_Index_Search_HiddenGroups" xml:space="preserve">
-        <value>Skryté skupiny</value>
+        <value>Zahrnout skryté skupiny</value>
     </data>
     <data name="Group_Index_Search_Submit" xml:space="preserve">
         <value>Hledat</value>
@@ -303,13 +303,13 @@
         <value>Všechny programy</value>
     </data>
     <data name="Topic_Index_ShowTaken" xml:space="preserve">
-        <value>Zobrazit nedostupné</value>
+        <value>Zahrnout nedostupné</value>
     </data>
     <data name="Topic_Index_ShowProposedOnly" xml:space="preserve">
         <value>Pouze navrhnuté</value>
     </data>
     <data name="Topic_Index_ShowHidden" xml:space="preserve">
-        <value>Zobrazit skryté</value>
+        <value>Zahrnout skryté</value>
     </data>
     <data name="Topic_Index_Create" xml:space="preserve">
         <value>Nové téma</value>
@@ -371,11 +371,8 @@
     <data name="Topic_MyTopics_Heading" xml:space="preserve">
         <value>Moje témata</value>
     </data>
-    <data name="Topic_MyTopics_ShowProposed" xml:space="preserve">
-        <value>Zobrazit navrhnuté</value>
-    </data>
     <data name="Topic_MyTopics_ShowHidden" xml:space="preserve">
-        <value>Zobrazit skryté</value>
+        <value>Zahrnout skryté</value>
     </data>
     <data name="Hidden topic" xml:space="preserve">
         <value>Skryté</value>
@@ -543,7 +540,7 @@
         <value>Potvrzovací email byl zaslán</value>
     </data>
     <data name="Topic_Index_Search_Placeholder" xml:space="preserve">
-        <value>Hledaný výraz..</value>
+        <value>Hledaný výraz</value>
     </data>
     <data name="Group_Index_OtherGroups" xml:space="preserve">
         <value>Ostatní skupiny</value>
