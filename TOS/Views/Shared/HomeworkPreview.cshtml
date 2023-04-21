@@ -4,5 +4,5 @@
 <article class="position-relative border-bottom">
     <h3 class="h5"><a asp-controller="Topic" asp-action="Details" asp-route-id="@Model.TopicId">@Html.SelectStringByLanguage(Model.NameEng, Model.Name)</a></h3>
 
-    <p>@Html.SelectStringByLanguage(Model.DescriptionShortEng!, Model.DescriptionShort)</p>
+    <p>@Html.SelectStringByLanguage(Model.DescriptionShortEng, Model.DescriptionShort)</p>
 </article>

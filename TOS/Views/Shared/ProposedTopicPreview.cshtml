@@ -3,10 +3,10 @@
 
 <article class="position-relative border-bottom">
     <header>
-        <h3 class="h5">
+        <h3 class="h5 mb-1">
             <a asp-controller="Topic" asp-action="Details" asp-route-id="@Model.TopicId">@Html.SelectStringByLanguage(Model.NameEng, Model.Name)</a>
         </h3>
-        <h4 class="h6">@Model.Creator.GetDisplayName()</h4>
+        <div class="text-secondary">@Model.Creator.GetDisplayName()</div>
         
         @if (Model.Group.NameEng == "Bachelor")
         {
@@ -22,5 +22,5 @@
         }
     </header>
     
-    <p>@Html.SelectStringByLanguage(Model.DescriptionShortEng!, Model.DescriptionShort)</p>
+    <p>@Html.SelectStringByLanguage(Model.DescriptionShortEng, Model.DescriptionShort)</p>
 </article>
