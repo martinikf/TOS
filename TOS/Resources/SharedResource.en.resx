@@ -457,13 +457,13 @@
         <value>Subscribe to notifications</value>
     </data>
     <data name="Manage_Notification_TopicEdit" xml:space="preserve">
-        <value>Your topic edit</value>
+        <value>Topic changed</value>
     </data>
     <data name="Manage_Notification_TopicAssigned-Student" xml:space="preserve">
         <value>Topic assigned to You</value>
     </data>
     <data name="Manage_Notification_TopicAssigned-Others" xml:space="preserve">
-        <value>Topic assigned to other Student</value>
+        <value>Topic assigned to student</value>
     </data>
     <data name="Manage_Notification_TopicAdopted" xml:space="preserve">
         <value>Proposed topic accepted</value>
@@ -751,7 +751,7 @@
         <value>Email couldn't be confirmed, error occured</value>
     </data>
     <data name="Manage_Notification_NewExternalUser" xml:space="preserve">
-        <value>New external user register</value>
+        <value>New external user registered</value>
     </data>
     <data name="NewExternalUser" xml:space="preserve">
         <value>Notification: New external user register</value>
@@ -914,5 +914,23 @@
     </data>
     <data name="Topic_Propose_Heading_Project" xml:space="preserve">
         <value>Propose project</value>
+    </data>
+    <data name="Manage_Notification_CommentNew_Tooltip" xml:space="preserve">
+        <value>This notification will be sent if someone has posted a comment on a topic to which you have a relation.  (Author, Supervisor, Student, Interest)</value>
+    </data>
+    <data name="Manage_Notification_NewInterest_Tooltip" xml:space="preserve">
+        <value>This notification will be sent if someone expresses interest in a topic to which you have a relation.  (Author, Supervisor, Student, Interest)</value>
+    </data>
+    <data name="Manage_Notification_TopicAdopted_Tooltip" xml:space="preserve">
+        <value>This notification will be sent when the topic you proposed has been accepted.</value>
+    </data>
+    <data name="Manage_Notification_TopicAssigned-Others_Tooltip" xml:space="preserve">
+        <value>This notification will be sent if a student has been assigned to a topic to which you have a relation.  (Author, Supervisor, Student, Interest)</value>
+    </data>
+    <data name="Manage_Notification_TopicAssigned-Student_Tooltip" xml:space="preserve">
+        <value>This notification will be sent when a topic is assigned to You.</value>
+    </data>
+    <data name="Manage_Notification_TopicEdit_Tooltip" xml:space="preserve">
+        <value>This notification will be sent when you change a topic to which you have a relation. (Author, Supervisor, Student, Interest)</value>
     </data>
 </root>

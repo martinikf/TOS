@@ -450,13 +450,13 @@
         <value>Změna tématu</value>
     </data>
     <data name="Manage_Notification_TopicAssigned-Student" xml:space="preserve">
-        <value>Téma přiřazeno vám</value>
+        <value>Téma přiřazeno Vám</value>
     </data>
     <data name="Manage_Notification_TopicAssigned-Others" xml:space="preserve">
-        <value>Téma přiřazeno jinému studentovi</value>
+        <value>Téma přiřazeno studentovi</value>
     </data>
     <data name="Manage_Notification_TopicAdopted" xml:space="preserve">
-        <value>Navrhnuté téma přijato</value>
+        <value>Vámi navrhnuté téma bylo přijato</value>
     </data>
     <data name="Manage_Notification_CommentNew" xml:space="preserve">
         <value>Nový komentář</value>
@@ -732,7 +732,7 @@
         <value>Notifikace: Zájem o téma</value>
     </data>
     <data name="Manage_Notification_NewInterest" xml:space="preserve">
-        <value>Při projevení zájmu u tématu</value>
+        <value>Někdo projevil zájem o téma</value>
     </data>
     <data name="Administration_Users_EmailConfirmed" xml:space="preserve">
         <value>Potvrzený email</value>
@@ -910,5 +910,23 @@
     </data>
     <data name="Topic_Propose_Heading_Project" xml:space="preserve">
         <value>Navrhnout téma projektu</value>
+    </data>
+    <data name="Manage_Notification_TopicEdit_Tooltip" xml:space="preserve">
+        <value>Tato notifikace se zašle při změně tématu, ke kterému máte nějaký vztah. (Autor, Vedoucí, Student, Zájem)</value>
+    </data>
+    <data name="Manage_Notification_TopicAdopted_Tooltip" xml:space="preserve">
+        <value>Tato notifikace se zašle při přijetí Vámi navrhnutého tématu.</value>
+    </data>
+    <data name="Manage_Notification_TopicAssigned-Student_Tooltip" xml:space="preserve">
+        <value>Tato notifikace se zašle při přiřazení některého tématu Vám.</value>
+    </data>
+    <data name="Manage_Notification_TopicAssigned-Others_Tooltip" xml:space="preserve">
+        <value>Tato notifikace se zašle pokud k tématu, ke kterému máte nějaký vztah, byl přiřazen nějaký student.</value>
+    </data>
+    <data name="Manage_Notification_CommentNew_Tooltip" xml:space="preserve">
+        <value>Tato notifikace se zašle, pokud někdo přidal komentář k tématu, ke kterému máte nějaký vztah. (Autor, Vedoucí, Student, Zájem)</value>
+    </data>
+    <data name="Manage_Notification_NewInterest_Tooltip" xml:space="preserve">
+        <value>Tato notifikace se zašle, pokud někdo projeví zájem o téma, ke kterému máte nějaký vztah. (Autor, Vedoucí, Student, Zájem)</value>
     </data>
 </root>

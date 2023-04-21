@@ -100,19 +100,6 @@ public class NotificationManager : INotificationManager
         SendNotification(users, topic, notification, null, callbackUrl);
     }
 
-    public async Task NewExternalUser(ApplicationUser user, string callbackUrl)
-    {
-        var notification = await GetNotification("NewExternalUser");
-        
-        var users = await _context.UserSubscribedNotifications.Where(x=>x.NotificationId == notification.NotificationId)
-            .Select(x=>x.User).ToListAsync();
-
-        string subject = $"{notification.Subject} - {notification.SubjectEng}";
-        string body = $"{notification.Text}<br/><br/> <a href={callbackUrl}>{callbackUrl.Split("?")[0]}</a> <br/>{user.GetDisplayName()} - {user.Email}<br/><br/>{notification.TextEng}";
-        
-        await SendNotificationBulk(users, subject, body);
-    }
-
     private async Task<Notification> GetNotification(string name)
     {
         var notification = await _context.Notifications.FirstOrDefaultAsync(x=>x.Name == name);
@@ -201,6 +188,4 @@ public interface INotificationManager
     Task TopicAdopted(Topic topic, string callbackUrl);
 
     Task NewInterest(Topic topic, ApplicationUser user, string callbackUrl);
-
-    Task NewExternalUser(ApplicationUser user, string callbackUrl);
 }

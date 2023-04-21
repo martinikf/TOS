@@ -48,11 +48,6 @@ namespace TOS.Areas.Identity.Pages.Account
             var result = await _userManager.ConfirmEmailAsync(user, code);
             StatusMessage = result.Succeeded ? _sharedLocalizer["Manage_ConfirmEmail_Success"] : _sharedLocalizer["Manage_ConfirmEmail_Error"];
             
-            if (result.Succeeded)
-            {
-                var c = "https://" + HttpContext.Request.Host + $"/Administration/Users?searchString={user.Email}";
-                await _notificationManager.NewExternalUser(user, c);
-            }
             return Page();
         }
     }

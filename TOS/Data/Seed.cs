@@ -51,7 +51,6 @@ public static class Seed
         CreateNotification("TopicAdopted", "Téma bylo přijato", "Topic was accepted", "Vaše navrhnuté téma, [TOPIC_NAME], bylo přijato.", "Your proposed topic, [TOPIC_NAME_ENG], was accepted.", ctx);
         CreateNotification("CommentNew", "Nový komentář", "New comment", "Nový komentář u tématu, [TOPIC_NAME], - [COMMENT_TEXT]", "New comment, [TOPIC_NAME_ENG], - [COMMENT_TEXT]", ctx);
         CreateNotification("NewInterest", "Někdo projevil zájem", "Someone is interested", "Někdo projevil zájem o téma, [TOPIC_NAME].", "Some is interested in topic, [TOPIC_NAME_ENG].", ctx);
-        CreateNotification("NewExternalUser", "Nová registrace", "New registration", "Právě se někdo zaregistroval.", "Someone has just registered.", ctx);
     }
 
     public static async void DevSeed(WebApplication app)

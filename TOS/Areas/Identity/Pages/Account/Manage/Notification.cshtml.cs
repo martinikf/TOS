@@ -2,13 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using TOS.Data;
 using TOS.Models;
 
@@ -30,25 +27,6 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
             _context = context;
         }
 
-        private async Task LoadAsync(ApplicationUser user)
-        {
-            var userName = await _userManager.GetUserNameAsync(user);
-            //Get current user
-            var currentUser = await _userManager.GetUserAsync(User);
-            if (currentUser is null) throw new Exception("User should not be null");
-
-            var notifications = _context.Notifications.ToList();
-            foreach(var n in notifications)
-            {
-                if (_context.UserSubscribedNotifications.Any(x =>
-                        x.UserId == user.Id && x.NotificationId == n.NotificationId))
-                {
-                    n.Selected = true;
-                }
-            }
-            ViewData["Notifications"] = notifications;
-        }
-
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -57,7 +35,20 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await LoadAsync(user);
+            var notifications = new Dictionary<string, Notification>();
+            
+            foreach(var n in await _context.Notifications.ToListAsync())
+            {
+                if (_context.UserSubscribedNotifications.Any(x =>
+                        x.UserId == user.Id && x.NotificationId == n.NotificationId))
+                {
+                    n.Selected = true;
+                }
+                notifications.Add(n.Name, n);
+            }
+
+            ViewData["Notification"] = notifications;
+            
             return Page();
         }
 

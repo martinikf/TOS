@@ -5,6 +5,8 @@
 @{
     ViewData["Title"] = SharedLocalizer["Manage_Notification_Heading"];
     ViewData["ActivePage"] = ManageNavPages.Notification;
+    var notification = ViewData["Notification"] as Dictionary<string, Notification>;
+    if (notification is null) throw new Exception("Notification data is missing");
 }
 
 <h3>@SharedLocalizer["Manage_Notification_Heading"]</h3>
@@ -13,23 +15,73 @@
     <div class="col-md-6">
         <form id="profile-form" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            @foreach (var notification in (ICollection<Notification>) ViewData["Notifications"]!)
+
+            <!-- TopicEdit -->
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" id="TopicEdit" name="selectedNotifications" value="@notification["TopicEdit"].NotificationId" @(notification["TopicEdit"].Selected ? "checked" : "")/>
+                <label class="form-check-label" for="TopicEdit">@SharedLocalizer["Manage_Notification_TopicEdit"]</label>
+                <button type="button" class="btn btn-sm btn-link link-secondary text-decoration-none p-0" 
+                        data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="@SharedLocalizer["Manage_Notification_TopicEdit_Tooltip"]">
+                  ?
+                </button>
+            </div>
+            
+            <!-- TopicAdopted -->
+            @if (User.IsInRole("ProposeTopic"))
             {
-                @if (notification.Name == "NewExternalUser" && User.IsInRole("Administrator") || notification.Name != "NewExternalUser")
-                {
-                    <div class="form-check mb-3">
-                        @if (notification.Selected)
-                        {
-                            <input type="checkbox" class="form-check-input" id="@notification.Name" name="selectedNotifications" value="@notification.NotificationId" checked/>
-                        }
-                        else
-                        {
-                            <input type="checkbox" class="form-check-input" id="@notification.Name" name="selectedNotifications" value="@notification.NotificationId"/>
-                        }
-                        <label class="form-check-label" for="@notification.Name">@SharedLocalizer["Manage_Notification_" + notification.Name]</label>
-                    </div>
-                }
+                <div class="form-check mb-3">
+                    <input type="checkbox" class="form-check-input" id="TopicAdopted" name="selectedNotifications" value="@notification["TopicAdopted"].NotificationId" @(notification["TopicAdopted"].Selected ? "checked" : "")/>
+                    <label class="form-check-label" for="TopicAdopted">@SharedLocalizer["Manage_Notification_TopicAdopted"]</label>
+                    <button type="button" class="btn btn-sm btn-link link-secondary text-decoration-none p-0" 
+                            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="@SharedLocalizer["Manage_Notification_TopicAdopted_Tooltip"]">
+                        ?
+                    </button>
+                </div>
             }
+            
+            @if (User.IsInRole("AssignedTopic"))
+            {
+                <!-- TopicAssigned-Student -->
+                <div class="form-check mb-3">
+                    <input type="checkbox" class="form-check-input" id="TopicAssigned-Student" name="selectedNotifications" value="@notification["TopicAssigned-Student"].NotificationId" @(notification["TopicAssigned-Student"].Selected ? "checked" : "")/>
+                    <label class="form-check-label" for="TopicAssigned-Student">@SharedLocalizer["Manage_Notification_TopicAssigned-Student"]</label>
+                     <button type="button" class="btn btn-sm btn-link link-secondary text-decoration-none p-0" 
+                            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="@SharedLocalizer["Manage_Notification_TopicAssigned-Student_Tooltip"]">
+                      ?
+                    </button>
+                </div>
+            }
+            
+            <!-- TopicAssigned-Others -->
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" id="TopicAssigned-Others" name="selectedNotifications" value="@notification["TopicAssigned-Others"].NotificationId" @(notification["TopicAssigned-Others"].Selected? "checked" : "")/>
+                <label class="form-check-label" for="TopicAssigned-Others">@SharedLocalizer["Manage_Notification_TopicAssigned-Others"]</label>
+                <button type="button" class="btn btn-sm btn-link link-secondary text-decoration-none p-0" 
+                       data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="@SharedLocalizer["Manage_Notification_TopicAssigned-Others_Tooltip"]">
+                 ?
+                </button>
+            </div>
+            
+            <!-- CommentNew -->
+            <div class="form-check mb-3">
+                 <input type="checkbox" class="form-check-input" id="CommentNew" name="selectedNotifications" value="@notification["CommentNew"].NotificationId" @(notification["CommentNew"].Selected? "checked" : "")/>
+                 <label class="form-check-label" for="CommentNew">@SharedLocalizer["Manage_Notification_CommentNew"]</label>
+                 <button type="button" class="btn btn-sm btn-link link-secondary text-decoration-none p-0" 
+                        data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="@SharedLocalizer["Manage_Notification_CommentNew_Tooltip"]">
+                  ?
+                </button>
+            </div>
+            
+            <!-- NewInterest -->
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" id="NewInterest" name="selectedNotifications" value="@notification["NewInterest"].NotificationId" @(notification["NewInterest"].Selected? "checked" : "")/>
+                <label class="form-check-label" for="NewInterest">@SharedLocalizer["Manage_Notification_NewInterest"]</label>
+                 <button type="button" class="btn btn-sm btn-link link-secondary text-decoration-none p-0" 
+                        data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="@SharedLocalizer["Manage_Notification_NewInterest_Tooltip"]">
+                  ?
+                </button>
+            </div>
+
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">@SharedLocalizer["Manage_Notification_Submit"]</button>
         </form>
     </div>
@@ -37,4 +89,11 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial"/>
+    
+    <script>
+    $(document).ready(function (){
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    });
+    </script>
 }
