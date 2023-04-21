@@ -18,7 +18,7 @@ public static class RoleHelper
                 roles.AddRange(new[] {"Teacher", "Topic", "Comment", "AnyComment", "Attachment", "Group", "SuperviseTopic"});
                 break;
             case Role.Student:
-                roles.AddRange(new[] {"Student", "ProposeTopic", "InterestTopic", "Comment", "AnonymousComment", "AssignedTopic"});
+                roles.AddRange(new[] {"Student", "ProposeTopic", "InterestTopic", "Comment", "AnonymousComment", "AssignedTopic", "Attachment"});
                 break;
             case Role.External:
                 roles.AddRange(new [] {"External", "ProposeTopic", "Comment", "Attachment"});
