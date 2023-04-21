@@ -31,6 +31,10 @@
         {
             <span class="badge bg-success">@SharedLocalizer["External topic"]</span>
         }
+        else if (Model.Creator.UserRoles.Any(x => x.Role.Name!.Equals("Student")))
+        {
+            <span class="badge bg-success">@SharedLocalizer["Student topic"]</span>
+        }
         <span class="badge rounded-pill bg-secondary">@Model.UserInterestedTopics.Count</span>
     </header>
     
