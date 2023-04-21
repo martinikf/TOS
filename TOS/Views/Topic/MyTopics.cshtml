@@ -16,10 +16,13 @@
             <input type="text" class="form-control" name="searchString" placeholder="@SharedLocalizer["Topic_MyTopics_SearchPlaceholder"]" value="@Model.SearchString"/>
         </div>
 
-        <div class="col-auto form-check">
-            <label for="showProposed">@SharedLocalizer["Topic_MyTopics_ShowProposed"]</label>
-            <input class="form-check-input" name="showProposed" id="showProposed" type="checkbox" value="true" @Html.Raw(Model.ShowProposedTopics ? "checked" : "")/>
-        </div>
+        @if (User.IsInRole("ProposeTopic"))
+        {
+            <div class="col-auto form-check">
+                <label for="showProposed">@SharedLocalizer["Topic_MyTopics_ShowProposed"]</label>
+                <input class="form-check-input" name="showProposed" id="showProposed" type="checkbox" value="true" @Html.Raw(Model.ShowProposedTopics ? "checked" : "")/>
+            </div>
+        }
     
         @if (User.IsInRole("Topic") || User.IsInRole("AnyTopic"))
         {
@@ -38,7 +41,7 @@
 <hr/>
 
 <div class="accordion" id="accordionPanelsStayOpenExample">
-    @foreach (var g in new string[] {"Unassigned", "Bachelor", "Master"})
+    @foreach (var g in new[] {"Unassigned", "Bachelor", "Master"})
     {
         @if (Model.Topics.Any(x => x.Type == TopicType.Thesis && x.Group.NameEng == g))
         {
