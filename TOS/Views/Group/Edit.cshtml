@@ -7,7 +7,7 @@
 
 <h1>@SharedLocalizer["Group_Edit_Heading"] - @Html.SelectStringByLanguage(Model.NameEng, Model.Name)</h1>
 
-@if ((User.IsInRole("Group") && User.Identity?.Name == Model.Creator.UserName) || User.IsInRole("AnyGroup"))
+@if (((User.IsInRole("Group") && User.Identity?.Name == Model.Creator.UserName) || User.IsInRole("AnyGroup")) && !Model.Selectable && Model.NameEng != "Unassigned")
 {
     {
         var data = new Tuple<int, string, string, string, string, string, string>
