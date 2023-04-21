@@ -32,6 +32,9 @@ namespace TOS.Controllers
             
             if(group.NameEng.Equals("Unassigned") && (User.IsInRole("Topic") || User.IsInRole("AnyTopic")))
                 return RedirectToAction("Proposed", "Topic");
+            //If group is unassigned and user doesn't have required role
+            if (group.NameEng.Equals("Unassigned"))
+                return RedirectToAction("Index", "Home");
             
             return RedirectToAction("Group", "Topic", new {groupId = group.GroupId});
         }
