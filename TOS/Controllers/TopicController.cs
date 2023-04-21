@@ -120,7 +120,7 @@ namespace TOS.Controllers
             return View(await topics.ToListAsync());
         }
         
-        public async Task<IActionResult> MyTopics(string searchString = "", bool showHidden = false, bool showProposed = false)
+        public async Task<IActionResult> MyTopics(string searchString = "", bool showHidden = false)
         {
             var user = await GetUserOrNull();
             if (user == null)
@@ -129,8 +129,7 @@ namespace TOS.Controllers
             var vm = new MyTopicsViewModel
             {
                 SearchString = searchString,
-                ShowHiddenTopics = showHidden,
-                ShowProposedTopics = showProposed
+                ShowHiddenTopics = showHidden
             };
 
             searchString = searchString.Trim();
@@ -146,7 +145,6 @@ namespace TOS.Controllers
             topics = ApplySearch(topics, searchString);
 
             topics = topics.Where(x => showHidden ? x.Visible || !x.Visible : x.Visible || x.Proposed);
-            if(showProposed == false) topics = topics.Where(x => !x.Proposed);
 
             //If search string is provided, select all topics from groups that match the search string
             if (searchString.Length > 2)
