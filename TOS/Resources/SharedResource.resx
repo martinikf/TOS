@@ -624,10 +624,10 @@
         <value>Notifikace: Téma změněno</value>
     </data>
     <data name="TopicAssigned-Student" xml:space="preserve">
-        <value>Notifikace: Téma přiřazeno danému studentovi</value>
+        <value>Notifikace: Téma přiřazeno Vám</value>
     </data>
     <data name="TopicAssigned-Others" xml:space="preserve">
-        <value>Notifikace: Téma přiřazeno - ostatním uživatelům</value>
+        <value>Notifikace: Téma přiřazeno studentovi</value>
     </data>
     <data name="TopicAdopted" xml:space="preserve">
         <value>Notifikace: Navrhnuté téma přijato</value>
@@ -742,12 +742,6 @@
     </data>
     <data name="Manage_ConfirmEmail_Error" xml:space="preserve">
         <value>Při ověřování emailu nastala chyba</value>
-    </data>
-    <data name="Manage_Notification_NewExternalUser" xml:space="preserve">
-        <value>Nový externí uživatel se zaregistroval</value>
-    </data>
-    <data name="NewExternalUser" xml:space="preserve">
-        <value>Notifikace: Registrace nového externího uživatele</value>
     </data>
     <data name="Topic_Edit_Attachment_Delete" xml:space="preserve">
         <value>Smazat</value>

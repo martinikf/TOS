@@ -15,20 +15,24 @@
   </a>
 </p>
 <div class="collapse" id="collapseExample">
-  <div class="card card-body">
-    <p>@SharedLocalizer["Administration_EditNotification_Tutorial"]</p>
-    <p>
-        [URL]<br/>
-        [TOPIC_NAME], [TOPIC_NAME_ENG], [TOPIC_SHORT_DESCRIPTION]<br/>
-        [TOPIC_SHORT_DESCRIPTION_ENG], [TOPIC_LONG_DESCRIPTION], [TOPIC_LONG_DESCRIPTION_ENG]<br/>
-        [TOPIC_CREATOR], [TOPIC_CREATOR_EMAIL]<br/>
-        [TOPIC_SUPERVISOR], [TOPIC_SUPERVISOR_EMAIL]<br/>
-        [TOPIC_ASSIGNED], [TOPIC_ASSIGNED_EMAIL]<br/>
-        [TOPIC_TYPE], [TOPIC_TYPE_ENG]<br/>
-        [COMMENT_AUTHOR], [COMMENT_AUTHOR_EMAIL], [COMMENT_TEXT], [COMMENT_DATE]
-    </p>
-  </div>
+    <div class="card card-body">
+        <p>@SharedLocalizer["Administration_EditNotification_Tutorial"]</p>
+        <p>
+            [URL]<br/>
+            [TOPIC_NAME], [TOPIC_NAME_ENG], [TOPIC_SHORT_DESCRIPTION]<br/>
+            [TOPIC_SHORT_DESCRIPTION_ENG], [TOPIC_LONG_DESCRIPTION], [TOPIC_LONG_DESCRIPTION_ENG]<br/>
+            [TOPIC_CREATOR], [TOPIC_CREATOR_EMAIL]<br/>
+            [TOPIC_SUPERVISOR], [TOPIC_SUPERVISOR_EMAIL]<br/>
+            [TOPIC_ASSIGNED], [TOPIC_ASSIGNED_EMAIL]<br/>
+            [TOPIC_TYPE], [TOPIC_TYPE_ENG]<br/>
+            [COMMENT_AUTHOR], [COMMENT_AUTHOR_EMAIL], [COMMENT_TEXT], [COMMENT_DATE]
+        </p>
+    </div>
 </div>
+
+<p>
+    @SharedLocalizer["Manage_Notification_"+Model.Name+"_Tooltip"]
+</p>
 
 <form asp-action="EditNotification">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>

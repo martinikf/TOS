@@ -463,7 +463,7 @@
         <value>Topic assigned to You</value>
     </data>
     <data name="Manage_Notification_TopicAssigned-Others" xml:space="preserve">
-        <value>Topic assigned to student</value>
+        <value>Topic assigned to a student</value>
     </data>
     <data name="Manage_Notification_TopicAdopted" xml:space="preserve">
         <value>Proposed topic accepted</value>
@@ -631,10 +631,10 @@
         <value>Notification: Topic change</value>
     </data>
     <data name="TopicAssigned-Student" xml:space="preserve">
-        <value>Notification: Topics assigned to the student</value>
+        <value>Notification: Topic assigned to You</value>
     </data>
     <data name="TopicAssigned-Others" xml:space="preserve">
-        <value>Notificaiton: Topic assigned - other users</value>
+        <value>Notification: Topic assigned to student</value>
     </data>
     <data name="TopicAdopted" xml:space="preserve">
         <value>Notification: Proposed topic accepted</value>
@@ -736,7 +736,7 @@
         <value>Topic</value>
     </data>
     <data name="NewInterest" xml:space="preserve">
-        <value>Notification: Interest in topic</value>
+        <value>Notification: Interest</value>
     </data>
     <data name="Manage_Notification_NewInterest" xml:space="preserve">
         <value>Someone is interested in your topic</value>
@@ -749,12 +749,6 @@
     </data>
     <data name="Manage_ConfirmEmail_Error" xml:space="preserve">
         <value>Email couldn't be confirmed, error occured</value>
-    </data>
-    <data name="Manage_Notification_NewExternalUser" xml:space="preserve">
-        <value>New external user registered</value>
-    </data>
-    <data name="NewExternalUser" xml:space="preserve">
-        <value>Notification: New external user register</value>
     </data>
     <data name="Topic_Edit_Attachment_Delete" xml:space="preserve">
         <value>Delete</value>
