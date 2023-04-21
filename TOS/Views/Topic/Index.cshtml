@@ -56,14 +56,14 @@
         </div>
         
         <div class="col-auto">
-            <label for="orderBy">@SharedLocalizer["Topic_Index_OrderBy"]</label>
-        </div>
-        <div class="col-auto">
-            <select class="form-select" id="orderBy" name="orderBy">
-                @Html.SelectOption("Supervisor", SharedLocalizer["orderBySupervisor"].Value, Model.OrderBy)
-                @Html.SelectOption("Name", SharedLocalizer["orderByName"].Value, Model.OrderBy)
-                @Html.SelectOption("Interest", SharedLocalizer["orderByInterest"].Value, Model.OrderBy)
-            </select>
+            <div class="d-flex align-items-center">
+                <label for="orderBy">@SharedLocalizer["Topic_Index_OrderBy"]</label>
+                <select class="form-select ms-2" id="orderBy" name="orderBy">
+                    @Html.SelectOption("Supervisor", SharedLocalizer["orderBySupervisor"].Value, Model.OrderBy)
+                    @Html.SelectOption("Name", SharedLocalizer["orderByName"].Value, Model.OrderBy)
+                    @Html.SelectOption("Interest", SharedLocalizer["orderByInterest"].Value, Model.OrderBy)
+                </select>
+            </div>
         </div>
         
         <div class="col-auto">

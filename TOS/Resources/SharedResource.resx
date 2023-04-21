@@ -303,7 +303,7 @@
         <value>Všechny programy</value>
     </data>
     <data name="Topic_Index_ShowTaken" xml:space="preserve">
-        <value>Zobrazit zabrané</value>
+        <value>Zobrazit nedostupné</value>
     </data>
     <data name="Topic_Index_ShowProposedOnly" xml:space="preserve">
         <value>Pouze navrhnuté studenty</value>
