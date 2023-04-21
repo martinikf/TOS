@@ -22,6 +22,23 @@
 
 <hr/>
 
-@foreach (var topic in Model) {
-    <partial name="TopicPreview" model="topic"/>
-} 
+@if (Model.Any(x => x.Creator.UserRoles.Any(y => y.Role.Name == "External")))
+{
+    <h2 class="h3">@SharedLocalizer["Proposed_External"]</h2>
+
+    @foreach (var topic in Model.Where(x=>x.Creator.UserRoles.Any(y=>y.Role.Name == "External")))
+    {
+        <partial name="ProposedTopicPreview" model="topic"/>
+    }
+}
+
+@if (Model.Any(x => x.Creator.UserRoles.Any(y => y.Role.Name == "Student")))
+{
+    <hr class="border border-primary border-3 opacity-75"/>
+    <h2 class="h3">@SharedLocalizer["Proposed_Student"]</h2>
+    
+    @foreach (var topic in Model.Where(x=>x.Creator.UserRoles.Any(y=>y.Role.Name == "Student")))
+    {
+        <partial name="ProposedTopicPreview" model="topic"/>
+    }
+}

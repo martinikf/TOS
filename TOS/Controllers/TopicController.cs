@@ -113,7 +113,7 @@ namespace TOS.Controllers
         public async Task<IActionResult> Proposed()
         {
             var topics = _context.Topics
-                .Where(x => x.Type == TopicType.Thesis && (x.Group.NameEng == "Unassigned" || x.Proposed));
+                .Where(x => x.Type == TopicType.Thesis && (x.Group.NameEng == "Unassigned" || x.Proposed)).OrderBy(x=>x.Creator.LastName).ThenBy(x=>x.Creator.FirstName).ThenBy(x=>x.Group.Name);
             return View(await topics.ToListAsync());
         }
         

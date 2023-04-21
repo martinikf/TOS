@@ -1,0 +1,26 @@
+﻿@using TOS.Extensions
+@model TOS.Models.Topic
+
+<article class="position-relative border-bottom">
+    <header>
+        <h3 class="h5">
+            <a asp-controller="Topic" asp-action="Details" asp-route-id="@Model.TopicId">@Html.SelectStringByLanguage(Model.NameEng, Model.Name)</a>
+        </h3>
+        <h4 class="h6">@Model.Creator.GetDisplayName()</h4>
+        
+        @if (Model.Group.NameEng == "Bachelor")
+        {
+            <span class="badge bg-success">@SharedLocalizer["Bachelor topic"]</span>
+        }
+        else if(Model.Group.NameEng == "Master")
+        {
+            <span class="badge bg-success">@SharedLocalizer["Master topic"]</span>
+        }
+        else
+        {
+            <span class="badge bg-success">@SharedLocalizer["Unassigned topic"]</span>
+        }
+    </header>
+    
+    <p>@Html.SelectStringByLanguage(Model.DescriptionShortEng!, Model.DescriptionShort)</p>
+</article>
