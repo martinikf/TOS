@@ -47,11 +47,11 @@
             @if (Model.Proposed || Model.Creator.UserRoles.Any(x => x.Role.Name!.Equals("External") || x.Role.Name!.Equals("Student")) && User.Identity!.IsAuthenticated)
             {
                 <span>@SharedLocalizer["Topic_Details_ProposedBy"] - @Model.Creator.GetDisplayName() (@Model.Creator.Email)</span>
+                <br/>
             }
             @if (Model.AssignedId != null && User.Identity!.IsAuthenticated)
             {
                 <span>@SharedLocalizer["Topic_Details_AssignedStudent"] - @Model.AssignedStudent!.GetDisplayName() (@Model.AssignedStudent.Email)</span>
-                <br/>
             }
         </p>
 
