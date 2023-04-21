@@ -306,7 +306,7 @@
         <value>Zobrazit nedostupné</value>
     </data>
     <data name="Topic_Index_ShowProposedOnly" xml:space="preserve">
-        <value>Pouze navrhnuté studenty</value>
+        <value>Pouze navrhnuté</value>
     </data>
     <data name="Topic_Index_ShowHidden" xml:space="preserve">
         <value>Zobrazit skryté</value>

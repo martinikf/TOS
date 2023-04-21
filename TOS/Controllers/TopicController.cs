@@ -112,9 +112,12 @@ namespace TOS.Controllers
         [Authorize(Roles = "Topic,AnyTopic")]
         public async Task<IActionResult> Unassigned()
         {
-            var topics = await _context.Topics.Where(x => x.Group.NameEng == "Unassigned").ToListAsync();
-            
-            return View(topics);
+            //Display all topics that are proposed and have external creator
+            var topics = _context.Topics
+                .Where(x => x.Type == TopicType.Thesis && (x.Group.NameEng == "Unassigned" || 
+                                                        (x.Proposed && x.Creator.UserRoles.Any(y=>y.Role.Name =="External"))))
+                .Distinct();
+            return View(await topics.ToListAsync());
         }
         
         public async Task<IActionResult> MyTopics(string searchString = "", bool showHidden = false, bool showProposed = false)
@@ -238,7 +241,7 @@ namespace TOS.Controllers
             var group = await GetGroup(groupName);
             if (group is null) return NotFound();
             
-            if (group.Selectable)
+            if (group.Selectable || groupName == "Unassigned")
             {
                 var list = await _context.Groups.Where(x => x.Selectable).ToListAsync();
                 foreach (var g in list.Where(g => g.GroupId.Equals(group.GroupId)))

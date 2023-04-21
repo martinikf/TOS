@@ -313,7 +313,7 @@
         <value>Show taken</value>
     </data>
     <data name="Topic_Index_ShowProposedOnly" xml:space="preserve">
-        <value>Proposed by students</value>
+        <value>Proposed only</value>
     </data>
     <data name="Topic_Index_ShowHidden" xml:space="preserve">
         <value>Show hidden</value>

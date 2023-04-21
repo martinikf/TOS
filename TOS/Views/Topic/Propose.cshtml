@@ -42,39 +42,29 @@
         <textarea asp-for="DescriptionLongEng" class="form-control" style="height: 100px;"></textarea>
         <span asp-validation-for="DescriptionLongEng" class="text-danger"></span>
     </div>
-
-    @if (!User.IsInRole("External"))
-    {
-        <div class="mb-3">
-            <label asp-for="GroupId" class="form-label">@SharedLocalizer["Topic_Create_Group"]</label>
-            <select asp-for="GroupId" class="form-select">
-                @foreach (Group group in ViewBag.Groups)
+    
+    <div class="mb-3">
+        <label asp-for="GroupId" class="form-label">@SharedLocalizer["Topic_Create_Group"]</label>
+        <select asp-for="GroupId" class="form-select">
+            @if (User.IsInRole("External") && (TopicType) ViewData["TopicType"]! != TopicType.Project)
+            {
+                <option value="-1">@SharedLocalizer["Unassigned option"]</option>
+            }
+            @foreach (Group group in ViewBag.Groups)
+            {
+                @if (group.Highlight)
                 {
-                    @if (group.Highlight)
-                    {
-                        <option value="@group.GroupId" selected>@Html.SelectStringByLanguage(group.NameEng, group.Name)</option>
+                    <option value="@group.GroupId" selected>@Html.SelectStringByLanguage(group.NameEng, group.Name)</option>
 
-                    }
-                    else
-                    {
-                        <option value="@group.GroupId">@Html.SelectStringByLanguage(group.NameEng, group.Name)</option>
-                    }
                 }
-            </select>
-        </div>
-    }
-    else
-    {
-        @if ((TopicType)ViewData["TopicType"]! == TopicType.Project)
-        {
-            <input type="hidden" asp-for="GroupId" value="@(((IEnumerable<Group>)ViewData["Groups"]!).First().GroupId)"/>
-        }
-        else
-        {
-            <input type="hidden" asp-for="GroupId" value="-1"/>
-        }
-    }
-
+                else
+                {
+                    <option value="@group.GroupId">@Html.SelectStringByLanguage(group.NameEng, group.Name)</option>
+                }
+            }
+        </select>
+    </div>
+    
     <!--Attachments-->
     @if (User.IsInRole("Attachment"))
     {
