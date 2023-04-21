@@ -31,7 +31,7 @@ namespace TOS.Controllers
                 return RedirectToAction("Index", "Topic", new{ groupName = group.NameEng});
             
             if(group.NameEng.Equals("Unassigned") && (User.IsInRole("Topic") || User.IsInRole("AnyTopic")))
-                return RedirectToAction("Unassigned", "Topic");
+                return RedirectToAction("Proposed", "Topic");
             
             return RedirectToAction("Group", "Topic", new {groupId = group.GroupId});
         }
@@ -110,13 +110,10 @@ namespace TOS.Controllers
         }
 
         [Authorize(Roles = "Topic,AnyTopic")]
-        public async Task<IActionResult> Unassigned()
+        public async Task<IActionResult> Proposed()
         {
-            //Display all topics that are proposed and have external creator
             var topics = _context.Topics
-                .Where(x => x.Type == TopicType.Thesis && (x.Group.NameEng == "Unassigned" || 
-                                                        (x.Proposed && x.Creator.UserRoles.Any(y=>y.Role.Name =="External"))))
-                .Distinct();
+                .Where(x => x.Type == TopicType.Thesis && (x.Group.NameEng == "Unassigned" || x.Proposed));
             return View(await topics.ToListAsync());
         }
         
