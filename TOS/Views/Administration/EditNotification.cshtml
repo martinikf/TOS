@@ -7,8 +7,6 @@
 
 <h1>@SharedLocalizer["Administration_EditNotification_Heading"] - @SharedLocalizer[Model.Name]</h1>
 
-
-
 <p>
   <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
     @SharedLocalizer["Administration_EditNotification_Guide"]
@@ -45,19 +43,9 @@
         <span asp-validation-for="Subject" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="SubjectEng" class="form-label">@SharedLocalizer["Administration_EditNotification_SubjectEng"]*</label>
-        <input asp-for="SubjectEng" class="form-control" autocomplete="off"/>
-        <span asp-validation-for="SubjectEng" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
         <label asp-for="Text" class="form-label">@SharedLocalizer["Administration_EditNotification_Text"]*</label>
         <textarea asp-for="Text" class="form-control" style="height: 125px"></textarea>
         <span asp-validation-for="Text" class="text-danger"></span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="TextEng" class="form-label">@SharedLocalizer["Administration_EditNotification_TextEng"]*</label>
-        <textarea asp-for="TextEng" class="form-control" style="height: 125px"></textarea>
-        <span asp-validation-for="TextEng" class="text-danger"></span>
     </div>
     <a asp-controller="Administration" asp-action="Notifications" class="btn btn-secondary">@SharedLocalizer["Cancel"]</a>
     <input type="submit" class="btn btn-primary" value="@SharedLocalizer["Administration_EditNotification_Submit"]"/>

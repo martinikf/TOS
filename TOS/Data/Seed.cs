@@ -45,12 +45,12 @@ public static class Seed
         CreateGroup("Bakalářská", "Bachelor", adminUser, true, true, ctx);
         CreateGroup("Diplomová", "Master", adminUser, true, true, ctx);
         
-        CreateNotification("TopicEdit", "Změna tématu", "Topic Change", "Téma, [TOPIC_NAME], bylo změněno.", "Topic, [TOPIC_NAME_ENG], was edited.", ctx);
-        CreateNotification("TopicAssigned-Student", "Téma bylo přiřazeno Vám", "Topic was assigned to You", "Téma, [TOPIC_NAME], bylo přiřazeno Vám.", "Topic, [TOPIC_NAME_ENG], was assigned to You.", ctx);
-        CreateNotification("TopicAssigned-Others", "Téma bylo přiřazeno", "Topic was assigned", "Téma, [TOPIC_NAME], bylo přiřazeno někomu jinému.", "Topic, [TOPIC_NAME_ENG], was assigned to someone else.", ctx);
-        CreateNotification("TopicAdopted", "Téma bylo přijato", "Topic was accepted", "Vaše navrhnuté téma, [TOPIC_NAME], bylo přijato.", "Your proposed topic, [TOPIC_NAME_ENG], was accepted.", ctx);
-        CreateNotification("CommentNew", "Nový komentář", "New comment", "Nový komentář u tématu, [TOPIC_NAME], - [COMMENT_TEXT]", "New comment, [TOPIC_NAME_ENG], - [COMMENT_TEXT]", ctx);
-        CreateNotification("NewInterest", "Někdo projevil zájem", "Someone is interested", "Někdo projevil zájem o téma, [TOPIC_NAME].", "Some is interested in topic, [TOPIC_NAME_ENG].", ctx);
+        CreateNotification("TopicEdit", "Změna tématu",  "Téma, [TOPIC_NAME], bylo změněno.",  ctx);
+        CreateNotification("TopicAssigned-Student", "Téma bylo přiřazeno Vám",  "Téma, [TOPIC_NAME], bylo přiřazeno Vám.", ctx);
+        CreateNotification("TopicAssigned-Others", "Téma bylo přiřazeno", "Téma, [TOPIC_NAME], bylo přiřazeno někomu jinému.",  ctx);
+        CreateNotification("TopicAdopted", "Téma bylo přijato",  "Vaše navrhnuté téma, [TOPIC_NAME], bylo přijato.", ctx);
+        CreateNotification("CommentNew", "Nový komentář", "Nový komentář u tématu, [TOPIC_NAME], - [COMMENT_TEXT]",  ctx);
+        CreateNotification("NewInterest", "Někdo projevil zájem",  "Někdo projevil zájem o téma, [TOPIC_NAME].", ctx);
     }
 
     public static async void DevSeed(WebApplication app)
@@ -176,17 +176,15 @@ public static class Seed
         await ctx.SaveChangesAsync();
     }
 
-    public static Notification CreateNotification(string name, string subject, string subjectEng, string text, string textEng, ApplicationDbContext ctx)
+    public static Notification CreateNotification(string name, string subject, string text, ApplicationDbContext ctx)
     {
         if (!ctx.Notifications.Any(x => x.Name.Equals(name)))
         {
             ctx.Notifications.Add(new Notification()
             {
                 Name = name, 
-                Subject = subject, 
-                SubjectEng = subjectEng,
+                Subject = subject,
                 Text = text,
-                TextEng = textEng
             });
         }
 

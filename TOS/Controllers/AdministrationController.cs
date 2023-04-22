@@ -250,12 +250,7 @@ public class AdministrationController : Controller
         {
             return RedirectToAction(nameof(EditNotification), new {notification.NotificationId});
         }
-        
-        if(string.IsNullOrEmpty(notification.SubjectEng))
-            notification.SubjectEng = notification.Subject;
-        if (string.IsNullOrEmpty(notification.Text))
-            notification.TextEng = notification.Text;
-        
+
         ModelState.Clear();
         if (!TryValidateModel(notification))
         {

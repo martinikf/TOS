@@ -110,8 +110,8 @@ public class NotificationManager : INotificationManager
 
     private void SendNotification(IEnumerable<ApplicationUser> users, Topic? topic, Notification notification, Comment? comment, string? callbackUrl)
     {
-        var subject = $"{NotificationSubstitution(topic, notification.Subject, callbackUrl, comment)} - {NotificationSubstitution(topic, notification.SubjectEng, callbackUrl, comment)}";
-        var body = $"{NotificationSubstitution(topic, notification.Text, callbackUrl, comment)}<br/>---<br/>{NotificationSubstitution(topic, notification.TextEng, callbackUrl, comment)}";
+        var subject = $"{NotificationSubstitution(topic, notification.Subject, callbackUrl, comment)}";
+        var body = $"{NotificationSubstitution(topic, notification.Text, callbackUrl, comment)}";
 
         users = users
             .Where(x => x.UserSubscribedNotifications.Any(y => y.NotificationId == notification.NotificationId))

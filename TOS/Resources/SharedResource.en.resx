@@ -196,7 +196,7 @@
         <value>Administration - edit</value>
     </data>
     <data name="Administration_EditNotification_Tutorial" xml:space="preserve">
-        <value>When creating a notification, you can use key words in square brackets: by placing them as text in the text box. As a result, the final notification will display the value of the object to which the notification refers. The key words regarding the comment can only be used for the notification of a new comment.</value>
+        <value>When creating a notification, you can use HTML and key words in square brackets: by placing them as text in the text box. As a result, the final notification will display the value of the object to which the notification refers. The key words regarding the comment can only be used for the notification of a new comment.</value>
     </data>
     <data name="Administration_EditNotification_Subject" xml:space="preserve">
         <value>Subject</value>
