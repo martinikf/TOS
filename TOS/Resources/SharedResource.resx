@@ -465,10 +465,10 @@
         <value>Přihlášení</value>
     </data>
     <data name="Login_Username" xml:space="preserve">
-        <value>Email/Stag přihlášení</value>
+        <value>Email/Přihlašovací jméno</value>
     </data>
-    <data name="Login_Password" xml:space="preserve">
-        <value>Heslo/Stag heslo</value>
+    <data name="Login_Password_Stag" xml:space="preserve">
+        <value>Stag heslo</value>
     </data>
     <data name="Login_RememberMe" xml:space="preserve">
         <value>Zůstat přihlášen</value>
@@ -943,5 +943,23 @@
     </data>
     <data name="Unassigned topic" xml:space="preserve">
         <value>Nezařazená</value>
+    </data>
+    <data name="Login_Password_ActiveDirectory" xml:space="preserve">
+        <value>Heslo/Active Directory heslo</value>
+    </data>
+    <data name="Login_Info" xml:space="preserve">
+        <value>Univerzitní uživatelé musí vyplnit heslo, které použivájí k přístupu k Active Directory. Při prvním přihlášení musí univerzitní uživatel zadat přihlašovací jméno ve tvaru: např. martfi00. Pokud uživatel používá rozdílná hesla pro AD a STAG, tak při prvním přihlášení aplikace zobrazí pole pro zadání STAG hesla.</value>
+    </data>
+    <data name="Login_PasswordStag_Info" xml:space="preserve">
+        <value>Zadané heslo nelze použít k přístupu k informačnímu systému STAG. Prosím zadejete heslo, které k přístupu k systému STAG používate. Toto heslo je nutné zadat pouze při prvním přihlášení.</value>
+    </data>
+    <data name="ERROR:WrongCredentialsActiveDirectory" xml:space="preserve">
+        <value>Špatné přihlašovací údaje, AD</value>
+    </data>
+    <data name="ERROR:WrongCredentialsLocal" xml:space="preserve">
+        <value>Špatné přihlašovací údaje</value>
+    </data>
+    <data name="ERROR:WrongCredentialsStag" xml:space="preserve">
+        <value>Nelze ověřit uživatele v systému STAG</value>
     </data>
 </root>

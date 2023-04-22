@@ -53,6 +53,9 @@ namespace TOS.Areas.Identity.Pages.Account
             [DataType(DataType.Password)]
             public string Password { get; set; }
             
+            [DataType(DataType.Password)]
+            public string PasswordStag { get; set; }
+            
             public bool RememberMe { get; set; }
         }
 
@@ -74,15 +77,30 @@ namespace TOS.Areas.Identity.Pages.Account
         }
 
         //For first login user has to use portalID or portalID + upol.cz. For logins after that user can also use full email
-        //Teacher must use their external login, TODO: not sure how they look like, but it probably works now..
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            var success = await _authentication.Authenticate(Input.Username, Input.Password, Input.RememberMe);
-            if (success)
+
+            var result = _authentication.Authenticate(Input.Username, Input.Password, Input.PasswordStag, Input.RememberMe);
+            
+            switch (await result)
             {
-                return LocalRedirect(returnUrl);
+                case UpolAuthenticationResponse.Success:
+                    return LocalRedirect(returnUrl);
+                case UpolAuthenticationResponse.WrongCredentialsActiveDirectory:
+                    ModelState.AddModelError(string.Empty, _localizer["ERROR:WrongCredentialsActiveDirectory"]);
+                    if(Input.PasswordStag != null && Input.PasswordStag.Length > 0) ViewData["ShowStagPassword"] = true;
+                    return Page();
+                case UpolAuthenticationResponse.WrongCredentialsStag:
+                    ModelState.AddModelError(string.Empty, _localizer["ERROR:WrongCredentialsStag"]);
+                    ViewData["ShowStagPassword"] = true;
+                    ViewData["Password"] = Input.Password;
+                    return Page();
+                case UpolAuthenticationResponse.WrongCredentialsLocal:
+                    ModelState.AddModelError(string.Empty, _localizer["ERROR:WrongCredentialsLocal"]);
+                    return Page();
             }
+
             return InvalidLoginAttempt();
         }
 

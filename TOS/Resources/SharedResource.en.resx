@@ -475,10 +475,10 @@
         <value>Login</value>
     </data>
     <data name="Login_Username" xml:space="preserve">
-        <value>Email/Stag login</value>
+        <value>Email/Username</value>
     </data>
-    <data name="Login_Password" xml:space="preserve">
-        <value>Password/Stag password</value>
+    <data name="Login_Password_Stag" xml:space="preserve">
+        <value>Stag password</value>
     </data>
     <data name="Login_RememberMe" xml:space="preserve">
         <value>Remember me</value>
@@ -938,5 +938,17 @@
     </data>
     <data name="Unassigned topic" xml:space="preserve">
         <value>Unassigned</value>
+    </data>
+    <data name="Login_Password_ActiveDirectory" xml:space="preserve">
+        <value>Password/Active directory password</value>
+    </data>
+    <data name="ERROR:WrongCredentialsActiveDirectory" xml:space="preserve">
+        <value>Wrong login credentials, AD</value>
+    </data>
+    <data name="ERROR:WrongCredentialsLocal" xml:space="preserve">
+        <value>Wrong login credentials</value>
+    </data>
+    <data name="ERROR:WrongCredentialsStag" xml:space="preserve">
+        <value>Wrong stag password</value>
     </data>
 </root>

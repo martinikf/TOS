@@ -2,7 +2,6 @@
 using System.Text;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using System.DirectoryServices.Protocols;
 using System.Net;
 using TOS.Data;
@@ -21,13 +20,14 @@ public class UpolAuthentication : IAuthentication
     private readonly string _stagServicesTeacherIdnoByExternal;
     private readonly string _stagServicesStudentInfoByOsCislo;
     private readonly string _stagServicesTeacherInfoByIdno;
-    
-    public UpolAuthentication(ApplicationDbContext context, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+
+    public UpolAuthentication(ApplicationDbContext context, SignInManager<ApplicationUser> signInManager,
+        IConfiguration configuration)
     {
         _context = context;
         _signInManager = signInManager;
         _configuration = configuration;
-        
+
         _stagServicesUrl = _configuration["StagServices:URL"] ?? string.Empty;
         _stagServicesStudentOsCisloByExternal = _configuration["StagServices:StudentOsCisloByExternal"] ?? string.Empty;
         _stagServicesTeacherIdnoByExternal = _configuration["StagServices:TeacherIdnoByExternal"] ?? string.Empty;
@@ -35,79 +35,56 @@ public class UpolAuthentication : IAuthentication
         _stagServicesTeacherInfoByIdno = _configuration["StagServices:TeacherInfoByIdno"] ?? string.Empty;
     }
 
-    public async Task<bool> Authenticate(string username, string password, bool rememberMe)
+    //If user logs in for the first time and has different STAG and AD password -> STAG password must be used
+    public async Task<UpolAuthenticationResponse> Authenticate(string username, string passwordActiveDirectory, string? passwordStag, bool rememberMe)
     {
         username = NormalizeUsername(username);
 
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName!.ToLower().Equals(username));
+        //Determines if user is logging in for the first time
+        var user = _context.Users.FirstOrDefault(x => x.UserName!.Equals(username));
 
-        //User has signed in the past
-        if (user is not null)
+        if (user != null)
         {
-            return await SignIn(username, password, rememberMe, user);
+            return await SignInUser(user, passwordActiveDirectory, rememberMe);
         }
-        
-        //User doesn't exists in local DB, check if login is in UPOL AD
-        return await UnknownUser(username, password, rememberMe);
+
+        return await UnknownUser(username, passwordActiveDirectory, passwordStag, rememberMe);
     }
 
-    private string NormalizeUsername(string username)
+    private async Task<UpolAuthenticationResponse> SignInUser(ApplicationUser user, string passwordActiveDirectory, bool rememberMe)
     {
-        username = username.Trim().ToLower();
-        if (username.EndsWith("@upol.cz"))
+        //Determines if user has local account or upol account
+        if (user.PasswordHash != null)
         {
-            //Check if user used his email long_email@upol.cz; This doesn't work for very first sign in
-            var userFromEmailInput = _context.Users.FirstOrDefault(x => x.Email!.ToLower().Equals(username));
-            if (userFromEmailInput != null)
+            if (await LocalSignIn(user.UserName!, passwordActiveDirectory, rememberMe))
             {
-                username = userFromEmailInput.UserName!;
+                return UpolAuthenticationResponse.Success;
             }
-            else
-            {
-                //User used portalID + @upol.cz
-                username = username.Replace("@upol.cz", "");
-            }
+            return UpolAuthenticationResponse.WrongCredentialsLocal;
         }
-
-        return username;
-    }
-
-    private async Task<bool> SignIn(string username, string password, bool rememberMe, ApplicationUser user)
-    {
-        //User uses UPOL AD
-        if (user.PasswordHash == null)
-        {
-            return await UpolSignIn(username, password, rememberMe, user);
-        }
-
-        //User is local
-        return await LocalSignIn(username, password, rememberMe);
-    }
-
-    private async Task<bool> LocalSignIn(string username, string password, bool rememberMe)
-    {
-        //Try tu sign in user with credentials in local DB and return true if login was successful
-        return (await _signInManager.PasswordSignInAsync(username, password, rememberMe, false)).Succeeded;
-    }
-
-    private async Task<bool> UpolSignIn(string username, string password, bool rememberMe, ApplicationUser user)
-    {
-        //Try to authenticate the user against UPOL AD, if successful, sign in the user
-        if (UpolActiveDirectoryAuthenticate(username, password))
+       
+        if (UpolActiveDirectoryAuthenticate(user.UserName!, passwordActiveDirectory))
         {
             await _signInManager.SignInAsync(user, rememberMe);
-            return true;
+            return UpolAuthenticationResponse.Success;
         }
-        return false;
+        return UpolAuthenticationResponse.WrongCredentialsActiveDirectory;
+    }
+    
+    private async Task<bool> LocalSignIn(string username, string passwordActiveDirectory, bool rememberMe)
+    {
+        return (await _signInManager.PasswordSignInAsync(username, passwordActiveDirectory, rememberMe, false)).Succeeded;
     }
 
-    private bool UpolActiveDirectoryAuthenticate(string username, string password)
+    private bool UpolActiveDirectoryAuthenticate(string username, string passwordActiveDirectory)
     {
+        //Works only under windows, ssl 
         try
         {
-            //Works only under windows, ssl 
-            var endpoint = new LdapDirectoryIdentifier(_configuration["UpolActiveDirectory:IP"] ?? string.Empty,  int.Parse(_configuration["UpolActiveDirectory:Port"] ?? string.Empty), true, false);
-            using var ldap = new LdapConnection(endpoint, new NetworkCredential(_configuration["UpolActiveDirectory:Dn"] + "\\" + username, password))
+            var endpoint = new LdapDirectoryIdentifier(_configuration["UpolActiveDirectory:IP"] ?? string.Empty,
+                int.Parse(_configuration["UpolActiveDirectory:Port"] ?? string.Empty), true, false);
+            using var ldap = new LdapConnection(endpoint,
+                new NetworkCredential(_configuration["UpolActiveDirectory:Dn"] + "\\" + username, passwordActiveDirectory))
             {
                 AuthType = AuthType.Basic
             };
@@ -116,9 +93,9 @@ public class UpolAuthentication : IAuthentication
             //Allow self signed certificates
             ldap.SessionOptions.VerifyServerCertificate = (_, _) => true;
             ldap.Timeout = TimeSpan.FromMinutes(1);
-            
+
             ldap.Bind();
-            
+
             return true;
         }
         catch
@@ -127,60 +104,63 @@ public class UpolAuthentication : IAuthentication
         }
     }
     
-    private async Task<bool> UnknownUser(string username, string password, bool rememberMe)
+    private async Task<UpolAuthenticationResponse> UnknownUser(string username, string passwordActiveDirectory, string? passwordStag, bool rememberMe)
     {
-        //Check credentials against UPOL AD
-        if (UpolActiveDirectoryAuthenticate(username, password))
+        if (UpolActiveDirectoryAuthenticate(username, passwordActiveDirectory))
         {
-            //User used UPOL AD credentials, create new user in local DB
-            var user = await CreateUpolUser(username, password);
-            return await UpolSignIn(username, password, rememberMe, user);
+            var user = await CreateUpolUser(username, passwordStag ?? passwordActiveDirectory);
+            
+            //User has different stag and ad password and stag password was wrong or not provided, or stag is down
+            if (user is null)
+                return UpolAuthenticationResponse.WrongCredentialsStag;
+            
+            await _signInManager.SignInAsync(user, rememberMe);
+            return UpolAuthenticationResponse.Success;
         }
         //User used wrong credentials or UPOL AD is down
-        return false;
+        return UpolAuthenticationResponse.WrongCredentialsActiveDirectory;
     }
-
-    private async Task<ApplicationUser> CreateUpolUser(string username, string password)
+    
+    private async Task<ApplicationUser?> CreateUpolUser(string username, string passwordStag)
     {
         string stagId;
-        //Get user stag ID
         stagId = GetStudentStagId(username);
         if (stagId.Length > 0)
-        {
-            return await CreateStudent(username, password, stagId);
-        }
+            return await CreateStudent(username, passwordStag, stagId);
         
         stagId = GetTeacherStagId(username);
         if (stagId.Length > 0)
-        {
-            return await CreateTeacher(username, password, stagId);
-        }
+            return await CreateTeacher(username, passwordStag, stagId);
         
-        //User is not in STAG
-        throw new Exception("User authenticated in UPOL AD, but is not in STAG. Possible cause: STAG API is down; user has different AD and STAG login");
+        //Username is not in stag
+        return null;
     }
-    
-    private async Task<ApplicationUser> CreateStudent(string username, string password, string stagId)
+
+    private async Task<ApplicationUser?> CreateStudent(string username, string password, string stagId)
     {
         var request = _stagServicesStudentInfoByOsCislo + stagId;
         var user = await CreateUser(request, username, password);
+        if (user is null) return null;
+        
         await RoleHelper.AssignRoles(user, Role.Student, _context);
         return user;
     }
-    
-    private async Task<ApplicationUser> CreateTeacher(string username, string password, string stagId)
+
+    private async Task<ApplicationUser?> CreateTeacher(string username, string password, string stagId)
     {
         var request = _stagServicesTeacherInfoByIdno + stagId;
         var user = await CreateUser(request, username, password);
+        if (user is null) return user;
+        
         await RoleHelper.AssignRoles(user, Role.Teacher, _context);
         return user;
     }
 
-    private async Task<ApplicationUser> CreateUser(string request, string username, string password)
+    private async Task<ApplicationUser?> CreateUser(string request, string username, string password)
     {
         if (!GetStagInfo(request, username, password, out var firstname, out var lastname, out var email))
-            throw new Exception("Stag API failed");
-        
+            return null; //Couldn't get user info from stag
+
         //Lower case lastname except first letter
         lastname = lastname[..1] + lastname[1..].ToLower();
 
@@ -211,8 +191,9 @@ public class UpolAuthentication : IAuthentication
         try
         {
             var response = StagRequest(request, username, password);
+            //If response is null here, stag credentials are wrong
+            
             var xml = XDocument.Parse(response);
-
             firstname = xml.Descendants("jmeno").First().Value;
             lastname = xml.Descendants("prijmeni").First().Value;
             email = xml.Descendants("email").First().Value;
@@ -234,7 +215,7 @@ public class UpolAuthentication : IAuthentication
             var request = _stagServicesStudentOsCisloByExternal + username;
             var response = StagRequest(request, null, null);
             var xml = XDocument.Parse(response);
-       
+
             var result = xml.Descendants("osCislo").First().Value;
             return result;
         }
@@ -242,14 +223,14 @@ public class UpolAuthentication : IAuthentication
         {
             return string.Empty;
         }
-}
-    
+    }
+
     private string GetTeacherStagId(string username)
     {
         var request = _stagServicesTeacherIdnoByExternal + username;
         return StagRequest(request, null, null);
     }
-
+    
     private string StagRequest(string request, string? username, string? password)
     {
         request = _stagServicesUrl + request;
@@ -269,9 +250,38 @@ public class UpolAuthentication : IAuthentication
             return string.Empty;
         }
     }
+
+    private string NormalizeUsername(string username)
+    {
+        username = username.Trim().ToLower();
+        if (username.EndsWith("@upol.cz"))
+        {
+            //Check if user used his email long_email@upol.cz; This doesn't work for very first sign in
+            var userFromEmailInput = _context.Users.FirstOrDefault(x => x.Email!.ToLower().Equals(username));
+            if (userFromEmailInput != null)
+            {
+                username = userFromEmailInput.UserName!;
+            }
+            else
+            {
+                //User used portalID + @upol.cz
+                username = username.Replace("@upol.cz", "");
+            }
+        }
+
+        return username;
+    }
 }
 
 public interface IAuthentication
 {
-    public Task<bool> Authenticate(string username, string password, bool rememberMe);
+    public Task<UpolAuthenticationResponse> Authenticate(string username, string passwordActiveDirectory, string? passwordStag, bool rememberMe);
+}
+
+public enum UpolAuthenticationResponse
+{
+    Success,
+    WrongCredentialsLocal,
+    WrongCredentialsActiveDirectory,
+    WrongCredentialsStag,
 }

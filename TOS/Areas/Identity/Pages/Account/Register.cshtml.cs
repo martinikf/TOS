@@ -83,16 +83,7 @@ namespace TOS.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             var email = Input.Email.Trim().ToLower();
-            
-            if (email.EndsWith("@upol.cz"))
-            {
-                if (await _authentication.Authenticate(email, Input.Password, false))
-                {
-                    return LocalRedirect(returnUrl);
-                }
-                return RedirectToPage("./Login", new {ReturnUrl = returnUrl});
-            }
-            
+
             var user = CreateUser();
             
             user.FirstName = Input.Firstname;
