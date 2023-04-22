@@ -6,6 +6,8 @@
 
 <h1>@SharedLocalizer["Administration_Users_Heading"]</h1>
 
+<a class="btn btn-primary mb-3" asp-area="Identity" asp-page="/Account/Register">@SharedLocalizer["Users_CreateNewUser"]</a>
+
 <form class="row g-2" asp-action="Users" method="get">
     <div class="col-auto">
         <input type="text" class="form-control" name="searchString" value="@ViewData["searchString"]" placeholder="@SharedLocalizer["Administration_Users_Search_Placeholder"]" autocomplete="off"/>

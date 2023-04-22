@@ -78,7 +78,7 @@
         <value>Přihlásit</value>
     </data>
     <data name="Register" xml:space="preserve">
-        <value>Registrovat</value>
+        <value>Registrovat uživatele</value>
     </data>
     <data name="Logout" xml:space="preserve">
         <value>Odhlásit</value>
@@ -480,10 +480,10 @@
         <value>Přihlásit se</value>
     </data>
     <data name="Register_Heading" xml:space="preserve">
-        <value>Registrace pro externí uživatele</value>
+        <value>Registrace</value>
     </data>
     <data name="Register_Info" xml:space="preserve">
-        <value>Tato registrace slouží pouze pro externí uživatele mimo Univerzitu Palackého! Vyučující/Studenti se rovnou přihlašují pomocí stejných údajů jako do stagu/AD univerzity.</value>
+        <value>Tato registrace slouží pouze pro administrátory. Při úspěšné registraci se odešle e-mail na zadanou adresu s přístupovými údaji.</value>
     </data>
     <data name="Email" xml:space="preserve">
         <value>E-mail</value>
@@ -961,5 +961,17 @@
     </data>
     <data name="ERROR:WrongCredentialsStag" xml:space="preserve">
         <value>Nelze ověřit uživatele v systému STAG</value>
+    </data>
+    <data name="Register_Email_Subject" xml:space="preserve">
+        <value>Byl vám vytvořen účet</value>
+    </data>
+    <data name="Register_Email_Body" xml:space="preserve">
+        <value>Přístupové údaje:</value>
+    </data>
+    <data name="Register_Email_Link" xml:space="preserve">
+        <value>Ověření e-mailové adresy.</value>
+    </data>
+    <data name="Users_CreateNewUser" xml:space="preserve">
+        <value>Vytvořit uživatele</value>
     </data>
 </root>

@@ -5,18 +5,21 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Localization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using TOS.Data;
 using TOS.Models;
 using TOS.Resources;
 using TOS.Services;
 
 namespace TOS.Areas.Identity.Pages.Account
 {
+    [Authorize(Roles ="Administrator")]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -26,6 +29,7 @@ namespace TOS.Areas.Identity.Pages.Account
         private readonly IEmailSender _emailSender;
         private readonly IHtmlLocalizer<SharedResource> _sharedLocalizer;
         private readonly IAuthentication _authentication;
+        private readonly ApplicationDbContext _ctx;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
@@ -33,7 +37,8 @@ namespace TOS.Areas.Identity.Pages.Account
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             IHtmlLocalizer<SharedResource> sharedLocalizer,
-            IAuthentication authentication)
+            IAuthentication authentication,
+            ApplicationDbContext ctx)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -42,6 +47,7 @@ namespace TOS.Areas.Identity.Pages.Account
             _emailSender = emailSender;
             _sharedLocalizer = sharedLocalizer;
             _authentication = authentication;
+            _ctx = ctx;
         }
         
         [BindProperty]
@@ -56,34 +62,28 @@ namespace TOS.Areas.Identity.Pages.Account
             [Required(ErrorMessageResourceType = typeof(ValidationErrorResource), ErrorMessageResourceName = "ERROR_EmailRequired")]
             [EmailAddress]
             public string Email { get; set; }
-            
-            [Required(ErrorMessageResourceType = typeof(ValidationErrorResource), ErrorMessageResourceName = "ERROR_PasswordRequired")]
-            [StringLength(100, ErrorMessageResourceType = typeof(ValidationErrorResource), ErrorMessageResourceName = "ERROR_PasswordLength", MinimumLength = 6)]
-            [DataType("Password")]
-            public string Password { get; set; }
-            
-            [Compare("Password", ErrorMessageResourceType = typeof(ValidationErrorResource), ErrorMessageResourceName = "ERROR_PasswordsNotMatch")]
-            [DataType("Password")]
-            public string ConfirmPassword { get; set; }
-            
+
             [Required(ErrorMessageResourceType = typeof(ValidationErrorResource), ErrorMessageResourceName = "ERROR_FirstNameRequired")]
             public string Firstname { get; set; }
             
             [Required(ErrorMessageResourceType = typeof(ValidationErrorResource), ErrorMessageResourceName = "ERROR_LastNameRequired")]
             public string Lastname { get; set; }
+            
             public string DisplayName { get; set; }
+            
+            public string RoleGroup { get; set; }
         }
 
-        public void OnGetAsync(string returnUrl = null)
+        public void OnGetAsync()
         {
-            ReturnUrl = returnUrl;
+            
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync()
         {
-            returnUrl ??= Url.Content("~/");
             var email = Input.Email.Trim().ToLower();
-
+            var password = Guid.NewGuid().ToString().Substring(0, 8);
+            
             var user = CreateUser();
             
             user.FirstName = Input.Firstname;
@@ -92,7 +92,9 @@ namespace TOS.Areas.Identity.Pages.Account
             
             await _userStore.SetUserNameAsync(user, email, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, email, CancellationToken.None);
-            var result = await _userManager.CreateAsync(user, Input.Password);
+            var result = await _userManager.CreateAsync(user, password);
+            
+           
 
             if (result.Succeeded)
             {
@@ -102,22 +104,27 @@ namespace TOS.Areas.Identity.Pages.Account
                 var callbackUrl = Url.Page(
                     "/Account/ConfirmEmail",
                     pageHandler: null,
-                    values: new { area = "Identity", userId, code, returnUrl },
+                    values: new { area = "Identity", userId, code },
                     protocol: Request.Scheme);
                 
                 if (callbackUrl == null)
                     throw new NullReferenceException("Call back URL is null");
 
-             
-                await _emailSender.SendEmailAsync(Input.Email, _sharedLocalizer["Confirmation_Email_Subject"].Value,
-                    _sharedLocalizer["Confirmation_Email_Body"].Value +
+                await _emailSender.SendEmailAsync(email, _sharedLocalizer["Register_Email_Subject"].Value,
+                    _sharedLocalizer["Register_Email_Body"].Value +
+                    $"<h3>{user.UserName} : {password}</h3>" +
                     $" <a href='{callbackUrl}'>" +
-                    _sharedLocalizer["Confirmation_Email_Link"].Value + "</a>.");
+                    _sharedLocalizer["Register_Email_Link"].Value + "</a>.");
 
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                return LocalRedirect(returnUrl);
+                if (Input.RoleGroup != null && Input.RoleGroup.Length > 0)
+                {
+                    Enum.TryParse(Input.RoleGroup, out Role role);
+                    await RoleHelper.AssignRoles(user, role, _ctx);
+                }
+
+                return RedirectToAction("Users", "Administration");
             }
-
+            
             // If we got this far, something failed, redisplay form
             ViewData["Error"] = _sharedLocalizer["Register_Duplicate_Username"];
             return Page();

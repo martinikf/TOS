@@ -490,10 +490,7 @@
         <value>Log in</value>
     </data>
     <data name="Register_Heading" xml:space="preserve">
-        <value>Register for external users</value>
-    </data>
-    <data name="Register_Info" xml:space="preserve">
-        <value>This registration is only for external users outside Palacký University! Teachers/Students log in directly using the same credentials as for the university stag/AD.</value>
+        <value>Registration</value>
     </data>
     <data name="Email" xml:space="preserve">
         <value>Email</value>
@@ -950,5 +947,17 @@
     </data>
     <data name="ERROR:WrongCredentialsStag" xml:space="preserve">
         <value>Wrong stag password</value>
+    </data>
+    <data name="Register_Email_Subject" xml:space="preserve">
+        <value>Account was created</value>
+    </data>
+    <data name="Register_Email_Body" xml:space="preserve">
+        <value>Login credentials:</value>
+    </data>
+    <data name="Register_Email_Link" xml:space="preserve">
+        <value>E-mail address confirmation.</value>
+    </data>
+    <data name="Users_CreateNewUser" xml:space="preserve">
+        <value>Create user</value>
     </data>
 </root>

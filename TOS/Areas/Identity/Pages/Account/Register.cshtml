@@ -8,7 +8,7 @@
 
 <h1>@SharedLocalizer["Register_Heading"]</h1>
 
-<div class="row g-3">
+<div class="row">
     <div class="col-md-6 mx-auto">
         <p class="text-danger">@SharedLocalizer["Register_Info"]</p>
         <hr />
@@ -16,6 +16,7 @@
         {
             <p class="text-danger">@ViewData["Error"]</p>
         }
+        
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
             <div class="form-floating mb-3">
@@ -23,37 +24,50 @@
                 <label asp-for="Input.Email">@SharedLocalizer["Email"]*</label>
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
-            <div class="row g-0">
-                <div class="form-floating mb-3 col-lg">
-                    <input asp-for="Input.Firstname" class="form-control" autocomplete="given-name" aria-required="false" placeholder=""/>
-                    <label asp-for="Input.Firstname">@SharedLocalizer["Firstname"]*</label>
-                    <span asp-validation-for="Input.Firstname" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3 col-lg">
-                    <input asp-for="Input.Lastname" class="form-control" autocomplete="family-name" aria-required="false" placeholder=""/>
-                    <label asp-for="Input.Lastname">@SharedLocalizer["Lastname"]*</label>
-                    <span asp-validation-for="Input.Lastname" class="text-danger"></span>
-                </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Firstname" class="form-control" autocomplete="given-name" aria-required="false" placeholder=""/>
+                <label asp-for="Input.Firstname">@SharedLocalizer["Firstname"]*</label>
+                <span asp-validation-for="Input.Firstname" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Lastname" class="form-control" autocomplete="family-name" aria-required="false" placeholder=""/>
+                <label asp-for="Input.Lastname">@SharedLocalizer["Lastname"]*</label>
+                <span asp-validation-for="Input.Lastname" class="text-danger"></span>
             </div>
             <div class="form-floating mb-3">
                 <input asp-for="Input.DisplayName" class="form-control" aria-required="false" placeholder=""/>
                 <label asp-for="Input.DisplayName">@SharedLocalizer["DisplayName"]</label>
                 <span asp-validation-for="Input.DisplayName" class="text-danger"></span>
             </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder=""/>
-                <label asp-for="Input.Password">@SharedLocalizer["Password"]*</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            <div class="form-check mb-3 form-check-inline">
+                <input type="radio" class="form-check-input" id="Student" asp-for="Input.RoleGroup" value="Student"/>
+                <label for="Student" class="form-check-label">@SharedLocalizer["Student"]</label>
             </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder=""/>
-                <label asp-for="Input.ConfirmPassword">@SharedLocalizer["ConfirmPassword"]*</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            <div class="form-check mb-3 form-check-inline">
+                <input type="radio" class="form-check-input" id="Teacher" asp-for="Input.RoleGroup" value="Teacher"/>
+                <label for="Teacher" class="form-check-label">@SharedLocalizer["Teacher"]</label>
             </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">@SharedLocalizer["Register"]</button>
+            <div class="form-check mb-3 form-check-inline">
+                <input type="radio" class="form-check-input" id="External" asp-for="Input.RoleGroup" value="External" checked/>
+                <label for="External" class="form-check-label">@SharedLocalizer["External"]</label>
+            </div>
+            <div class="form-check mb-3 form-check-inline">
+                <input type="radio" class="form-check-input" id="Administrator" asp-for="Input.RoleGroup" value="Administrator"/>
+                <label for="Administrator" class="form-check-label">@SharedLocalizer["Administrator"]</label>
+            </div>
+                
+            <div class="d-flex justify-content-between">
+                <div>
+                    <a class="btn btn-secondary btn-lg" asp-action="Users" asp-controller="Administration">@SharedLocalizer["Cancel"]</a>
+                </div>
+                <div>
+                    <button id="registerSubmit" type="submit" class="btn btn-lg btn-primary">@SharedLocalizer["Register"]</button>
+                </div>
+            </div>
         </form>
     </div>
 </div>
+   
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

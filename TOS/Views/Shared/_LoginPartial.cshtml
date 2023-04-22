@@ -20,9 +20,6 @@
 else
 {
     <li class="nav-item">
-        <a class="nav-link @(path.Contains("Register")? "active" : "")" asp-area="Identity" asp-page="/Account/Register">@SharedLocalizer["Register"]</a>
-    </li>
-    <li class="nav-item">
         <a class="nav-link @(path.Contains("Login")? "active" : "")" asp-area="Identity" asp-page="/Account/Login">@SharedLocalizer["Login"]</a>
     </li>
 }
