@@ -865,7 +865,7 @@
         <value>Name - english must be unique</value>
     </data>
     <data name="Home_Index_All_Heading" xml:space="preserve">
-        <value>...</value>
+        <value>Warning</value>
     </data>
     <data name="Home_Index_All_Text" xml:space="preserve">
         <value>...</value>
@@ -877,16 +877,16 @@
         <value>...</value>
     </data>
     <data name="Home_Index_Login_External_Heading" xml:space="preserve">
-        <value>...</value>
+        <value>External login</value>
     </data>
     <data name="Home_Index_Login_Upol_Heading" xml:space="preserve">
-        <value>...</value>
+        <value>UPOL login</value>
     </data>
     <data name="Home_Index_Login_Upol_Text" xml:space="preserve">
         <value>...</value>
     </data>
     <data name="Home_Index_Notification_Heading" xml:space="preserve">
-        <value>...</value>
+        <value>Notifications</value>
     </data>
     <data name="Home_Index_Notification_Text" xml:space="preserve">
         <value>...</value>
@@ -959,5 +959,11 @@
     </data>
     <data name="Users_CreateNewUser" xml:space="preserve">
         <value>Create user</value>
+    </data>
+    <data name="Home_Index_Groups_Heading" xml:space="preserve">
+        <value>Groups</value>
+    </data>
+    <data name="Home_Index_Groups_Text" xml:space="preserve">
+        <value>...</value>
     </data>
 </root>

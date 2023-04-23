@@ -483,7 +483,7 @@
         <value>Registrace</value>
     </data>
     <data name="Register_Info" xml:space="preserve">
-        <value>Tato registrace slouží pouze pro administrátory. Při úspěšné registraci se odešle e-mail na zadanou adresu s přístupovými údaji.</value>
+        <value>Tato registrace slouží pouze pro administrátory. Po úspěšné registraci se odešlou přihlašovací údaje na e-mail registrovaného.</value>
     </data>
     <data name="Email" xml:space="preserve">
         <value>E-mail</value>
@@ -864,13 +864,10 @@
         <value>Pro externí uživatele</value>
     </data>
     <data name="Home_Index_Login_Upol_Text" xml:space="preserve">
-        <value>Aplikace je napojena na služby Univerzity Palackého a umožňuje vám přihlášení pomocí přihlašovacích údajů k AD/Stagu.
-            Z tohoto důvodu nevyužívejte registrace, ale rovnou se přihlašujte pomocí stejných přihlašovacích údajů jako ke službám Univerzity Palackého.</value>
+        <value>Aplikace je napojena na služby Univerzity Palackého a umožňuje Vám přihlášení pomocí přihlašovacích údajů k AD/STAGu.</value>
     </data>
     <data name="Home_Index_Login_External_Text" xml:space="preserve">
-        <value>Externí uživatelé mají možnost navrhnout témata závěrečných prací.
-            Pro pokračování se přihlaste nebo zaregistrujte.
-            Vaše registrace bude muset být potvrzena vedením katedry.</value>
+        <value>Externí uživatelé mají možnost navrhnout témata závěrečných prací. Pro přístup Vám musí být vytvořen účet administrátorem.</value>
     </data>
     <data name="Home_Index_Notification_Heading" xml:space="preserve">
         <value>Notifikace</value>
@@ -925,9 +922,7 @@
             Pokud bude téma přijato bude viditelné v příslušné skupině témat a bude označeno jako "Studentská práce".</value>
     </data>
     <data name="Propose_Tutorial_External" xml:space="preserve">
-        <value>Při vytváření můžete navrhnout zda závěrečná práce bude bakalářská (3 semestry), či diplomová (4 semestry). Tento návrh je pouze orientační a až při posouzení tématu vyučujícím bude potvrzen.
-            Téma po vytvoření nebude veřejně přístupné, nejdříve jej musí potvrdit a případně i upravit jakýkoliv vyučující. Téma můžete upravovat pouze do doby jeho prvního posouzení vyučujícím.
-            Pokud téma bude přijato bude viditelné v příslušné skupině témat a bude uvedeno jako "Externí práce".</value>
+        <value>Při vytváření můžete navrhnout, zda závěrečná práce bude bakalářská (3 semestry), či diplomová (4 semestry). Tento návrh je pouze orientační a až při posouzení tématu vyučujícím bude potvrzen. Téma po vytvoření nebude veřejně přístupné, nejdříve jej musí potvrdit a případně i upravit jakýkoliv vyučující. Téma můžete upravovat pouze do doby jeho prvního posouzení vyučujícím. Pokud téma bude přijato bude viditelné v příslušné skupině témat a bude uvedeno jako "Externí práce".</value>
     </data>
     <data name="Proposed_External" xml:space="preserve">
         <value>Návrhy externistů</value>
@@ -948,7 +943,7 @@
         <value>Heslo/Active Directory heslo</value>
     </data>
     <data name="Login_Info" xml:space="preserve">
-        <value>Univerzitní uživatelé musí vyplnit heslo, které použivájí k přístupu k Active Directory. Při prvním přihlášení musí univerzitní uživatel zadat přihlašovací jméno ve tvaru: např. martfi00. Pokud uživatel používá rozdílná hesla pro AD a STAG, tak při prvním přihlášení aplikace zobrazí pole pro zadání STAG hesla.</value>
+        <value>Univerzitní uživatelé musí pro první přihlášení vyplnit svoje přihlašovací jméno ve tvaru např. martfi00. Do pole pro heslo zadávají heslo pro přístup k doméně Univerzity Palackého. Pokud uživatel používá různá hesla pro doménu a systém STAG, tak aplikace také vyžádá heslo, které uživatel používá k přístupu do STAGu.</value>
     </data>
     <data name="Login_PasswordStag_Info" xml:space="preserve">
         <value>Zadané heslo nelze použít k přístupu k informačnímu systému STAG. Prosím zadejete heslo, které k přístupu k systému STAG používate. Toto heslo je nutné zadat pouze při prvním přihlášení.</value>
@@ -963,7 +958,7 @@
         <value>Nelze ověřit uživatele v systému STAG</value>
     </data>
     <data name="Register_Email_Subject" xml:space="preserve">
-        <value>Byl vám vytvořen účet</value>
+        <value>Byl Vám vytvořen účet</value>
     </data>
     <data name="Register_Email_Body" xml:space="preserve">
         <value>Přístupové údaje:</value>
@@ -973,5 +968,14 @@
     </data>
     <data name="Users_CreateNewUser" xml:space="preserve">
         <value>Vytvořit uživatele</value>
+    </data>
+    <data name="Home_Index_Groups_Heading" xml:space="preserve">
+        <value>Skupiny</value>
+    </data>
+    <data name="Home_Index_Groups_Text" xml:space="preserve">
+        <value>Skupiny slouží pro vyučované předměty. Umožnují spravovat úkoly a projekty v daném předmětu.</value>
+    </data>
+    <data name="ForgotPassword_Text" xml:space="preserve">
+        <value>Volbu zapomenuté heslo mohou využít pouze uživatelé bez univezitního účtu.</value>
     </data>
 </root>

@@ -94,8 +94,6 @@ namespace TOS.Areas.Identity.Pages.Account
             await _emailStore.SetEmailAsync(user, email, CancellationToken.None);
             var result = await _userManager.CreateAsync(user, password);
             
-           
-
             if (result.Succeeded)
             {
                 var userId = await _userManager.GetUserIdAsync(user);
@@ -114,7 +112,7 @@ namespace TOS.Areas.Identity.Pages.Account
                     _sharedLocalizer["Register_Email_Body"].Value +
                     $"<h3>{user.UserName} : {password}</h3>" +
                     $" <a href='{callbackUrl}'>" +
-                    _sharedLocalizer["Register_Email_Link"].Value + "</a>.");
+                    _sharedLocalizer["Register_Email_Link"].Value + "</a>");
 
                 if (Input.RoleGroup != null && Input.RoleGroup.Length > 0)
                 {

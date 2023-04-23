@@ -173,6 +173,5 @@ namespace TOS.Controllers
            
             return  TryValidateModel("Group");
         }
-        
     }
 }

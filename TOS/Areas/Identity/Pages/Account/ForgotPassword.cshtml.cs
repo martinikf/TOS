@@ -41,16 +41,16 @@ namespace TOS.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync()
         {
+            var user = await _userManager.FindByEmailAsync(Input.Email);
+            
             //If AD/Stag user tries to reset password, redirect to login page
-            if (Input.Email.ToLower().EndsWith("@upol.cz"))
+            if (user != null && String.IsNullOrEmpty(user.PasswordHash))
             {
-                //TODO: Error message
                 return RedirectToPage("./Login");
             }
             
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(Input.Email);
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
