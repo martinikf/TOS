@@ -383,8 +383,12 @@ namespace TOS.Controllers
                 _context.Add(topic);
                 await _context.SaveChangesAsync();
                 
+                var topicNotification = await _context.Topics
+                    .Include(x=>x.AssignedStudent)
+                    .Include(x=>x.Supervisor)
+                    .FirstAsync(x=>x.TopicId.Equals(topic.TopicId));
                 if(topic.AssignedId != null)
-                    await _notificationManager.TopicAssigned(topic, user, CallbackDetailsUrl(topic.TopicId));
+                    await _notificationManager.TopicAssigned(topicNotification, user, CallbackDetailsUrl(topic.TopicId));
             }
             else
             {

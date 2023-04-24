@@ -28,7 +28,6 @@ namespace TOS.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly IEmailSender _emailSender;
         private readonly IHtmlLocalizer<SharedResource> _sharedLocalizer;
-        private readonly IAuthentication _authentication;
         private readonly ApplicationDbContext _ctx;
 
         public RegisterModel(
@@ -37,7 +36,6 @@ namespace TOS.Areas.Identity.Pages.Account
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             IHtmlLocalizer<SharedResource> sharedLocalizer,
-            IAuthentication authentication,
             ApplicationDbContext ctx)
         {
             _userManager = userManager;
@@ -46,7 +44,6 @@ namespace TOS.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _emailSender = emailSender;
             _sharedLocalizer = sharedLocalizer;
-            _authentication = authentication;
             _ctx = ctx;
         }
         
