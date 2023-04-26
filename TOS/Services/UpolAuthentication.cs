@@ -18,6 +18,7 @@ public class UpolAuthentication : IAuthentication
     private readonly string _stagServicesUrl;
     private readonly string _stagServicesStudentOsCisloByExternal;
     private readonly string _stagServicesTeacherIdnoByExternal;
+    private readonly string _stagServicesTeacherIdnoByStagLogin;
     private readonly string _stagServicesStudentInfoByOsCislo;
     private readonly string _stagServicesTeacherInfoByIdno;
 
@@ -33,6 +34,7 @@ public class UpolAuthentication : IAuthentication
         _stagServicesTeacherIdnoByExternal = _configuration["StagServices:TeacherIdnoByExternal"] ?? string.Empty;
         _stagServicesStudentInfoByOsCislo = _configuration["StagServices:StudentInfoByOsCislo"] ?? string.Empty;
         _stagServicesTeacherInfoByIdno = _configuration["StagServices:TeacherInfoByIdno"] ?? string.Empty;
+        _stagServicesTeacherIdnoByStagLogin = _configuration["StagServices:TeacherIdnoByStagLogin"] ?? string.Empty;
     }
 
     //If user logs in for the first time and has different STAG and AD password -> STAG password must be used
@@ -228,6 +230,11 @@ public class UpolAuthentication : IAuthentication
     private string GetTeacherStagId(string username)
     {
         var request = _stagServicesTeacherIdnoByExternal + username;
+        var result = StagRequest(request, null, null);
+        if (result.Length > 0) return result;
+        
+        //Backup try StagLogin instead of External username
+        request = _stagServicesTeacherIdnoByStagLogin + username;
         return StagRequest(request, null, null);
     }
     

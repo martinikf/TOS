@@ -943,7 +943,7 @@
         <value>Heslo/Active Directory heslo</value>
     </data>
     <data name="Login_Info" xml:space="preserve">
-        <value>Univerzitní uživatelé musí pro první přihlášení vyplnit svoje přihlašovací jméno ve tvaru např. martfi00. Do pole pro heslo zadávají heslo pro přístup k doméně Univerzity Palackého. Pokud uživatel používá různá hesla pro doménu a systém STAG, tak aplikace také vyžádá heslo, které uživatel používá k přístupu do STAGu.</value>
+        <value>Univerzitní uživatelé musí pro první přihlášení vyplnit svoje Active Directory přihlašovací jméno ve tvaru např. martfi00. Do pole pro heslo zadávají heslo pro přístup k doméně Univerzity Palackého. Pokud uživatel používá různá hesla pro doménu a systém STAG, tak aplikace také vyžádá heslo, které uživatel používá k přístupu do STAGu.</value>
     </data>
     <data name="Login_PasswordStag_Info" xml:space="preserve">
         <value>Zadané heslo nelze použít k přístupu k informačnímu systému STAG. Prosím zadejete heslo, které k přístupu k systému STAG používate. Toto heslo je nutné zadat pouze při prvním přihlášení.</value>
