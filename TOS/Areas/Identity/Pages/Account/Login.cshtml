@@ -16,16 +16,19 @@
         <hr/>
         <form id="account" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Username" class="form-control" autocomplete="username" aria-required="true" placeholder=""/>
-                <label asp-for="Input.Username" class="form-label">@SharedLocalizer["Login_Username"]</label>
-                <span asp-validation-for="Input.Username" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="" value="@((string?) ViewData["Password"] ?? "")"/>
-                <label asp-for="Input.Password" class="form-label">@SharedLocalizer["Login_Password_ActiveDirectory"]</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
+            @if ((bool) (ViewData["ShowStagPassword"] ?? false) == false)
+            {
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Username" class="form-control" autocomplete="username" aria-required="true" placeholder=""/>
+                    <label asp-for="Input.Username" class="form-label">@SharedLocalizer["Login_Username"]</label>
+                    <span asp-validation-for="Input.Username" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="" value="@((string?) ViewData["Password"] ?? "")"/>
+                    <label asp-for="Input.Password" class="form-label">@SharedLocalizer["Login_Password_ActiveDirectory"]</label>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+            }
             @if ((bool) (ViewData["ShowStagPassword"] ?? false))
             {
                 <p class="text-primary">
@@ -37,18 +40,31 @@
                     <label asp-for="Input.PasswordStag" class="form-label">@SharedLocalizer["Login_Password_Stag"]</label>
                     <span asp-validation-for="Input.PasswordStag" class="text-danger"></span>
                 </div>
+                
+                <input asp-for="Input.Username" type="hidden" autocomplete="username" aria-required="true" placeholder=""/>
+                <input asp-for="Input.Password" type="hidden" autocomplete="current-password" aria-required="true" placeholder="" value="@((string?) ViewData["Password"] ?? "")"/>
+                <input asp-for="Input.RememberMe" type="hidden"/>
             }
-            <div class="form-check mb-3">
-                <label asp-for="Input.RememberMe" class="form-check-label">@SharedLocalizer["Login_RememberMe"]</label>
-                <input class="form-check-input" asp-for="Input.RememberMe"/>
-            </div>
+            @if ((bool) (ViewData["ShowStagPassword"] ?? false) == false)
+            {
+                <div class="form-check mb-3">
+                    <label asp-for="Input.RememberMe" class="form-check-label">@SharedLocalizer["Login_RememberMe"]</label>
+                    <input class="form-check-input" asp-for="Input.RememberMe"/>
+                </div>
+            }
+            
             <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">@SharedLocalizer["Login_Submit"]</button>
         </form>
-        <div>
-            <p>
-                <a id="forgot-password" asp-page="./ForgotPassword">@SharedLocalizer["Login_ForgotPassword"]</a>
-            </p>
-        </div>
+        
+        @if ((bool) (ViewData["ShowStagPassword"] ?? false) == false)
+        {
+            <div>
+                <p>
+                    <a id="forgot-password" asp-page="./ForgotPassword">@SharedLocalizer["Login_ForgotPassword"]</a>
+                </p>
+            </div>
+        }
+        
     </div>
 </div>
 

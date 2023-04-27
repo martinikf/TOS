@@ -465,7 +465,7 @@
         <value>Přihlášení</value>
     </data>
     <data name="Login_Username" xml:space="preserve">
-        <value>Email/Přihlašovací jméno</value>
+        <value>Email/Active Directory přihlašovací jméno</value>
     </data>
     <data name="Login_Password_Stag" xml:space="preserve">
         <value>Stag heslo</value>
@@ -943,10 +943,10 @@
         <value>Heslo/Active Directory heslo</value>
     </data>
     <data name="Login_Info" xml:space="preserve">
-        <value>Univerzitní uživatelé musí pro přihlášení využít přihlašovací údaje, které používají pro přihlášení k doméně Univerzity Palackého (Active Directory). Pokud uživatel používá různá hesla pro AD a STAG, tak se aplikace poprvé dotáže také na heslo, které uživatel používá k systému STAG.</value>
+        <value>Univerzitní uživatelé musí pro přihlášení využít přihlašovací údaje, které používají pro přihlášení k doméně Univerzity Palackého (Active Directory). Pokud uživatel používá různá hesla pro AD a STAG, tak se aplikace poprvé dotáže také na heslo, které uživatel používá k systému STAG. Při pokusu o přihlášení univerzitním uživatelem aplikace vždy ověří zadané přihlašovací údaje pomocí domény UP. Pokud dané přihlášení je uživatelovo první, tak aplikace získá osobní údaje a roli uživatele ze STAGu. Aplikace si neukládá hesla univerzitních uživatelů v žádné podobě!</value>
     </data>
     <data name="Login_PasswordStag_Info" xml:space="preserve">
-        <value>Zadané heslo nelze použít k přístupu k informačnímu systému STAG. Prosím zadejete heslo, které k přístupu k systému STAG používate. Toto heslo je nutné zadat pouze při prvním přihlášení.</value>
+        <value>Prosím zadejete heslo, které k přístupu k systému STAG používate. Toto heslo je nutné zadat pouze při prvním přihlášení.</value>
     </data>
     <data name="ERROR:WrongCredentialsActiveDirectory" xml:space="preserve">
         <value>Špatné přihlašovací údaje, AD</value>

@@ -89,10 +89,10 @@ namespace TOS.Areas.Identity.Pages.Account
                     return LocalRedirect(returnUrl);
                 case UpolAuthenticationResponse.WrongCredentialsActiveDirectory:
                     ModelState.AddModelError(string.Empty, _localizer["ERROR:WrongCredentialsActiveDirectory"]);
-                    if(Input.PasswordStag != null && Input.PasswordStag.Length > 0) ViewData["ShowStagPassword"] = true;
                     return Page();
                 case UpolAuthenticationResponse.WrongCredentialsStag:
-                    ModelState.AddModelError(string.Empty, _localizer["ERROR:WrongCredentialsStag"]);
+                    if(Input.PasswordStag != null && Input.PasswordStag.Length > 0)
+                        ModelState.AddModelError(string.Empty, _localizer["ERROR:WrongCredentialsStag"]);
                     ViewData["ShowStagPassword"] = true;
                     ViewData["Password"] = Input.Password;
                     return Page();
