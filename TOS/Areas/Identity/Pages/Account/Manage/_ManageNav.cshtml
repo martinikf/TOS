@@ -7,9 +7,9 @@
      @{
             var user = await UserManager.GetUserAsync(User);
      }
+     <li class="nav-item"><a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">@SharedLocalizer["Manage_Nav_Email"]</a></li>
      @if(user != null &&  await UserManager.HasPasswordAsync(user)){
-        <li class="nav-item"><a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">@SharedLocalizer["Manage_Nav_Email"]</a></li>
          <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">@SharedLocalizer["Manage_Nav_Password"]</a></li>
-    }
+     }
     <li class="nav-item"><a class="nav-link @ManageNavPages.NotificationNavClass(ViewContext)" id="notification" asp-page="./Notification">@SharedLocalizer["Manage_Nav_Notification"]</a></li>
 </ul>

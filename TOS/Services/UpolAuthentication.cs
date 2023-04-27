@@ -261,17 +261,18 @@ public class UpolAuthentication : IAuthentication
     private string NormalizeUsername(string username)
     {
         username = username.Trim().ToLower();
-        if (username.EndsWith("@upol.cz"))
+        
+        if (username.Contains("@"))
         {
-            //Check if user used his email long_email@upol.cz; This doesn't work for very first sign in
-            var userFromEmailInput = _context.Users.FirstOrDefault(x => x.Email!.ToLower().Equals(username));
-            if (userFromEmailInput != null)
+            //If user used email instead of username
+            var user = _context.Users.FirstOrDefault(x => x.Email!.Equals(username));
+            if (user != null)
             {
-                username = userFromEmailInput.UserName!;
+                username = user.UserName!;
             }
-            else
+            else if (username.EndsWith("@upol.cz"))
             {
-                //User used portalID + @upol.cz
+                //If user didnt use email but username ends with @upol.cz -> try to get username
                 username = username.Replace("@upol.cz", "");
             }
         }
