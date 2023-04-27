@@ -52,6 +52,10 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
             if (currentUser is null) throw new Exception("User should not be null");
 
             var displayName = currentUser.DisplayName;
+            if (displayName is null)
+            {
+                displayName = currentUser.FirstName + " " + currentUser.LastName;
+            }
 
             Username = userName;
 
@@ -86,6 +90,9 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
                 await LoadAsync(user);
                 return Page();
             }
+            
+            if(Input.DisplayName == user.FirstName +" " +user.LastName)
+                return RedirectToPage();
             
             //TODO Add stag api sync option for AD-users
 
