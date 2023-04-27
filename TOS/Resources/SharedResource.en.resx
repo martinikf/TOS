@@ -966,4 +966,22 @@
     <data name="Home_Index_Groups_Text" xml:space="preserve">
         <value>...</value>
     </data>
+    <data name="Login_Info" xml:space="preserve">
+        <value>University users must use the login credentials they use to log in to the Palacký University domain (Active Directory). If the user uses different passwords for AD and STAG, the application will also ask for the password the user uses for STAG for the first time.</value>
+    </data>
+    <data name="Login_PasswordStag_Info" xml:space="preserve">
+        <value>The password entered cannot be used to access the STAG information system. Please enter the password you use to access the STAG system. You only need to enter this password the first time you log in.</value>
+    </data>
+    <data name="ForgotPassword_Text" xml:space="preserve">
+        <value>The forgotten password option can only be used by users without an university account.</value>
+    </data>
+    <data name="Propose_Tutorial_External" xml:space="preserve">
+        <value>When proposing your thesis, you can suggest whether it will be a bachelor's thesis (3 semesters) or a master's thesis (4 semesters). This suggestion is only indicative and will be confirmed only after the teacher's review of the topic. Once created, the topic will not be publicly available; it must first be confirmed and possibly modified by any teacher. You may edit the topic only until the first review by the teacher. If the topic is accepted it will be visible in the appropriate topic group and will be listed as "External topic".</value>
+    </data>
+    <data name="Propose_Tutorial_Student" xml:space="preserve">
+        <value>The topic will not be publicly displayed after the topic has been proposed. It must first be confirmed and possibly edited by any teacher. You may only edit the topic until it is first reviewed by the instructor. If accepted, the topic will be visible in the appropriate topic group and will be marked as "Student topic".</value>
+    </data>
+    <data name="Register_Info" xml:space="preserve">
+        <value>This registration is for administrators only. After successful registration, login details will be sent to the e-mail of the registered person.</value>
+    </data>
 </root>
