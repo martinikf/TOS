@@ -160,7 +160,7 @@ public class UpolAuthentication : IAuthentication
 
     private async Task<ApplicationUser?> CreateUser(string request, string username, string password)
     {
-        if (!GetStagInfo(request, username, password, out var firstname, out var lastname, out var email))
+        if (!GetStagInfo(request, username, password, out var firstname, out var lastname, out var email, out var displayName))
             return null; //Couldn't get user info from stag
 
         //Lower case lastname except first letter
@@ -177,6 +177,10 @@ public class UpolAuthentication : IAuthentication
             EmailConfirmed = true,
             PasswordHash = null
         };
+        
+        if (displayName.Length > 0)
+            user.DisplayName = displayName;
+        
         user.SecurityStamp = Guid.NewGuid().ToString("D");
 
         await _context.Users.AddAsync(user);
@@ -188,17 +192,26 @@ public class UpolAuthentication : IAuthentication
         return user;
     }
 
-    private bool GetStagInfo(string request, string username, string password, out string firstname, out string lastname, out string email)
+    private bool GetStagInfo(string request, string username, string password, out string firstname, out string lastname, out string email, out string displayName)
     {
         try
         {
             var response = StagRequest(request, username, password);
+            displayName = "";
             //If response is null here, stag credentials are wrong
             
             var xml = XDocument.Parse(response);
             firstname = xml.Descendants("jmeno").First().Value;
             lastname = xml.Descendants("prijmeni").First().Value;
             email = xml.Descendants("email").First().Value;
+            if (xml.Descendants("titulPred").Any())
+            {
+                displayName = xml.Descendants("titulPred").First().Value + " " + firstname + " " + lastname;
+            }
+            if(xml.Descendants("titulZa").Any())
+            {
+                displayName += " " + xml.Descendants("titulZa").First().Value;
+            }
             return true;
         }
         catch
@@ -206,6 +219,7 @@ public class UpolAuthentication : IAuthentication
             firstname = "";
             lastname = "";
             email = "";
+            displayName = "";
             return false;
         }
     }
