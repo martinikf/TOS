@@ -217,7 +217,7 @@ namespace TOS.Controllers
         [Authorize(Roles = "Topic,AnyTopic,Group,AnyGroup")]
         public async Task<IActionResult> Create([Bind("TopicId,Name,NameEng,DescriptionShort,DescriptionShortEng,DescriptionLong,DescriptionLongEng,Visible,CreatorId,SupervisorId,AssignedId,GroupId,Type")] Topic topic, int[] programmes, List<IFormFile> files)
         {
-            if (User.IsInRole("Group") && (!User.IsInRole("Topic") || !User.IsInRole("AnyTopic") || !User.IsInRole("AnyGroup")))
+            if (User.IsInRole("Group") && !User.IsInRole("Topic") && !User.IsInRole("AnyTopic") && !User.IsInRole("AnyGroup"))
             {
                 var user = await GetUser();
                 if (!user.CreatedGroups.Any(x => x.GroupId == topic.GroupId))
