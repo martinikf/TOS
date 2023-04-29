@@ -258,7 +258,7 @@
         <value>Skupiny</value>
     </data>
     <data name="Group_Index_Search_Placeholder" xml:space="preserve">
-        <value>Název skupiny...</value>
+        <value>Název skupiny</value>
     </data>
     <data name="Group_Index_Search_HiddenGroups" xml:space="preserve">
         <value>Zahrnout skryté skupiny</value>
@@ -393,7 +393,7 @@
         <value>Správa profilu</value>
     </data>
     <data name="Manage_Index_Heading" xml:space="preserve">
-        <value>Zobrazované jméno</value>
+        <value>Profil</value>
     </data>
     <data name="Manage_Index_Username" xml:space="preserve">
         <value>Přihlašovací jméno</value>
@@ -946,7 +946,7 @@
         <value>Univerzitní uživatelé musí pro přihlášení využít přihlašovací údaje, které používají pro přihlášení k doméně Univerzity Palackého (Active Directory). Pokud uživatel používá různá hesla pro AD a STAG, tak se aplikace poprvé dotáže také na heslo, které uživatel používá k systému STAG. Při pokusu o přihlášení univerzitním uživatelem aplikace vždy ověří zadané přihlašovací údaje pomocí domény UP. Pokud dané přihlášení je uživatelovo první, tak aplikace získá osobní údaje a roli uživatele ze STAGu. Aplikace si neukládá hesla univerzitních uživatelů v žádné podobě!</value>
     </data>
     <data name="Login_PasswordStag_Info" xml:space="preserve">
-        <value>Prosím zadejete heslo, které k přístupu k systému STAG používate. Toto heslo je nutné zadat pouze při prvním přihlášení.</value>
+        <value>Prosím zadejte heslo, které k přístupu k systému STAG používate. Toto heslo je nutné zadat pouze při prvním přihlášení.</value>
     </data>
     <data name="ERROR:WrongCredentialsActiveDirectory" xml:space="preserve">
         <value>Špatné přihlašovací údaje, AD</value>
@@ -977,5 +977,8 @@
     </data>
     <data name="ForgotPassword_Text" xml:space="preserve">
         <value>Volbu zapomenuté heslo mohou využít pouze uživatelé bez univerzitního účtu.</value>
+    </data>
+    <data name="Administration_Users_Delete_Body" xml:space="preserve">
+        <value>Opravdu chcete smazat tohoto uživatele? Vymažou se všechny příspěvky v diskuzích a vlastniství témat a skupin se předá administrátorovi.</value>
     </data>
 </root>

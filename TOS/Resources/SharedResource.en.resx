@@ -265,7 +265,7 @@
         <value>Groups</value>
     </data>
     <data name="Group_Index_Search_Placeholder" xml:space="preserve">
-        <value>Name of group..</value>
+        <value>Group name</value>
     </data>
     <data name="Group_Index_Search_HiddenGroups" xml:space="preserve">
         <value>Include hidden groups</value>
@@ -397,7 +397,7 @@
         <value>Manage account</value>
     </data>
     <data name="Manage_Index_Heading" xml:space="preserve">
-        <value>Display name</value>
+        <value>Profile</value>
     </data>
     <data name="Manage_Index_Username" xml:space="preserve">
         <value>Login username</value>
@@ -661,7 +661,7 @@
         <value>Warning</value>
     </data>
     <data name="Group_Edit_Delete_Body" xml:space="preserve">
-        <value>You really want to delete this group? You will delete all the topics it covers.</value>
+        <value>Do you really want to delete this group? This will delete all the topics it contains.</value>
     </data>
     <data name="Group_Edit_Delete_Cancel" xml:space="preserve">
         <value>Cancel</value>
@@ -871,7 +871,7 @@
         <value>...</value>
     </data>
     <data name="Home_Index_Heading" xml:space="preserve">
-        <value>...</value>
+        <value>System for offering topics of diploma theses</value>
     </data>
     <data name="Home_Index_Login_External_Text" xml:space="preserve">
         <value>...</value>
@@ -967,13 +967,13 @@
         <value>...</value>
     </data>
     <data name="Login_Info" xml:space="preserve">
-        <value>University users must use the login credentials they use to log in to the Palacký University domain (Active Directory). If the user uses different passwords for AD and STAG, the application will also ask for the password the user uses for STAG for the first time.</value>
+        <value>University users must use the login credentials they use to log in to the Palacký University domain (Active Directory). If the user uses different passwords for AD and STAG, the application will also ask for the password the user uses for STAG for the first time. When a university user attempts to log in, the application always verifies the entered login data using the UP domain. If the login is the user's first, the application retrieves the user's personal data and role from STAG. The application does not store the passwords of university users in any form!</value>
     </data>
     <data name="Login_PasswordStag_Info" xml:space="preserve">
-        <value>The password entered cannot be used to access the STAG information system. Please enter the password you use to access the STAG system. You only need to enter this password the first time you log in.</value>
+        <value>Please enter the password you use to access the STAG system. You only need to enter this password the first time you log in.</value>
     </data>
     <data name="ForgotPassword_Text" xml:space="preserve">
-        <value>The forgotten password option can only be used by users without an university account.</value>
+        <value>Th forgot password option can only be used by users without an university account.</value>
     </data>
     <data name="Propose_Tutorial_External" xml:space="preserve">
         <value>When proposing your thesis, you can suggest whether it will be a bachelor's thesis (3 semesters) or a master's thesis (4 semesters). This suggestion is only indicative and will be confirmed only after the teacher's review of the topic. Once created, the topic will not be publicly available; it must first be confirmed and possibly modified by any teacher. You may edit the topic only until the first review by the teacher. If the topic is accepted it will be visible in the appropriate topic group and will be listed as "External topic".</value>
@@ -983,5 +983,8 @@
     </data>
     <data name="Register_Info" xml:space="preserve">
         <value>This registration is for administrators only. After successful registration, login details will be sent to the e-mail of the registered person.</value>
+    </data>
+    <data name="Administration_Users_Delete_Body" xml:space="preserve">
+        <value>Do you really want to delete this user? All posts in the discussions will be deleted and ownership of topics and groups will be handed over to the administrator.</value>
     </data>
 </root>
