@@ -79,6 +79,8 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnPostChangeEmailAsync()
         {
+            Input.NewEmail = Input.NewEmail.Trim().ToLower();
+            
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -89,6 +91,12 @@ namespace TOS.Areas.Identity.Pages.Account.Manage
             {
                 await LoadAsync(user);
                 return Page();
+            }
+            
+            if (_userManager.Users.Any(x => x.Email!.Equals(Input.NewEmail)))
+            {
+                StatusMessage = _localizer["Confirmation_Email_NotChanged"];
+                return RedirectToPage();
             }
 
             var email = await _userManager.GetEmailAsync(user);
