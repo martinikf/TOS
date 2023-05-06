@@ -846,9 +846,6 @@
     <data name="Comment_Delete" xml:space="preserve">
         <value>Delete</value>
     </data>
-    <data name="Home_Index_Login_Heading" xml:space="preserve">
-        <value>...</value>
-    </data>
     <data name="Administration_Users_Delete" xml:space="preserve">
         <value>Delete</value>
     </data>
@@ -867,14 +864,8 @@
     <data name="Home_Index_All_Heading" xml:space="preserve">
         <value>Warning</value>
     </data>
-    <data name="Home_Index_All_Text" xml:space="preserve">
-        <value>...</value>
-    </data>
     <data name="Home_Index_Heading" xml:space="preserve">
         <value>System for offering topics of diploma theses</value>
-    </data>
-    <data name="Home_Index_Login_External_Text" xml:space="preserve">
-        <value>...</value>
     </data>
     <data name="Home_Index_Login_External_Heading" xml:space="preserve">
         <value>External login</value>
@@ -882,17 +873,8 @@
     <data name="Home_Index_Login_Upol_Heading" xml:space="preserve">
         <value>UPOL login</value>
     </data>
-    <data name="Home_Index_Login_Upol_Text" xml:space="preserve">
-        <value>...</value>
-    </data>
     <data name="Home_Index_Notification_Heading" xml:space="preserve">
         <value>Notifications</value>
-    </data>
-    <data name="Home_Index_Notification_Text" xml:space="preserve">
-        <value>...</value>
-    </data>
-    <data name="Home_Index_Text" xml:space="preserve">
-        <value>...</value>
     </data>
     <data name="Unassigned theses" xml:space="preserve">
         <value>Unassigned theses</value>
@@ -962,9 +944,6 @@
     </data>
     <data name="Home_Index_Groups_Heading" xml:space="preserve">
         <value>Groups</value>
-    </data>
-    <data name="Home_Index_Groups_Text" xml:space="preserve">
-        <value>...</value>
     </data>
     <data name="Login_Info" xml:space="preserve">
         <value>University users must use the login credentials they use to log in to the Palacký University domain (Active Directory). If the user uses different passwords for AD and STAG, the application will also ask for the password the user uses for STAG for the first time. When a university user attempts to log in, the application always verifies the entered login data using the UP domain. If the login is the user's first, the application retrieves the user's personal data and role from STAG. The application does not store the passwords of university users in any form!</value>
