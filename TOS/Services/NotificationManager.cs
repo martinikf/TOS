@@ -43,6 +43,7 @@ public class NotificationManager : INotificationManager
         var notification = await GetNotification("CommentNew");
         
         var users = new HashSet<ApplicationUser>();
+        users.Add(topic.Creator);
         if (topic.AssignedStudent != null) users.Add(topic.AssignedStudent);
         if (topic.Supervisor != null) users.Add(topic.Supervisor);
         users.AddRange( topic.UserInterestedTopics.Select(x=>x.User));
